@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * File Name :         InputManager.cs
+ * Author(s) :         Toby Schamberger
+ * Creation Date :     2/19/2024
+ *
+ * Brief Description : 
+ *
+ * TODO:
+ * - jumping
+ *****************************************************************************/
+
+using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +23,8 @@ public class InputManager : MonoBehaviour
 
     [Tooltip("The fastest the player will go (without an external force)")]
     public float Speed;
+    [Tooltip("The fastest the player will go (midair)")]
+    public float SpeedMidair;
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
 
@@ -20,6 +34,8 @@ public class InputManager : MonoBehaviour
     private Rigidbody rigidbody;
 
     [HideInInspector] public bool CurrentlyMoving;
+    [HideInInspector] public bool InWater;
+    [HideInInspector] public float VerticalVelocity;
     private float currentAccelerationTime;
 
 
@@ -55,9 +71,18 @@ public class InputManager : MonoBehaviour
         Pause.started += Pause_started;
     }
 
-    private void WhileMoving()
+    private void ManageMovement()
     {
-        
+        if (CurrentlyMoving)
+        {
+            if (currentAccelerationTime < AccelerationSeconds)
+                currentAccelerationTime += Time.fixedDeltaTime;
+        }
+        else
+        {
+            if (currentAccelerationTime > 0)
+                currentAccelerationTime -= Time.fixedDeltaTime;
+        }
 
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
         accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
@@ -67,7 +92,24 @@ public class InputManager : MonoBehaviour
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
         Vector2 movement = Move.ReadValue<Vector2>();
-        Vector3 move = transform.TransformDirection(new Vector3(movement.x, 0f, movement.y));
+        Vector3 move = transform.TransformDirection(new Vector3(movement.x, VerticalVelocity, movement.y));
+
+        rigidbody.velocity = move * currentSpeed;
+    }
+
+    private void ManageMidairMovement()
+    {
+        //acceleration doesnt change midair!!!
+
+        float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
+        accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
+
+        float currentSpeed = SpeedMidair * accelerationPercent;
+
+        //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
+
+        Vector2 movement = Move.ReadValue<Vector2>();
+        Vector3 move = transform.TransformDirection(new Vector3(movement.x, VerticalVelocity, movement.y));
 
         rigidbody.velocity = move * currentSpeed;
     }
@@ -99,17 +141,12 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        WhileMoving();
+        if (VerticalVelocity != 0)
+        {
+            ManageMidairMovement();
+            return;
+        }
 
-        if (CurrentlyMoving)
-        {
-            if (currentAccelerationTime < AccelerationSeconds)
-                currentAccelerationTime += Time.fixedDeltaTime;
-        }
-        else
-        {
-            if (currentAccelerationTime > 0)
-                currentAccelerationTime -= Time.fixedDeltaTime;
-        }
+        ManageMovement();
     }
 }
