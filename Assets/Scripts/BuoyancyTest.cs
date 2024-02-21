@@ -58,7 +58,7 @@ public class BuoyancyTest : MonoBehaviour
         float maxYPos = volume.GetSurfaceLevel();
         if (yPos < maxYPos)
         {
-            float upForce = volume.WaterData.BuoyancyForce * rb.mass;
+            float upForce = volume.WaterData.BuoyancyForce;
             float underWaterBuoyantForce = (maxYPos - yPos) * volume.WaterData.DepthModifier;
             float force = upForce + (upForce * underWaterBuoyantForce);
             var vel = rb.velocity;
