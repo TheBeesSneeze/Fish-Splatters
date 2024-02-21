@@ -51,12 +51,14 @@ MonoBehaviour:
   Speed: 10
   SpeedMidair: 0
   AccelerationSeconds: 2
-  descentSpeed: 0
+  bobbingDeadZone: 0.05
+  descentSpeed: 0.5
   ascentSpeed: 0
   jumpHeightLimit: 0
   diveHeightLimit: 0
   swimLine: 0
   heightMultiplier: 0
+  movementOrigin: {fileID: 0}
   Move:
     m_Name: 
     m_Type: 0
@@ -85,7 +87,6 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   CurrentlyMoving: 0
-  InWater: 0
   VerticalVelocity: 0
 --- !u!54 &8929504200544972529
 Rigidbody:
@@ -109,10 +110,10 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &2421650342148469136
 MonoBehaviour:
@@ -163,10 +164,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 10.670101
-  m_Height: 11.455
-  m_Direction: 1
-  m_Center: {x: 0.006950021, y: 23.153599, z: -63.7887}
+  m_Radius: 0.9
+  m_Height: 3.39
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &9005592617502128726
 GameObject:
   m_ObjectHideFlags: 0
