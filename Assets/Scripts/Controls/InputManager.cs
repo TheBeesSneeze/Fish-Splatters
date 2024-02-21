@@ -44,6 +44,9 @@ public class InputManager : MonoBehaviour
     [Tooltip("The amount you multiplier for how high the jump is")]
     public float heightMultiplier;
 
+    [Header("Unity")]
+    public GameObject Pivot;
+
     bool isHoldingJump;
     bool hasPastSwimLine = true;
     float depth;
@@ -115,7 +118,7 @@ public class InputManager : MonoBehaviour
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
         Vector2 move = Move.ReadValue<Vector2>();
-        movement = transform.TransformDirection(new Vector3(move.x, VerticalVelocity, move.y));
+        movement = transform.TransformDirection(new Vector3(move.x, 0, move.y));
 
         rigidbody.velocity = movement * currentSpeed;
     }
@@ -213,15 +216,11 @@ public class InputManager : MonoBehaviour
 
     private void RotateFish()
     {
-        //transform.forward = Vector3.Lerp(transform.forward, rigidbody.velocity, Time.deltaTime * 10);
+        Vector3 rotation = new Vector3(movement.x, 0, movement.z);
 
-        //transform.rotation = Quaternion.LookRotation(rigidbody.velocity.normalized);
+        Quaternion targetRotation = Quaternion.LookRotation(rotation.normalized);
 
-        /*
-        float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+        Pivot.transform.rotation = Quaternion.Slerp(Pivot.transform.rotation, targetRotation, Time.deltaTime *10);
 
-        Vector3 rotate = new Vector3(0, angle, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(movement), Time.deltaTime * 10);
-        */
     }
 }
