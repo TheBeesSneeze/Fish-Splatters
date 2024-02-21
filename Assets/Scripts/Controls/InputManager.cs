@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class InputManager : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public bool InWater;
     [HideInInspector] public float VerticalVelocity;
     private float currentAccelerationTime;
+    private Vector3 movement;
 
 
     private void Awake()
@@ -91,10 +93,10 @@ public class InputManager : MonoBehaviour
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        Vector2 movement = Move.ReadValue<Vector2>();
-        Vector3 move = transform.TransformDirection(new Vector3(movement.x, VerticalVelocity, movement.y));
+        Vector2 move = Move.ReadValue<Vector2>();
+        movement = transform.TransformDirection(new Vector3(move.x, VerticalVelocity, move.y));
 
-        rigidbody.velocity = move * currentSpeed;
+        rigidbody.velocity = movement * currentSpeed;
     }
 
     private void ManageMidairMovement()
@@ -108,10 +110,10 @@ public class InputManager : MonoBehaviour
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        Vector2 movement = Move.ReadValue<Vector2>();
-        Vector3 move = transform.TransformDirection(new Vector3(movement.x, VerticalVelocity, movement.y));
+        Vector2 move = Move.ReadValue<Vector2>();
+        movement = transform.TransformDirection(new Vector3(move.x, VerticalVelocity, move.y));
 
-        rigidbody.velocity = move * currentSpeed;
+        rigidbody.velocity = movement * currentSpeed;
     }
 
     private void Move_started(InputAction.CallbackContext obj)
@@ -146,7 +148,40 @@ public class InputManager : MonoBehaviour
             ManageMidairMovement();
             return;
         }
+        else
+        {
+            ManageMovement();
+        }
 
-        ManageMovement();
+        RotateFish();
+    }
+
+    private void RotateFish()
+    {
+
+        //transform.eulerAngles = Vector3.RotateTowards(transform.eulerAngles, transform.position + movement, 1, 1);
+
+        /*
+        float angle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg;
+
+        //angle = Mathf.Clamp(angle, rangedPlayerController.MaxDownAngle, rangedPlayerController.MaxUpAngle);
+
+        rangedPlayerController.RotationPivot.transform.localEulerAngles = new Vector3(0, 0, angle);
+
+        //flip gun to aim in right direction
+        if (aimDirection.x < 0)
+            GunSprite.flipY = true;
+
+        if (aimDirection.x > 0)
+            GunSprite.flipY = false;
+
+        //change layer to look right
+        if (aimDirection.y > 0)
+            GunSprite.sortingOrder = -5;
+
+        if (aimDirection.y < 0)
+            GunSprite.sortingOrder = 5;
+
+        */
     }
 }
