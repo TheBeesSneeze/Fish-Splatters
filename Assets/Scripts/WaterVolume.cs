@@ -22,6 +22,9 @@ public class WaterVolumeData
     public float DragFactor = 0.25f;
     [Tooltip("How much buoyant force to apply.")]
     public float BuoyancyForce = 8f;
+    [Tooltip("Direction of the current relative to the rotation of this volume.")]
+    public Vector3 CirculationDirection;
+    [Tooltip("Direction of the current relative to the rotation of this volume.")]
     public float CirculationSpeed;
     [Tooltip("The direction to apply the buoyancy in.")]
     public Vector3 BuoyancyDirection = Vector3.up;
@@ -47,13 +50,19 @@ public class WaterVolume : MonoBehaviour
     {
         Collider c = GetComponent<Collider>();
         Gizmos.DrawWireCube(
-            new Vector3(transform.position.x, c.bounds.max.y + WaterData.SurfaceLevelOffset, transform.position.z),
+            new Vector3(transform.position.x, transform.position.y + WaterData.SurfaceLevelOffset, transform.position.z),
             new Vector3(c.bounds.size.x, 0.05f, c.bounds.size.z));
+        Gizmos.DrawLine(transform.position, GetWaterCurrentForce());
     }
 
     public float GetSurfaceLevel()
     {
-        return col.bounds.max.y + WaterData.SurfaceLevelOffset;
+        return transform.position.y + WaterData.SurfaceLevelOffset;
+    }
+
+    public Vector3 GetWaterCurrentForce()
+    {
+        return transform.rotation * WaterData.CirculationDirection.normalized * WaterData.CirculationSpeed;
     }
 
     public bool CheckWithinBounds2D(Vector3 v)
