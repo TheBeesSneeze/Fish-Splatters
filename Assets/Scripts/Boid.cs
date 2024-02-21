@@ -14,7 +14,7 @@ public class Boid : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        boids = GameObject.Find
+        //boids = GameObject.Find
     }
 
     // Update is called once per frame
@@ -90,6 +90,8 @@ public class Boid : MonoBehaviour
             }
         }
 
+
+        return result;
         /*
         Vector pvJ
 
