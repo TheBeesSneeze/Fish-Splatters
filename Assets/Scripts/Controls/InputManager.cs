@@ -1,6 +1,6 @@
 /*******************************************************************************
  * File Name :         InputManager.cs
- * Author(s) :         Toby Schamberger
+ * Author(s) :         Toby Schamberger, Clare Grady
  * Creation Date :     2/19/2024
  *
  * Brief Description : 
@@ -41,6 +41,25 @@ public class InputManager : MonoBehaviour
     private Vector3 movement;
 
 
+    //Clare's variables
+    [Tooltip("How fast the descent speed is")]
+    public float descentSpeed;
+    [Tooltip("How fast the ascent and fall down is")]
+    public float ascentSpeed;
+    [Tooltip("How high the fish can jump")]
+    public float jumpHeightLimit;
+    [Tooltip("How low the fish can dive")]
+    public float diveHeightLimit;
+    [Tooltip("The line (y level) the fish wants to return to")]
+    public float swimLine;
+    [Tooltip("The amount you multiplier for how high the jump is")]
+    public float heightMultiplier;
+
+    bool isHoldingJump;
+    bool hasPastSwimLine = true;
+    float depth;
+
+
     private void Awake()
     {
         if(Instance == null)
@@ -73,6 +92,7 @@ public class InputManager : MonoBehaviour
         Pause.started += Pause_started;
     }
 
+    
     private void ManageMovement()
     {
         if (CurrentlyMoving)
@@ -85,6 +105,7 @@ public class InputManager : MonoBehaviour
             if (currentAccelerationTime > 0)
                 currentAccelerationTime -= Time.fixedDeltaTime;
         }
+        JumpManagment(); 
 
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
         accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
@@ -126,16 +147,50 @@ public class InputManager : MonoBehaviour
         CurrentlyMoving = false;
     }
 
+    private void JumpManagment()
+    {
+        Vector3 position = rigidbody.position;
+        if (isHoldingJump)
+        {
+            if(position.y > diveHeightLimit)
+            {
+                rigidbody.AddForce(Vector3.down * descentSpeed, ForceMode.VelocityChange);
+            }
+            depth = position.y;
+        }
+        else
+        {
+            if(!hasPastSwimLine)
+            {
+                if (position.y < -depth * heightMultiplier)
+                {
+                    rigidbody.AddForce(Vector3.up * ascentSpeed , ForceMode.VelocityChange);
+                }
+                else
+                {
+                    hasPastSwimLine = true;
+                }
+            }
+            else if(position.y > swimLine)
+            {
+                rigidbody.AddForce(Vector3.down * ascentSpeed, ForceMode.VelocityChange);
+            }
+        }
+    }
+
+
     private void Jump_started(InputAction.CallbackContext obj)
     {
-        throw new NotImplementedException();
+        isHoldingJump = true;
+        hasPastSwimLine = false;
     }
 
     private void Jump_canceled(InputAction.CallbackContext obj)
     {
-        throw new NotImplementedException();
+        isHoldingJump = false; 
     }
 
+    
     private void Pause_started(InputAction.CallbackContext obj)
     {
         throw new NotImplementedException();
