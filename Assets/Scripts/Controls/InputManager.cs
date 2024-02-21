@@ -29,19 +29,8 @@ public class InputManager : MonoBehaviour
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
 
-    private PlayerInput playerInput;
-    [HideInInspector] public InputAction Move, Jump, Pause;
-
-    private Rigidbody rigidbody;
-
-    [HideInInspector] public bool CurrentlyMoving;
-    [HideInInspector] public bool InWater;
-    [HideInInspector] public float VerticalVelocity;
-    private float currentAccelerationTime;
-    private Vector3 movement;
-
-
-    //Clare's variables
+    [Header("Jumping")]
+    //Clare's variables (clariables)
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
     [Tooltip("How fast the ascent and fall down is")]
@@ -58,6 +47,17 @@ public class InputManager : MonoBehaviour
     bool isHoldingJump;
     bool hasPastSwimLine = true;
     float depth;
+
+    private PlayerInput playerInput;
+    [HideInInspector] public InputAction Move, Jump, Pause;
+
+    private Rigidbody rigidbody;
+
+    [HideInInspector] public bool CurrentlyMoving;
+    [HideInInspector] public bool InWater;
+    [HideInInspector] public float VerticalVelocity;
+    private float currentAccelerationTime;
+    private Vector3 movement;
 
 
     private void Awake()
@@ -213,30 +213,15 @@ public class InputManager : MonoBehaviour
 
     private void RotateFish()
     {
+        //transform.forward = Vector3.Lerp(transform.forward, rigidbody.velocity, Time.deltaTime * 10);
 
-        //transform.eulerAngles = Vector3.RotateTowards(transform.eulerAngles, transform.position + movement, 1, 1);
+        //transform.rotation = Quaternion.LookRotation(rigidbody.velocity.normalized);
 
         /*
-        float angle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
 
-        //angle = Mathf.Clamp(angle, rangedPlayerController.MaxDownAngle, rangedPlayerController.MaxUpAngle);
-
-        rangedPlayerController.RotationPivot.transform.localEulerAngles = new Vector3(0, 0, angle);
-
-        //flip gun to aim in right direction
-        if (aimDirection.x < 0)
-            GunSprite.flipY = true;
-
-        if (aimDirection.x > 0)
-            GunSprite.flipY = false;
-
-        //change layer to look right
-        if (aimDirection.y > 0)
-            GunSprite.sortingOrder = -5;
-
-        if (aimDirection.y < 0)
-            GunSprite.sortingOrder = 5;
-
+        Vector3 rotate = new Vector3(0, angle, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(movement), Time.deltaTime * 10);
         */
     }
 }
