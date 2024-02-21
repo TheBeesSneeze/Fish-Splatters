@@ -38,11 +38,11 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public float VerticalVelocity;
     private float currentAccelerationTime;
 
-    bool isHoldingJump;
-    bool hasPastSwimLine = true; 
+
+    //Clare's variables
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
-    [Tooltip("How fast the ascent is")]
+    [Tooltip("How fast the ascent and fall down is")]
     public float ascentSpeed;
     [Tooltip("How high the fish can jump")]
     public float jumpHeightLimit;
@@ -50,10 +50,12 @@ public class InputManager : MonoBehaviour
     public float diveHeightLimit;
     [Tooltip("The line (y level) the fish wants to return to")]
     public float swimLine;
-    float depth;
     [Tooltip("The amount you multiplier for how high the jump is")]
     public float heightMultiplier;
-    
+
+    bool isHoldingJump;
+    bool hasPastSwimLine = true;
+    float depth;
 
 
     private void Awake()
