@@ -30,9 +30,7 @@ public class InputManager : MonoBehaviour
 
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
-
-    [Tooltip("Deadzone to stop bobbing, an offset from the position of the fish.")]
-    public float bobbingDeadZone = 0.05f;
+    
 
     [Header("Jumping")]
     //Clare's variables (clariables)
@@ -47,11 +45,13 @@ public class InputManager : MonoBehaviour
 
     [Tooltip("How low the fish can dive")] public float diveHeightLimit;
 
-    [Tooltip("The line (y level) the fish wants to return to")]
-    public float swimLine;
+    [Tooltip("Deadzone to stop bobbing, an offset from the position of the fish.")]
+    public float bobbingDeadZone = 0.05f;
 
     [Tooltip("The amount you multiplier for how high the jump is")]
     public float heightMultiplier;
+
+    public Vector3 cameraOffsetFromPlayer;
 
     public Transform movementOrigin;
 
@@ -68,9 +68,9 @@ public class InputManager : MonoBehaviour
     public bool InWater => currentVolume != null;
     [HideInInspector] public float VerticalVelocity;
     private float currentAccelerationTime;
-    private Vector3 movement;
+    private Vector3 targetMovement;
+    private Vector3 realMovement;
     private WaterVolume currentVolume;
-
 
     private void Awake()
     {
@@ -144,11 +144,12 @@ public class InputManager : MonoBehaviour
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
         Vector2 move = Move.ReadValue<Vector2>();
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        targetMovement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
 
-        var targetV = movement * currentSpeed;
-        targetV.y = rigidbody.velocity.y;
+        var targetV = targetMovement * currentSpeed;
+        targetMovement.y = rigidbody.velocity.y;
         Vector3 force = targetV - rigidbody.velocity;
+
         if (float.IsNaN(force.x) || float.IsNaN(force.y) || float.IsNaN(force.z))
         {
             force = Vector3.zero;
@@ -189,9 +190,9 @@ public class InputManager : MonoBehaviour
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
         Vector2 move = Move.ReadValue<Vector2>();
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        targetMovement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
 
-        var targetV = movement * currentSpeed;
+        var targetV = targetMovement * currentSpeed;
         // targetV.y = rigidbody.velocity.y;
         rigidbody.AddForce(targetV, ForceMode.Acceleration);
     }
@@ -272,6 +273,15 @@ public class InputManager : MonoBehaviour
         RotateFish();
     }
 
+    private void Update()
+    {
+        if (movementOrigin == null) return;
+
+        movementOrigin.transform.position = rigidbody.position + cameraOffsetFromPlayer;
+
+
+    }
+
     private void RotateFish()
     {
         Vector3 rotation = new Vector3(rigidbody.velocity.x, 0, rigidbody.velocity.z);
@@ -284,10 +294,10 @@ public class InputManager : MonoBehaviour
         //transform.rotation = Quaternion.LookRotation(rigidbody.velocity.normalized);
 
         /*
-        float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(targetMovement.x, targetMovement.z) * Mathf.Rad2Deg;
 
         Vector3 rotate = new Vector3(0, angle, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(movement), Time.deltaTime * 10);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(targetMovement), Time.deltaTime * 10);
         */
     }
 }
