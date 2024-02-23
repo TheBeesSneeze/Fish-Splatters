@@ -52,12 +52,14 @@ MonoBehaviour:
   Speed: 10
   SpeedMidair: 0
   AccelerationSeconds: 2
+  bobbingDeadZone: 0.05
   descentSpeed: 0
   ascentSpeed: 0
   jumpHeightLimit: 0
   diveHeightLimit: 0
   swimLine: 0
   heightMultiplier: 0
+  movementOrigin: {fileID: 0}
   Move:
     m_Name: 
     m_Type: 0
@@ -86,7 +88,6 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   CurrentlyMoving: 0
-  InWater: 0
   VerticalVelocity: 0
 --- !u!54 &8929504200544972529
 Rigidbody:
@@ -178,6 +179,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8263199108894618667}
   - component: {fileID: 130019726676517558}
+  - component: {fileID: 6694094841543114605}
+  - component: {fileID: 6643033662031990788}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -212,6 +215,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6694094841543114605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5818374537838965859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa7155796051b734daa718462081dc5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BindingMode: 1
+  m_FollowOffset: {x: 0, y: 10, z: -15}
+  m_XDamping: 1
+  m_YDamping: 1
+  m_ZDamping: 1
+  m_AngularDampingMode: 0
+  m_PitchDamping: 0
+  m_YawDamping: 0
+  m_RollDamping: 0
+  m_AngularDamping: 0
+--- !u!114 &6643033662031990788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5818374537838965859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8b78ac948f05a46a6d8339a503172b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7289626400421194731
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,8 +276,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7289626400421194731}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5.3500004}
+  m_LocalRotation: {x: 0.38268343, y: -1.6411398e-16, z: 6.797824e-17, w: 0.92387956}
+  m_LocalPosition: {x: 0.0000000111758744, y: 14.1799965, z: -11.609982}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
