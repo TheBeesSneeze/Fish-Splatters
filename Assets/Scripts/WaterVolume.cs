@@ -19,20 +19,17 @@ using UnityEngine.Serialization;
 public class WaterVolumeData
 {
     [Tooltip("How much drag to apply to the object whilst submerged.")]
-    public float DragFactor = 0.25f;
+    public float BuoyancyDamper = 10f;
     [Tooltip("How much buoyant force to apply.")]
-    public float BuoyancyForce = 8f;
+    public float BuoyancyForce = 60f;
     [Tooltip("Direction of the current relative to the rotation of this volume.")]
     public Vector3 CirculationDirection;
     [Tooltip("Direction of the current relative to the rotation of this volume.")]
     public float CirculationSpeed;
     [Tooltip("The direction to apply the buoyancy in.")]
     public Vector3 BuoyancyDirection = Vector3.up;
-    public float GravityAmount = 9.81f;
     [Tooltip("How far above the top of the volume the object will sit.")]
     public float SurfaceLevelOffset = 0.05f;
-    [Tooltip("How much force will be applied proportionally to the depth of the object.")]
-    [Range(0f, 1f)] public float DepthModifier = 1f;
 }
 
 [RequireComponent(typeof(Collider))]

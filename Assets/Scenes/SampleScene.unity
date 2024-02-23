@@ -332,15 +332,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 438131444053023521, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
       propertyPath: <WaterData>k__BackingField.DepthModifier
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 438131444053023521, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
-      propertyPath: <WaterData>k__BackingField.CirculationSpeed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 438131444053023521, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
-      propertyPath: <WaterData>k__BackingField.CirculationDirection.x
-      value: 0
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 5777986541487495852, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
       propertyPath: m_Name
@@ -417,7 +409,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4564085412338111071, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.18
+      value: 9.97
       objectReference: {fileID: 0}
     - target: {fileID: 4564085412338111071, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_LocalPosition.z

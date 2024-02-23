@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 10
-  SpeedMidair: 0
+  SpeedMidair: 2
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
   descentSpeed: 0.5
@@ -91,6 +91,8 @@ MonoBehaviour:
   diveHeightLimit: 0
   swimLine: 0
   heightMultiplier: 0
+  buoyantForceSpring: 60
+  buoyantForceDamper: 10
   cameraOffsetFromPlayer: {x: 0, y: 3.82, z: -12.56}
   movementOrigin: {fileID: 7267682323697709755}
   Move:

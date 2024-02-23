@@ -120,14 +120,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <WaterData>k__BackingField:
-    DragFactor: 0.5
-    BuoyancyForce: 8
-    CirculationDirection: {x: 1, y: 0, z: 0}
+    BuoyancyDamper: 10
+    BuoyancyForce: 60
+    CirculationDirection: {x: 0, y: 0, z: 0}
     CirculationSpeed: 0
     BuoyancyDirection: {x: 0, y: 1, z: 0}
-    GravityAmount: -9.81
     SurfaceLevelOffset: 5.54
-    DepthModifier: 0.5
 --- !u!1 &7223131377017595656
 GameObject:
   m_ObjectHideFlags: 0
