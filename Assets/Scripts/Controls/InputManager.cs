@@ -53,6 +53,8 @@ public class InputManager : MonoBehaviour
     [Tooltip("The amount you multiplier for how high the jump is")]
     public float heightMultiplier;
 
+    public Vector3 cameraOffsetFromPlayer;
+
     public Transform movementOrigin;
 
     bool isHoldingJump;
@@ -270,6 +272,15 @@ public class InputManager : MonoBehaviour
 
         JumpManagment();
         RotateFish();
+    }
+
+    private void Update()
+    {
+        if (movementOrigin == null) return;
+
+        movementOrigin.transform.position = rigidbody.position + cameraOffsetFromPlayer;
+
+
     }
 
     private void RotateFish()
