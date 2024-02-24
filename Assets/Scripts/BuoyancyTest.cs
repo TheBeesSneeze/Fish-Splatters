@@ -59,14 +59,14 @@ public class BuoyancyTest : MonoBehaviour
         if (yPos < maxYPos)
         {
             float upForce = volume.WaterData.BuoyancyForce;
-            float underWaterBuoyantForce = (maxYPos - yPos) * volume.WaterData.DepthModifier;
-            float force = upForce + (upForce * underWaterBuoyantForce);
+           // float underWaterBuoyantForce = (maxYPos - yPos) * volume.WaterData.DepthModifier;
+           // float force = upForce + (upForce * underWaterBuoyantForce);
             var vel = rb.velocity;
             // vel += (volume.WaterData.BuoyancyDirection * volume.WaterData.GravityAmount * Time.fixedDeltaTime); only if we're applying custom gravity
-            vel *= Mathf.Clamp01(1f - volume.WaterData.DragFactor * Time.deltaTime);
+            //vel *= Mathf.Clamp01(1f - volume.WaterData.DragFactor * Time.deltaTime);
             rb.AddForce(vel - rb.velocity, ForceMode.VelocityChange); //drag force
             rb.AddForce(volume.GetWaterCurrentForce());
-            rb.AddForce(volume.WaterData.BuoyancyDirection * force);
+          //  rb.AddForce(volume.WaterData.BuoyancyDirection * force);
             // }
         }
     }
