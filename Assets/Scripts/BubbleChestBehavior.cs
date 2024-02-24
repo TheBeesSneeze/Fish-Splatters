@@ -8,8 +8,7 @@ using UnityEngine;
 public class BubbleChestBehavior : MonoBehaviour
 {
     [Header ("Changable Variables")]
-    [Tooltip("Determines if the chest is open or not")]
-    public bool ChestOpen;
+    private bool ChestOpen;
     [Tooltip("Seconds between each bubble spawning")]
     public float BubbleSpawnSeconds;
     [Tooltip("How long the chest is closed for")]
@@ -47,9 +46,9 @@ public class BubbleChestBehavior : MonoBehaviour
         //can you tell i'm taking a cs course
         for (int i = 0; i < AmountOfBubbles; i++)
         {
-            Bubble = Instantiate(Bubble, transform.position, transform.rotation);
-            Rigidbody bubbleRB = Bubble.GetComponent<Rigidbody>();
-            bubbleRB.AddForce(transform.up * BubbleSpeed);
+            GameObject bubble = Instantiate(Bubble, transform.position, Bubble.transform.rotation);
+            Rigidbody bubbleRB = bubble.GetComponent<Rigidbody>();
+            bubbleRB.velocity = (Vector3.up * BubbleSpeed);
             yield return new WaitForSeconds(BubbleSpawnSeconds);
         }
         ChestOpen = false;
@@ -58,8 +57,8 @@ public class BubbleChestBehavior : MonoBehaviour
 
     public IEnumerator ClosedTime()
     {
-        ChestOpen = true;
         yield return new WaitForSeconds(ChestClosedSeconds);
+        ChestOpen = true;
         ChestControls();
     }
 }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1765888374549504635}
   - component: {fileID: 7996610780814044465}
   - component: {fileID: 1401417102888204438}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BubbleTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &183860239580403127
 MeshFilter:

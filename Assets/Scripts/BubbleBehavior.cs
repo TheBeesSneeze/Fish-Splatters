@@ -7,21 +7,23 @@ using UnityEngine;
 
 public class BubbleBehavior : MonoBehaviour
 {
-    [Header("Changable Variables")]
-    [Tooltip("Time until bubble despawns")]
-    public float BubbleDespawnSeconds;
+    //[Header("Changable Variables")]
+    //[Tooltip("Time until bubble despawns after hitting death plane")]
+    //public float BubbleDespawnSeconds;
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "BubbleDeathPlane")
         {
-            StartCoroutine(DestroyBubble());
+            DestroyBubble();
         }
     }
 
-    public IEnumerator DestroyBubble()
+    public void DestroyBubble()
     {
-        yield return new WaitForSeconds(BubbleDespawnSeconds);
+        //yield return new WaitForSeconds(BubbleDespawnSeconds);
         Destroy(gameObject);
+
+
     }
 }
