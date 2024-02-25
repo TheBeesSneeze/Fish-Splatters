@@ -581,6 +581,10 @@ PrefabInstance:
       value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 8684405678741292798, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: MidairZoom
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8684405678741292798, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: CameraSpeed
       value: 2
       objectReference: {fileID: 0}

@@ -19,6 +19,11 @@ public class CameraManager : MonoBehaviour
     public static CameraManager Instance;
 
     public float CameraSpeed = 10;
+    public float ZoomMultiplier=1;
+    public float MidairZoom = 1;
+
+    public float MaxDownwardTilt = 30;
+
     [Tooltip("Starts moving the camera up if the player jumps higher than this number")]
     public float JumpHeightToMoveCamera = 5;
 
@@ -35,6 +40,7 @@ public class CameraManager : MonoBehaviour
     private InputManager player;
 
     private float defaultAngle;
+    private float currentZoomMultiplier = 1;
 
     private Vector3 targetPosition; //the cameras relaitive anchor thing
     private Vector3 realPosition;
@@ -60,7 +66,7 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        targetPosition = player.transform.position + CameraOffsetFromPlayer;
+        targetPosition = player.transform.position + (CameraOffsetFromPlayer * currentZoomMultiplier);
         realPosition = Vector3.Lerp(transform.position, targetPosition, Time.fixedDeltaTime * CameraSpeed);
 
         switch (Mode)
@@ -91,10 +97,8 @@ public class CameraManager : MonoBehaviour
         if(water != null )
             t = water.GetPlayerPecentFromBottom();
 
-        //move camera slightly closer to player
-        Vector3 difference = player.transform.position - transform.position;
-        difference.y = 0;
-        difference = Vector3.Lerp(realPosition, realPosition + difference, t);
+        //zoom out
+        currentZoomMultiplier = Mathf.Max( (1 + t) * MidairZoom, 1);
 
         //move camera up slightly
         Vector3 pos = realPosition;
@@ -103,7 +107,7 @@ public class CameraManager : MonoBehaviour
 
         //angle the damn thing
         Vector3 rot = transform.eulerAngles;
-        rot.x = Mathf.LerpAngle(15, 70, t);
+        rot.x = Mathf.LerpAngle(defaultAngle, MaxDownwardTilt, t);
         transform.eulerAngles = rot;
     }
 
@@ -136,6 +140,7 @@ public class CameraManager : MonoBehaviour
 
     public void OnPlayerEnterWater()
     {
+        currentZoomMultiplier = ZoomMultiplier;
         Mode = CameraMode.DefaultFollow;
     }
     public void OnPlayerExitWater()
