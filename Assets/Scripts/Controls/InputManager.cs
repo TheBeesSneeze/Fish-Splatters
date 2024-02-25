@@ -1,6 +1,6 @@
 /*******************************************************************************
  * File Name :         InputManager.cs
- * Author(s) :         Toby Schamberger, Clare Grady
+ * Author(s) :         Toby Schamberger, Clare Grady, Alec
  * Creation Date :     2/19/2024
  *
  * Brief Description :
@@ -35,23 +35,22 @@ public class InputManager : MonoBehaviour
     public float bobbingDeadZone = 0.05f;
 
     [Header("Jumping")]
+
     //Clare's variables (clariables)
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
 
-    [Tooltip("How fast the ascent and fall down is")]
-    public float ascentSpeed;
+    //[Tooltip("How fast the ascent and fall down is")]
+    //public float ascentSpeed;
 
-    [Tooltip("How high the fish can jump")]
-    public float jumpHeightLimit;
+    //[Tooltip("How high the fish can jump")]
+    //public float jumpHeightLimit;
 
-    [Tooltip("How low the fish can dive")] public float diveHeightLimit;
+    //[Tooltip("How low the fish can dive")] 
+    //public float diveHeightLimit;
 
-    [Tooltip("The line (y level) the fish wants to return to")]
-    public float swimLine;
-
-    [Tooltip("The amount you multiplier for how high the jump is")]
-    public float heightMultiplier;
+    //[Tooltip("The amount you multiplier for how high the jump is")]
+    //public float heightMultiplier;
 
     [Tooltip("How aggressively to move up the water. Default is 100")]
     public float buoyantForceSpring = 100f;
@@ -59,13 +58,13 @@ public class InputManager : MonoBehaviour
     [Tooltip("How aggressively to counter upward movement. Default is 10")]
     public float buoyantForceDamper = 10f;
 
-    public Vector3 cameraOffsetFromPlayer;
+    [Tooltip("How much to slow the players descent. Default is 2")]
+    public float buoyantDownwardForceDamper = 50;
 
+    [Tooltip("this is the camera")]
     public Transform movementOrigin;
 
     bool isHoldingJump;
-    bool hasPastSwimLine = true;
-    float depth;
 
     private PlayerInput playerInput;
     [HideInInspector] public InputAction Move, Jump, Pause;
@@ -73,11 +72,10 @@ public class InputManager : MonoBehaviour
     private Rigidbody rigidbody;
 
     [HideInInspector] public bool CurrentlyMoving;
-    public bool InWater => currentVolume != null;
-    [HideInInspector] public float VerticalVelocity;
+    [HideInInspector] public bool InWater => currentVolume != null;
     private float currentAccelerationTime;
     private Vector3 movement;
-    private WaterVolume currentVolume;
+    [HideInInspector] public WaterVolume currentVolume;
 
 
     private void Awake()
@@ -116,6 +114,7 @@ public class InputManager : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out WaterVolume water))
         {
+            FishEvents.Instance.FishEnterWater.Invoke();
             currentVolume = water;
         }
     }
@@ -126,6 +125,7 @@ public class InputManager : MonoBehaviour
         if (!other.gameObject.TryGetComponent(out WaterVolume volume)) return;
         if (volume == currentVolume)
         {
+            FishEvents.Instance.FishExitWater.Invoke();
             currentVolume = null;
         }
     }
@@ -224,13 +224,22 @@ public class InputManager : MonoBehaviour
     {
         float yPosition = transform.position.y + bobbingDeadZone;
 
+        //sinking
         if (isHoldingJump)
         {
             //if (position.y > diveHeightLimit)
             //{
+            float waterForce = DeepWaterForce();
+
             rigidbody.AddForce(Vector3.down * descentSpeed, ForceMode.Force);
-            // }
-            hasPastSwimLine = true;
+            rigidbody.AddForce(Vector3.up * descentSpeed * waterForce, ForceMode.Force);
+
+            if(rigidbody.velocity.y >= 0)
+            {
+                Vector3 vel = rigidbody.velocity;
+                vel.y = 0;
+                rigidbody.velocity = vel;
+            }
         }
         else
         {
@@ -273,16 +282,37 @@ public class InputManager : MonoBehaviour
         // }
     }
 
+    private float DeepWaterForce()
+    {
+        float m = 0;
+        if (currentVolume != null)
+        {
+            m = currentVolume.GetPlayerPecentFromBottom();
+            m = m * buoyantDownwardForceDamper;
+        }
+
+        //Debug.Log(m);
+        return m;
+    }
 
     private void Jump_started(InputAction.CallbackContext obj)
     {
         isHoldingJump = true;
-        hasPastSwimLine = false;
+
+        if(currentVolume != null)
+        {
+            FishEvents.Instance.FishStartSinking.Invoke();
+        }
     }
 
     private void Jump_canceled(InputAction.CallbackContext obj)
     {
         isHoldingJump = false;
+
+        if (currentVolume != null)
+        {
+            FishEvents.Instance.FishStartAscending.Invoke();
+        }
     }
 
 
@@ -309,9 +339,7 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        if (movementOrigin == null) return;
-
-        movementOrigin.transform.position = rigidbody.position + cameraOffsetFromPlayer;
+        //moved camera stuff to CameraManager - toby
     }
 
     private void RotateFish()
