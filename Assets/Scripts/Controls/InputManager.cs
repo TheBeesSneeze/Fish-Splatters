@@ -255,9 +255,11 @@ public class InputManager : MonoBehaviour
                     //rigidbody.AddForce(vel - rigidbody.velocity, ForceMode.VelocityChange);
                     var posError = (-yPosition + currentVolume.GetSurfaceLevel());
                     var velError = 0 - rigidbody.velocity.y;
-                    rigidbody.AddForce(currentVolume.WaterData.BuoyancyDirection *
-                                       (posError * currentVolume.WaterData.BuoyancyForce +
-                                        velError * currentVolume.WaterData.BuoyancyDamper));
+                    var force = currentVolume.WaterData.BuoyancyDirection *
+                                                     (posError * currentVolume.WaterData.BuoyancyForce +
+                                                      velError * currentVolume.WaterData.BuoyancyDamper);
+                    force = Vector3.ClampMagnitude(force, 100f);
+                    rigidbody.AddForce(force);
                 }
                 //apply some up force
             }
