@@ -28,10 +28,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3003194936205004564}
   - {fileID: 7267682323697709755}
   - {fileID: 8870196940948889158}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5437888988921568922
 GameObject:
@@ -86,14 +87,9 @@ MonoBehaviour:
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
   descentSpeed: 0.5
-  ascentSpeed: 0
-  jumpHeightLimit: 0
-  diveHeightLimit: 0
-  swimLine: 0
-  heightMultiplier: 0
   buoyantForceSpring: 60
   buoyantForceDamper: 10
-  buoyantDownwardForceDamper: 50
+  buoyantDownwardForceDamper: 60
   movementOrigin: {fileID: 7267682323697709755}
   Move:
     m_Name: 
@@ -123,7 +119,7 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   CurrentlyMoving: 0
-  VerticalVelocity: 0
+  currentVolume: {fileID: 0}
 --- !u!54 &6755860316182521657
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -149,7 +145,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &6009066561247158246
 MonoBehaviour:
@@ -220,7 +216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8263199108894618667
 Transform:
   m_ObjectHideFlags: 0
@@ -275,7 +271,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7289626400421194731}
   m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
-  m_LocalPosition: {x: 0, y: 11.609999, z: -7.52}
+  m_LocalPosition: {x: 0, y: 3.67, z: -7.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -295,6 +291,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ec269a4e1e501446ab5ebda3ded39d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CameraSpeed: 2
+  ZoomMultiplier: 10
+  MaxDownwardTilt: 85
+  AngleCameraDown: 1
+  JumpHeightToMoveCamera: 5
+  Mode: 0
   CameraOffsetFromPlayer: {x: 0, y: 0, z: 0}
 --- !u!20 &7369281957692090549
 Camera:
@@ -355,6 +357,62 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7289626400421194731}
   m_Enabled: 1
+--- !u!1 &8802854550158990363
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3003194936205004564}
+  - component: {fileID: 4340739452572770004}
+  m_Layer: 0
+  m_Name: Event
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3003194936205004564
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8802854550158990363}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 8.884999, z: -6.554804}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4564085412338111071}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4340739452572770004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8802854550158990363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdb93b80932fc3d4a9441a728c4bc8df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FishStartSinking:
+    m_PersistentCalls:
+      m_Calls: []
+  FishStartAscending:
+    m_PersistentCalls:
+      m_Calls: []
+  FishExitWater:
+    m_PersistentCalls:
+      m_Calls: []
+  FishEnterWater:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &9005592617502128726
 GameObject:
   m_ObjectHideFlags: 0

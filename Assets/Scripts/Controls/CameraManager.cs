@@ -19,8 +19,16 @@ public class CameraManager : MonoBehaviour
     public static CameraManager Instance;
 
     public float CameraSpeed = 10;
+    public float ZoomMultiplier=1;
+
+    public float MaxDownwardTilt = 50;
+
+    public bool AngleCameraDown;
+
     [Tooltip("Starts moving the camera up if the player jumps higher than this number")]
     public float JumpHeightToMoveCamera = 5;
+
+    private float t = 0;
 
     public enum CameraMode
     {
@@ -60,8 +68,14 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        targetPosition = player.transform.position + CameraOffsetFromPlayer;
+        targetPosition = player.transform.position + (CameraOffsetFromPlayer);
         realPosition = Vector3.Lerp(transform.position, targetPosition, Time.fixedDeltaTime * CameraSpeed);
+
+        if (!AngleCameraDown)
+        {
+            FollowPlayer();
+            return;
+        }
 
         switch (Mode)
         {
@@ -75,8 +89,6 @@ public class CameraManager : MonoBehaviour
                 HandleCameraWhileAscending();
                 break;
         }
-
-        
     }
 
     private void FollowPlayer()
@@ -87,23 +99,21 @@ public class CameraManager : MonoBehaviour
     {
         //get player percent through water
         WaterVolume water = player.currentVolume;
-        float t = 0;
+
         if(water != null )
             t = water.GetPlayerPecentFromBottom();
 
-        //move camera slightly closer to player
-        Vector3 difference = player.transform.position - transform.position;
-        difference.y = 0;
-        difference = Vector3.Lerp(realPosition, realPosition + difference, t);
+        //zoom out
+        //currentZoomMultiplier = Mathf.Max( (1 + t), 1);
 
         //move camera up slightly
         Vector3 pos = realPosition;
-        pos.y = cameraYPoint;// + t;
+        pos.y = cameraYPoint + (t* ZoomMultiplier);
         transform.position = pos;
 
         //angle the damn thing
         Vector3 rot = transform.eulerAngles;
-        rot.x = Mathf.LerpAngle(15, 70, t);
+        rot.x = Mathf.LerpAngle(defaultAngle, MaxDownwardTilt, t);
         transform.eulerAngles = rot;
     }
 
@@ -136,6 +146,7 @@ public class CameraManager : MonoBehaviour
 
     public void OnPlayerEnterWater()
     {
+        //currentZoomMultiplier = ZoomMultiplier;
         Mode = CameraMode.DefaultFollow;
     }
     public void OnPlayerExitWater()
