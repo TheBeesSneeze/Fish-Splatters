@@ -24,6 +24,8 @@ public class CameraManager : MonoBehaviour
 
     public float MaxDownwardTilt = 30;
 
+    public bool AngleCameraDown;
+
     [Tooltip("Starts moving the camera up if the player jumps higher than this number")]
     public float JumpHeightToMoveCamera = 5;
 
@@ -68,6 +70,12 @@ public class CameraManager : MonoBehaviour
     {
         targetPosition = player.transform.position + (CameraOffsetFromPlayer * currentZoomMultiplier);
         realPosition = Vector3.Lerp(transform.position, targetPosition, Time.fixedDeltaTime * CameraSpeed);
+
+        if (!AngleCameraDown)
+        {
+            FollowPlayer();
+            return;
+        }
 
         switch (Mode)
         {
