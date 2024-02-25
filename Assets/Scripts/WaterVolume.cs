@@ -79,7 +79,6 @@ public class WaterVolume : MonoBehaviour
 
     /// <summary>
     /// returns number 0-1 for the players position relaitive of the surface level and bottom.
-    /// number may be greater than 1 if player is above water
     /// </summary>
     public float GetPlayerPecentFromBottom()
     {
@@ -88,6 +87,8 @@ public class WaterVolume : MonoBehaviour
 
         float y = GetSurfaceLevel() - InputManager.Instance.transform.position.y;
         float t = y / waterHeight;
+
+        t = Mathf.Clamp(t, 0, 1);
 
         return t;
 
