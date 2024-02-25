@@ -32,7 +32,7 @@ Transform:
   - {fileID: 7267682323697709755}
   - {fileID: 8870196940948889158}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5437888988921568922
 GameObject:
@@ -89,7 +89,7 @@ MonoBehaviour:
   descentSpeed: 0.5
   buoyantForceSpring: 60
   buoyantForceDamper: 10
-  buoyantDownwardForceDamper: 50
+  buoyantDownwardForceDamper: 60
   movementOrigin: {fileID: 7267682323697709755}
   Move:
     m_Name: 
@@ -145,7 +145,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &6009066561247158246
 MonoBehaviour:
@@ -216,7 +216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8263199108894618667
 Transform:
   m_ObjectHideFlags: 0
@@ -271,7 +271,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7289626400421194731}
   m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
-  m_LocalPosition: {x: 0, y: 11.609999, z: -7.52}
+  m_LocalPosition: {x: 0, y: 3.67, z: -7.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -291,7 +291,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ec269a4e1e501446ab5ebda3ded39d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraSpeed: 10
+  CameraSpeed: 2
+  ZoomMultiplier: 10
+  MaxDownwardTilt: 85
+  AngleCameraDown: 1
   JumpHeightToMoveCamera: 5
   Mode: 0
   CameraOffsetFromPlayer: {x: 0, y: 0, z: 0}
