@@ -500,6 +500,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7267682323697709755, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: buoyantDownwardForceDamper
+      value: 60
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

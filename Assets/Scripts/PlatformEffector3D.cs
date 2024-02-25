@@ -39,21 +39,31 @@ public class PlatformEffector3D : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        bool below = CheckObjectBelow(other);
 
+        if(!below )
+        {
+            collider.isTrigger = false;
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        
+        //crickets
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        
+        bool below = CheckObjectBelow(collision.collider);
+
+        if (below)
+        {
+            collider.isTrigger = true;
+        }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        
+        collider.isTrigger = true;
     }
 }
