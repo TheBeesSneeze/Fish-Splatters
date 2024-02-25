@@ -38,9 +38,24 @@ public class WaterVolume : MonoBehaviour
     [field: SerializeField] public WaterVolumeData WaterData { get; private set; }
     private Collider col;
 
+    private Transform bottom;
+    private float waterHeight;
+
     private void Awake()
     {
         col = GetComponent<Collider>();
+
+        bottom = transform.GetChild(0);
+
+        if (bottom == null || bottom.transform.childCount != 1)
+        {
+            Debug.LogWarning("make sure " + gameObject.name + " has a bottom component, and it is sorted at the top");
+        }
+        
+        if(bottom != null)
+        {
+            waterHeight = GetSurfaceLevel() - bottom.position.y;
+        }
     }
 
     private void OnDrawGizmos()
@@ -60,6 +75,22 @@ public class WaterVolume : MonoBehaviour
     public Vector3 GetWaterCurrentForce()
     {
         return transform.rotation * WaterData.CirculationDirection.normalized * WaterData.CirculationSpeed;
+    }
+
+    /// <summary>
+    /// returns number 0-1 for the players position relaitive of the surface level and bottom.
+    /// number may be greater than 1 if player is above water
+    /// </summary>
+    public float GetPlayerPecentFromBottom()
+    {
+        if (bottom == null)
+            return -1;
+
+        float y = GetSurfaceLevel() - InputManager.Instance.transform.position.y;
+        float t = y / waterHeight;
+
+        return t;
+
     }
 
     public bool CheckWithinBounds2D(Vector3 v)

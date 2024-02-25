@@ -59,7 +59,8 @@ public class InputManager : MonoBehaviour
     [Tooltip("How aggressively to counter upward movement. Default is 10")]
     public float buoyantForceDamper = 10f;
 
-    public Vector3 cameraOffsetFromPlayer;
+    [Tooltip("How much to slow the players descent. Default is 2")]
+    public float buoyantDownwardForceDamper = 50;
 
     public Transform movementOrigin;
 
@@ -73,7 +74,7 @@ public class InputManager : MonoBehaviour
     private Rigidbody rigidbody;
 
     [HideInInspector] public bool CurrentlyMoving;
-    public bool InWater => currentVolume != null;
+    [HideInInspector] public bool InWater => currentVolume != null;
     [HideInInspector] public float VerticalVelocity;
     private float currentAccelerationTime;
     private Vector3 movement;
@@ -224,12 +225,23 @@ public class InputManager : MonoBehaviour
     {
         float yPosition = transform.position.y + bobbingDeadZone;
 
+        //sinking
         if (isHoldingJump)
         {
             //if (position.y > diveHeightLimit)
             //{
+            float waterForce = DeepWaterForce();
+
             rigidbody.AddForce(Vector3.down * descentSpeed, ForceMode.Force);
-            // }
+            rigidbody.AddForce(Vector3.up * descentSpeed * waterForce, ForceMode.Force);
+
+            if(rigidbody.velocity.y >= 0)
+            {
+                Vector3 vel = rigidbody.velocity;
+                vel.y = 0;
+                rigidbody.velocity = vel;
+            }
+
             hasPastSwimLine = true;
         }
         else
@@ -273,6 +285,18 @@ public class InputManager : MonoBehaviour
         // }
     }
 
+    private float DeepWaterForce()
+    {
+        float m = 0;
+        if (currentVolume != null)
+        {
+            m = currentVolume.GetPlayerPecentFromBottom();
+            m = m * buoyantDownwardForceDamper;
+        }
+
+        //Debug.Log(m);
+        return m;
+    }
 
     private void Jump_started(InputAction.CallbackContext obj)
     {
@@ -311,7 +335,7 @@ public class InputManager : MonoBehaviour
     {
         if (movementOrigin == null) return;
 
-        movementOrigin.transform.position = rigidbody.position + cameraOffsetFromPlayer;
+        movementOrigin.transform.position = rigidbody.position + CameraManager.Instance.CameraOffsetFromPlayer;
     }
 
     private void RotateFish()
