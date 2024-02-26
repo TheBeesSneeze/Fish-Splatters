@@ -19,6 +19,12 @@ public class Boid : MonoBehaviour
     [Tooltip("Starting speed is random")]
     public float MaxStartingSpeed = 5;
 
+    [Header("weight")]
+    public float FlockWeight = 1;
+    public float SeperationWeight = 1;
+    public float AvgVelocityWeight = 1;
+    public float Rule4Weight = 1;
+
     public Vector3 Velocity;
 
     //private Rigidbody rb;
@@ -40,25 +46,26 @@ public class Boid : MonoBehaviour
     {
         center = CalculateCenter();
 
-        Vector3 v1 = Rule1();
-        Vector3 v2 = Rule2();
-        Vector3 v3 = Rule3();
-        Vector3 v4 = Rule4();
+        Vector3 v1 = Flock() * FlockWeight;
+        Vector3 v2 = Seperation() * SeperationWeight;
+        Vector3 v3 = AvgVelocity() * AvgVelocityWeight;
+        Vector3 v4 = Rule4() * Rule4Weight;
 
-        if (gameObject.name == "Boid" && false)
+        if (gameObject.name == "Boid")
         {
-            //Debug.Log(v1);
-            //Debug.Log(v2);
-            //Debug.Log(v3);
+            Debug.Log("v1:" + v1);
+            Debug.Log("v2:" + v2);
+            Debug.Log("v3:" + v3);
+            Debug.Log("v4:" + v4);
         }
 
-        Velocity = Velocity + v1 + v2 + v3 + v4;
+        Velocity = v1 + v2 + v3 + v4 + Velocity;
 
         //rb.velocity = Velocity;
         if (!Velocity.IsNaN())
             transform.position = (Velocity * Time.deltaTime) + transform.position;
 
-        BoundPosition();
+        //BoundPosition();
         LimitVelocity();
         //rb.position = rb.position + rb.velocity;
     }
@@ -76,29 +83,30 @@ public class Boid : MonoBehaviour
     /// mass wants to be center of flock
     /// </summary>
     /// <returns></returns>
-    private Vector3 Rule1()
+    private Vector3 Flock()
     {
         Vector3 center = CalculateCenter();
 
+        /*
         foreach (Boid boid in boids)
         {
             if (boid != this)
             {
-                center = center + transform.position;
+                center = center + boid.transform.position;
             }
         }
 
-        center = center / (boids.Length - 1);
+        center = center / (boids.Length);
+        */
 
-
-        return (center - transform.position) / 1000;
+        return (center - transform.position).normalized;
     }
 
     /// <summary>
     /// avoid collisions
     /// </summary>
     /// <returns></returns>
-    private Vector3 Rule2()
+    private Vector3 Seperation()
     {
         Vector3 result = Vector3.zero;
 
@@ -106,18 +114,20 @@ public class Boid : MonoBehaviour
         {
             if (boid != this)
             {
-                if (Vector3.Distance(boid.transform.position, this.transform.position) < NoCollisionDistance)
-                    result = result - (boid.transform.position - this.transform.position);
+                if (Vector3.Distance(boid.transform.position, this.transform.position) <= NoCollisionDistance)
+                {
+                    result += (this.transform.position - boid.transform.position);
+                }
             }
         }
 
-        return result;
+        return result.normalized;
     }
 
     /// <summary>
     /// average all velocities
     /// </summary>
-    private Vector3 Rule3()
+    private Vector3 AvgVelocity()
     {
         Vector3 result = CalculateAverageVelocity();
 
@@ -131,7 +141,7 @@ public class Boid : MonoBehaviour
 
         result = result / (boids.Length - 1);
 
-        return (result - Velocity) / 8f;
+        return (result - Velocity).normalized;
     }
 
     //follow a target
@@ -142,7 +152,7 @@ public class Boid : MonoBehaviour
             return Vector3.zero;
         }
 
-        return (Target.transform.position - transform.position) / 100;
+        return (Target.transform.position - transform.position) .normalized;
     }
 
     public void BoundPosition()
