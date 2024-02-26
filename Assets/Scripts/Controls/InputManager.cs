@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class InputManager : MonoBehaviour
@@ -61,8 +62,7 @@ public class InputManager : MonoBehaviour
     [Tooltip("How much to slow the players descent. Default is 2")]
     public float buoyantDownwardForceDamper = 50;
 
-    [Tooltip("this is the camera")]
-    public Transform movementOrigin;
+    [Tooltip("this is the camera")] public Transform movementOrigin;
 
     [HideInInspector] public bool isHoldingJump;
 
@@ -100,6 +100,11 @@ public class InputManager : MonoBehaviour
         Move = playerInput.currentActionMap.FindAction("Move");
         Jump = playerInput.currentActionMap.FindAction("Jump");
         Pause = playerInput.currentActionMap.FindAction("Pause");
+        playerInput.currentActionMap.FindAction("Quit").started += context => { Application.Quit(); };
+        playerInput.currentActionMap.FindAction("Restart").started += context =>
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        };
 
         Move.started += Move_started;
         Move.canceled += Move_canceled;
@@ -107,7 +112,7 @@ public class InputManager : MonoBehaviour
         Jump.started += Jump_started;
         Jump.canceled += Jump_canceled;
 
-        Pause.started += Pause_started;
+        //Pause.started += Pause_started;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -239,7 +244,7 @@ public class InputManager : MonoBehaviour
             rigidbody.AddForce(Vector3.down * descentSpeed, ForceMode.Force);
             rigidbody.AddForce(Vector3.up * descentSpeed * waterForce, ForceMode.Force);
 
-            if(rigidbody.velocity.y >= 0)
+            if (rigidbody.velocity.y >= 0)
             {
                 Vector3 vel = rigidbody.velocity;
                 vel.y = 0;
@@ -261,9 +266,9 @@ public class InputManager : MonoBehaviour
                     var posError = (-yPosition + currentVolume.GetSurfaceLevel());
                     var velError = 0 - rigidbody.velocity.y;
                     var force = currentVolume.WaterData.BuoyancyDirection *
-                                                     (posError * currentVolume.WaterData.BuoyancyForce +
-                                                      velError * currentVolume.WaterData.BuoyancyDamper);
-                    force = Vector3.ClampMagnitude(force, 100f);
+                                (posError * currentVolume.WaterData.BuoyancyForce +
+                                 velError * currentVolume.WaterData.BuoyancyDamper);
+                    //force = Vector3.ClampMagnitude(force, 100f);
                     rigidbody.AddForce(force);
                 }
                 //apply some up force
@@ -306,7 +311,7 @@ public class InputManager : MonoBehaviour
     {
         isHoldingJump = true;
 
-        if(currentVolume != null)
+        if (currentVolume != null)
         {
             FishEvents.Instance.FishStartSinking.Invoke();
         }
