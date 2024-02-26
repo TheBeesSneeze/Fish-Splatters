@@ -64,7 +64,7 @@ public class InputManager : MonoBehaviour
     [Tooltip("this is the camera")]
     public Transform movementOrigin;
 
-    bool isHoldingJump;
+    [HideInInspector] public bool isHoldingJump;
 
     private PlayerInput playerInput;
     [HideInInspector] public InputAction Move, Jump, Pause;
@@ -116,6 +116,11 @@ public class InputManager : MonoBehaviour
         {
             FishEvents.Instance.FishEnterWater.Invoke();
             currentVolume = water;
+
+            if (isHoldingJump)
+            {
+                FishEvents.Instance.FishStartSinking.Invoke();
+            }
         }
     }
 

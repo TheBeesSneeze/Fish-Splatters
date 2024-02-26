@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4564085412338111071}
+  - component: {fileID: 2019336131820175975}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -34,6 +35,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2019336131820175975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535882345916170445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdb93b80932fc3d4a9441a728c4bc8df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FishStartSinking:
+    m_PersistentCalls:
+      m_Calls: []
+  FishStartAscending:
+    m_PersistentCalls:
+      m_Calls: []
+  FishExitWater:
+    m_PersistentCalls:
+      m_Calls: []
+  FishEnterWater:
+    m_PersistentCalls:
+      m_Calls: []
+  EquilibriumEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  EquilibriumExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5437888988921568922
 GameObject:
   m_ObjectHideFlags: 0
@@ -83,7 +114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 10
-  SpeedMidair: 2
+  SpeedMidair: 10
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
   descentSpeed: 0.5
@@ -91,6 +122,7 @@ MonoBehaviour:
   buoyantForceDamper: 10
   buoyantDownwardForceDamper: 60
   movementOrigin: {fileID: 7267682323697709755}
+  isHoldingJump: 0
   Move:
     m_Name: 
     m_Type: 0
@@ -291,7 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ec269a4e1e501446ab5ebda3ded39d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraSpeed: 2
+  CameraSpeed: 2.5
   ZoomMultiplier: 10
   MaxDownwardTilt: 85
   AngleCameraDown: 1
@@ -411,6 +443,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   FishEnterWater:
+    m_PersistentCalls:
+      m_Calls: []
+  EquilibriumEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  EquilibriumExit:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &9005592617502128726

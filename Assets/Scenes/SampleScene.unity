@@ -432,6 +432,12 @@ MonoBehaviour:
   FishEnterWater:
     m_PersistentCalls:
       m_Calls: []
+  EquilibriumEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  EquilibriumExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1603607709
 Transform:
   m_ObjectHideFlags: 0
@@ -503,6 +509,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6569176695309526887, guid: 4c8b98d158b61914a84d6e480d9da0fe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.547
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811040626335476064, guid: 4c8b98d158b61914a84d6e480d9da0fe, type: 3}
+      propertyPath: m_Size.y
+      value: 0.37
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -530,7 +544,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4564085412338111071, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 13.53
       objectReference: {fileID: 0}
     - target: {fileID: 4564085412338111071, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_LocalPosition.z
