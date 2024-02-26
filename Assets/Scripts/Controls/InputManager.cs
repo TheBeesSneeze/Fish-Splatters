@@ -1,9 +1,9 @@
 /*******************************************************************************
  * File Name :         InputManager.cs
- * Author(s) :         Toby Schamberger, Clare Grady
+ * Author(s) :         Toby Schamberger, Clare Grady, Alec
  * Creation Date :     2/19/2024
  *
- * Brief Description : 
+ * Brief Description :
  *
  * TODO:
  * - jumping
@@ -30,34 +30,41 @@ public class InputManager : MonoBehaviour
 
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
-    
-
-    [Header("Jumping")]
-    //Clare's variables (clariables)
-    [Tooltip("How fast the descent speed is")]
-    public float descentSpeed;
-
-    [Tooltip("How fast the ascent and fall down is")]
-    public float ascentSpeed;
-
-    [Tooltip("How high the fish can jump")]
-    public float jumpHeightLimit;
-
-    [Tooltip("How low the fish can dive")] public float diveHeightLimit;
 
     [Tooltip("Deadzone to stop bobbing, an offset from the position of the fish.")]
     public float bobbingDeadZone = 0.05f;
 
-    [Tooltip("The amount you multiplier for how high the jump is")]
-    public float heightMultiplier;
+    [Header("Jumping")]
 
-    public Vector3 cameraOffsetFromPlayer;
+    //Clare's variables (clariables)
+    [Tooltip("How fast the descent speed is")]
+    public float descentSpeed;
 
+    //[Tooltip("How fast the ascent and fall down is")]
+    //public float ascentSpeed;
+
+    //[Tooltip("How high the fish can jump")]
+    //public float jumpHeightLimit;
+
+    //[Tooltip("How low the fish can dive")] 
+    //public float diveHeightLimit;
+
+    //[Tooltip("The amount you multiplier for how high the jump is")]
+    //public float heightMultiplier;
+
+    [Tooltip("How aggressively to move up the water. Default is 100")]
+    public float buoyantForceSpring = 100f;
+
+    [Tooltip("How aggressively to counter upward movement. Default is 10")]
+    public float buoyantForceDamper = 10f;
+
+    [Tooltip("How much to slow the players descent. Default is 2")]
+    public float buoyantDownwardForceDamper = 50;
+
+    [Tooltip("this is the camera")]
     public Transform movementOrigin;
 
-    bool isHoldingJump;
-    bool hasPastSwimLine = true;
-    float depth;
+    [HideInInspector] public bool isHoldingJump;
 
     private PlayerInput playerInput;
     [HideInInspector] public InputAction Move, Jump, Pause;
@@ -65,12 +72,11 @@ public class InputManager : MonoBehaviour
     private Rigidbody rigidbody;
 
     [HideInInspector] public bool CurrentlyMoving;
-    public bool InWater => currentVolume != null;
-    [HideInInspector] public float VerticalVelocity;
+    [HideInInspector] public bool InWater => currentVolume != null;
     private float currentAccelerationTime;
-    private Vector3 targetMovement;
-    private Vector3 realMovement;
-    private WaterVolume currentVolume;
+    private Vector3 movement;
+    [HideInInspector] public WaterVolume currentVolume;
+
 
     private void Awake()
     {
@@ -108,7 +114,13 @@ public class InputManager : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out WaterVolume water))
         {
+            FishEvents.Instance.FishEnterWater.Invoke();
             currentVolume = water;
+
+            if (isHoldingJump)
+            {
+                FishEvents.Instance.FishStartSinking.Invoke();
+            }
         }
     }
 
@@ -118,6 +130,7 @@ public class InputManager : MonoBehaviour
         if (!other.gameObject.TryGetComponent(out WaterVolume volume)) return;
         if (volume == currentVolume)
         {
+            FishEvents.Instance.FishExitWater.Invoke();
             currentVolume = null;
         }
     }
@@ -144,12 +157,11 @@ public class InputManager : MonoBehaviour
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
         Vector2 move = Move.ReadValue<Vector2>();
-        targetMovement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
 
-        var targetV = targetMovement * currentSpeed;
-        targetMovement.y = rigidbody.velocity.y;
+        var targetV = movement * currentSpeed;
+        targetV.y = rigidbody.velocity.y;
         Vector3 force = targetV - rigidbody.velocity;
-
         if (float.IsNaN(force.x) || float.IsNaN(force.y) || float.IsNaN(force.z))
         {
             force = Vector3.zero;
@@ -163,19 +175,19 @@ public class InputManager : MonoBehaviour
         if (currentVolume == null) return;
         float yPosition = transform.position.y + bobbingDeadZone;
         float maxYPos = currentVolume.GetSurfaceLevel();
-
-        if (yPosition < maxYPos)
-        {
-            float upForce = currentVolume.WaterData.BuoyancyForce;
-            float underWaterBuoyantForce = (maxYPos - yPosition) * currentVolume.WaterData.DepthModifier;
-            float force = upForce + (upForce * underWaterBuoyantForce);
-            var vel = rigidbody.velocity;
-            // vel += (volume.WaterData.BuoyancyDirection * volume.WaterData.GravityAmount * Time.fixedDeltaTime); only if we're applying custom gravity
-            vel *= Mathf.Clamp01(1f - currentVolume.WaterData.DragFactor * Time.deltaTime);
-            rigidbody.AddForce(vel - rigidbody.velocity, ForceMode.VelocityChange); //drag force
-            // rigidbody.AddForce(currentVolume.GetWaterCurrentForce());
-            rigidbody.AddForce(currentVolume.WaterData.BuoyancyDirection * force);
-        }
+        //
+        // if (yPosition < maxYPos)
+        // {
+        //     //float upForce = currentVolume.WaterData.BuoyancyForce;
+        //     float underWaterBuoyantForce = (maxYPos - yPosition) * currentVolume.WaterData.BuoyancyForce;
+        //     //float force = upForce + (upForce * underWaterBuoyantForce);
+        //     var vel = rigidbody.velocity;
+        //     // vel += (volume.WaterData.BuoyancyDirection * volume.WaterData.GravityAmount * Time.fixedDeltaTime); only if we're applying custom gravity
+        //     vel *= Mathf.Clamp01(1f - currentVolume.WaterData.DragFactor * Time.deltaTime);
+        //     rigidbody.AddForce(vel - rigidbody.velocity, ForceMode.VelocityChange); //drag force
+        //     // rigidbody.AddForce(currentVolume.GetWaterCurrentForce());
+        //     rigidbody.AddForce(currentVolume.WaterData.BuoyancyDirection * underWaterBuoyantForce);
+        // }
     }
 
     private void ManageMidairMovement()
@@ -190,11 +202,17 @@ public class InputManager : MonoBehaviour
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
         Vector2 move = Move.ReadValue<Vector2>();
-        targetMovement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
 
-        var targetV = targetMovement * currentSpeed;
-        // targetV.y = rigidbody.velocity.y;
-        rigidbody.AddForce(targetV, ForceMode.Acceleration);
+        var targetV = movement * currentSpeed;
+        targetV.y = rigidbody.velocity.y;
+        targetV -= rigidbody.velocity;
+        if (float.IsNaN(targetV.x) || float.IsNaN(targetV.y) || float.IsNaN(targetV.z))
+        {
+            targetV = Vector3.zero;
+        }
+
+        rigidbody.AddForce(targetV, ForceMode.VelocityChange);
     }
 
     private void Move_started(InputAction.CallbackContext obj)
@@ -209,15 +227,47 @@ public class InputManager : MonoBehaviour
 
     private void JumpManagment()
     {
-        Vector3 position = rigidbody.position;
+        float yPosition = transform.position.y + bobbingDeadZone;
+
+        //sinking
         if (isHoldingJump)
         {
             //if (position.y > diveHeightLimit)
             //{
-                rigidbody.AddForce(Vector3.down * descentSpeed, ForceMode.Impulse);
-           // }
+            float waterForce = DeepWaterForce();
 
-            //depth = position.y;
+            rigidbody.AddForce(Vector3.down * descentSpeed, ForceMode.Force);
+            rigidbody.AddForce(Vector3.up * descentSpeed * waterForce, ForceMode.Force);
+
+            if(rigidbody.velocity.y >= 0)
+            {
+                Vector3 vel = rigidbody.velocity;
+                vel.y = 0;
+                rigidbody.velocity = vel;
+            }
+        }
+        else
+        {
+            if (currentVolume != null)
+            {
+                if (yPosition >= currentVolume.GetSurfaceLevel())
+                {
+                    //at the top, stop!
+                }
+                else
+                {
+                    rigidbody.AddForce(-Physics.gravity, ForceMode.Acceleration);
+                    //rigidbody.AddForce(vel - rigidbody.velocity, ForceMode.VelocityChange);
+                    var posError = (-yPosition + currentVolume.GetSurfaceLevel());
+                    var velError = 0 - rigidbody.velocity.y;
+                    var force = currentVolume.WaterData.BuoyancyDirection *
+                                                     (posError * currentVolume.WaterData.BuoyancyForce +
+                                                      velError * currentVolume.WaterData.BuoyancyDamper);
+                    force = Vector3.ClampMagnitude(force, 100f);
+                    rigidbody.AddForce(force);
+                }
+                //apply some up force
+            }
         }
         // else
         // {
@@ -239,16 +289,37 @@ public class InputManager : MonoBehaviour
         // }
     }
 
+    private float DeepWaterForce()
+    {
+        float m = 0;
+        if (currentVolume != null)
+        {
+            m = currentVolume.GetPlayerPecentFromBottom();
+            m = m * buoyantDownwardForceDamper;
+        }
+
+        //Debug.Log(m);
+        return m;
+    }
 
     private void Jump_started(InputAction.CallbackContext obj)
     {
         isHoldingJump = true;
-        hasPastSwimLine = false;
+
+        if(currentVolume != null)
+        {
+            FishEvents.Instance.FishStartSinking.Invoke();
+        }
     }
 
     private void Jump_canceled(InputAction.CallbackContext obj)
     {
         isHoldingJump = false;
+
+        if (currentVolume != null)
+        {
+            FishEvents.Instance.FishStartAscending.Invoke();
+        }
     }
 
 
@@ -266,7 +337,7 @@ public class InputManager : MonoBehaviour
         else
         {
             ManageMovement();
-            HandleBuoyancy();
+            //HandleBuoyancy();
         }
 
         JumpManagment();
@@ -275,11 +346,7 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        if (movementOrigin == null) return;
-
-        movementOrigin.transform.position = rigidbody.position + cameraOffsetFromPlayer;
-
-
+        //moved camera stuff to CameraManager - toby
     }
 
     private void RotateFish()
@@ -294,10 +361,10 @@ public class InputManager : MonoBehaviour
         //transform.rotation = Quaternion.LookRotation(rigidbody.velocity.normalized);
 
         /*
-        float angle = Mathf.Atan2(targetMovement.x, targetMovement.z) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
 
         Vector3 rotate = new Vector3(0, angle, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(targetMovement), Time.deltaTime * 10);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(movement), Time.deltaTime * 10);
         */
     }
 }

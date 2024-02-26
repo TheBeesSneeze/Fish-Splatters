@@ -19,20 +19,17 @@ using UnityEngine.Serialization;
 public class WaterVolumeData
 {
     [Tooltip("How much drag to apply to the object whilst submerged.")]
-    public float DragFactor = 0.25f;
+    public float BuoyancyDamper = 10f;
     [Tooltip("How much buoyant force to apply.")]
-    public float BuoyancyForce = 8f;
+    public float BuoyancyForce = 60f;
     [Tooltip("Direction of the current relative to the rotation of this volume.")]
     public Vector3 CirculationDirection;
     [Tooltip("Direction of the current relative to the rotation of this volume.")]
     public float CirculationSpeed;
     [Tooltip("The direction to apply the buoyancy in.")]
     public Vector3 BuoyancyDirection = Vector3.up;
-    public float GravityAmount = 9.81f;
     [Tooltip("How far above the top of the volume the object will sit.")]
     public float SurfaceLevelOffset = 0.05f;
-    [Tooltip("How much force will be applied proportionally to the depth of the object.")]
-    [Range(0f, 1f)] public float DepthModifier = 1f;
 }
 
 [RequireComponent(typeof(Collider))]
@@ -41,9 +38,24 @@ public class WaterVolume : MonoBehaviour
     [field: SerializeField] public WaterVolumeData WaterData { get; private set; }
     private Collider col;
 
+    private Transform bottom;
+    private float waterHeight;
+
     private void Awake()
     {
         col = GetComponent<Collider>();
+
+        bottom = transform.GetChild(0);
+
+        if (bottom == null || bottom.transform.childCount != 1)
+        {
+            Debug.LogWarning("make sure " + gameObject.name + " has a bottom component, and it is sorted at the top");
+        }
+        
+        if(bottom != null)
+        {
+            waterHeight = GetSurfaceLevel() - bottom.position.y;
+        }
     }
 
     private void OnDrawGizmos()
@@ -63,6 +75,23 @@ public class WaterVolume : MonoBehaviour
     public Vector3 GetWaterCurrentForce()
     {
         return transform.rotation * WaterData.CirculationDirection.normalized * WaterData.CirculationSpeed;
+    }
+
+    /// <summary>
+    /// returns number 0-1 for the players position relaitive of the surface level (0) and bottom (1).
+    /// </summary>
+    public float GetPlayerPecentFromBottom()
+    {
+        if (bottom == null)
+            return -1;
+
+        float y = GetSurfaceLevel() - InputManager.Instance.transform.position.y;
+        float t = y / waterHeight;
+
+        t = Mathf.Clamp(t, 0, 1);
+
+        return t;
+
     }
 
     public bool CheckWithinBounds2D(Vector3 v)
