@@ -156,7 +156,7 @@ public class InputManager : MonoBehaviour
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        Vector2 move = Move.ReadValue<Vector2>();
+        Vector2 move = Move.ReadValue<Vector2>().normalized;
         movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
 
         var targetV = movement * currentSpeed;
@@ -201,7 +201,7 @@ public class InputManager : MonoBehaviour
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        Vector2 move = Move.ReadValue<Vector2>();
+        Vector2 move = Move.ReadValue<Vector2>().normalized;
         movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
 
         var targetV = movement * currentSpeed;
