@@ -53,12 +53,6 @@ public class InputManager : MonoBehaviour
     //[Tooltip("The amount you multiplier for how high the jump is")]
     //public float heightMultiplier;
 
-    [Tooltip("How aggressively to move up the water. Default is 100")]
-    public float buoyantForceSpring = 100f;
-
-    [Tooltip("How aggressively to counter upward movement. Default is 10")]
-    public float buoyantForceDamper = 10f;
-
     [Tooltip("How much to slow the players descent. Default is 2")]
     public float buoyantDownwardForceDamper = 50;
 
@@ -77,7 +71,9 @@ public class InputManager : MonoBehaviour
     private float currentAccelerationTime;
     private Vector3 movement;
     [HideInInspector] public WaterVolume currentVolume;
-
+    private WaterVolume prevVolume;
+    private float depth;
+    private bool jumpWasHeld;
     Vector3 lastRotation;
 
 
@@ -105,7 +101,10 @@ public class InputManager : MonoBehaviour
         Pause = playerInput.currentActionMap.FindAction("Pause");
         cameraMovement = playerInput.currentActionMap.FindAction("Camera");
         playerInput.currentActionMap.FindAction("Quit").started += context => { Application.Quit(); };
-        playerInput.currentActionMap.FindAction("Restart").started += context => { SceneManager.LoadScene(SceneManager.GetActiveScene().name); };
+        playerInput.currentActionMap.FindAction("Restart").started += context =>
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        };
 
         Move.started += Move_started;
         Move.canceled += Move_canceled;
@@ -137,6 +136,7 @@ public class InputManager : MonoBehaviour
         if (volume == currentVolume)
         {
             FishEvents.Instance.FishExitWater.Invoke();
+            prevVolume = currentVolume;
             currentVolume = null;
         }
     }
@@ -239,17 +239,25 @@ public class InputManager : MonoBehaviour
         {
             //if (position.y > diveHeightLimit)
             //{
-            float waterForce = DeepWaterForce();
 
             rigidbody.AddForce(Vector3.down * descentSpeed, ForceMode.Force);
-            rigidbody.AddForce(Vector3.up * descentSpeed * waterForce, ForceMode.Force);
-
-            if (rigidbody.velocity.y >= 0)
+            if (currentVolume != null)
             {
-                Vector3 vel = rigidbody.velocity;
-                vel.y = 0;
-                rigidbody.velocity = vel;
+                depth = Mathf.Abs(yPosition - currentVolume.GetSurfaceLevel());
             }
+            else
+            {
+                depth = 0f;
+            }
+            // rigidbody.AddForce(Vector3.up * descentSpeed * waterForce, ForceMode.Force);
+            //
+            // if (rigidbody.velocity.y >= 0)
+            // {
+            //     Vector3 vel = rigidbody.velocity;
+            //     vel.y = 0;
+            //     rigidbody.velocity = vel;
+            // }
+            jumpWasHeld = true;
         }
         else
         {
@@ -257,7 +265,15 @@ public class InputManager : MonoBehaviour
             {
                 if (yPosition >= currentVolume.GetSurfaceLevel())
                 {
-                    //at the top, stop!
+                    // //at the top, stop!
+                    if (jumpWasHeld)
+                    {
+                        rigidbody.AddForce(Vector3.up * -rigidbody.velocity.y, ForceMode.VelocityChange); //cancel out y veloicty
+                        //add impulse force to reach -depth height
+                        rigidbody.AddForce(Vector3.up * (Mathf.Sqrt(2 * depth * Physics.gravity.magnitude) * currentVolume.WaterData.JumpBoostMultiplier), ForceMode.Impulse);
+                        depth = 0f;
+                        jumpWasHeld = false;
+                    }
                 }
                 else
                 {
@@ -274,6 +290,8 @@ public class InputManager : MonoBehaviour
                 //apply some up force
             }
         }
+
+        //jumpWasHeld = isHoldingJump;
         // else
         // {
         //     if (!hasPastSwimLine)
@@ -356,7 +374,7 @@ public class InputManager : MonoBehaviour
 
     private void RotateFish()
     {
-        if (rigidbody.velocity.x == 0 && rigidbody.velocity.z==0)
+        if (rigidbody.velocity.x == 0 && rigidbody.velocity.z == 0)
             return;
 
         Vector3 rotation = new Vector3(rigidbody.velocity.x, 0, rigidbody.velocity.z);

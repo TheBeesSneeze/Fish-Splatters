@@ -22,6 +22,10 @@ public class WaterVolumeData
     public float BuoyancyDamper = 10f;
     [Tooltip("How much buoyant force to apply.")]
     public float BuoyancyForce = 60f;
+
+    [Tooltip("Multiplier for jump boost upon exiting the water.")]
+    public float JumpBoostMultiplier = 1f;
+
     [Tooltip("Direction of the current relative to the rotation of this volume.")]
     public Vector3 CirculationDirection;
     [Tooltip("Direction of the current relative to the rotation of this volume.")]
