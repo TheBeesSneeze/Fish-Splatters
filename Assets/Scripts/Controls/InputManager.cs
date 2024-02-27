@@ -41,6 +41,9 @@ public class InputManager : MonoBehaviour
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
 
+    public float bottomSurfaceMotorLeftSpeed = 0.1f;
+    public float bottomSurfaceMotorRightSpeed = 0.1f;
+
     //[Tooltip("How fast the ascent and fall down is")]
     //public float ascentSpeed;
 
@@ -139,6 +142,19 @@ public class InputManager : MonoBehaviour
             prevVolume = currentVolume;
             currentVolume = null;
         }
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
+        //do a haptic
+        Gamepad.current.SetMotorSpeeds(bottomSurfaceMotorLeftSpeed, bottomSurfaceMotorRightSpeed);
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
+        Gamepad.current.ResetHaptics();
     }
 
     private void ManageMovement()
