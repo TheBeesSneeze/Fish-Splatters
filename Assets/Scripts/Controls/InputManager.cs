@@ -70,7 +70,7 @@ public class InputManager : MonoBehaviour
     private Rigidbody rigidbody;
 
     [HideInInspector] public bool CurrentlyMoving;
-    [HideInInspector] public bool InWater => currentVolume != null;
+    public bool InWater => currentVolume != null;
     private float currentAccelerationTime;
     private Vector3 movement;
     [HideInInspector] public WaterVolume currentVolume;
@@ -179,6 +179,7 @@ public class InputManager : MonoBehaviour
 
         Vector2 move = Move.ReadValue<Vector2>().normalized;
         movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        movement.y = 0f;
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
@@ -215,15 +216,16 @@ public class InputManager : MonoBehaviour
     {
         //acceleration doesnt change midair!!!
 
-        float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
-        accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
+        float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
+        // accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
 
-        float currentSpeed = SpeedMidair * accelerationPercent;
+        float currentSpeed = SpeedMidair;
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
         Vector2 move = Move.ReadValue<Vector2>().normalized;
         movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        movement.y = 0f;
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;

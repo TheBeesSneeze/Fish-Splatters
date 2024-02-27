@@ -179,12 +179,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 20
-  SpeedMidair: 15
+  SpeedMidair: 5
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
   descentSpeed: 0.5
-  buoyantForceSpring: 60
-  buoyantForceDamper: 10
+  bottomSurfaceMotorLeftSpeed: 0.1
+  bottomSurfaceMotorRightSpeed: 0.1
   buoyantDownwardForceDamper: 60
   movementOrigin: {fileID: 7267682323697709755}
   Model: {fileID: 6593285041407148169}
