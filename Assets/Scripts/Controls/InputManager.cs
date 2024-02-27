@@ -63,11 +63,12 @@ public class InputManager : MonoBehaviour
     public float buoyantDownwardForceDamper = 50;
 
     [Tooltip("this is the camera")] public Transform movementOrigin;
+    public Transform Model;
 
     [HideInInspector] public bool isHoldingJump;
 
     private PlayerInput playerInput;
-    [HideInInspector] public InputAction Move, Jump, Pause;
+    [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement;
 
     private Rigidbody rigidbody;
 
@@ -76,6 +77,8 @@ public class InputManager : MonoBehaviour
     private float currentAccelerationTime;
     private Vector3 movement;
     [HideInInspector] public WaterVolume currentVolume;
+
+    Vector3 lastRotation;
 
 
     private void Awake()
@@ -100,11 +103,9 @@ public class InputManager : MonoBehaviour
         Move = playerInput.currentActionMap.FindAction("Move");
         Jump = playerInput.currentActionMap.FindAction("Jump");
         Pause = playerInput.currentActionMap.FindAction("Pause");
+        cameraMovement = playerInput.currentActionMap.FindAction("Camera");
         playerInput.currentActionMap.FindAction("Quit").started += context => { Application.Quit(); };
-        playerInput.currentActionMap.FindAction("Restart").started += context =>
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        };
+        playerInput.currentActionMap.FindAction("Restart").started += context => { SceneManager.LoadScene(SceneManager.GetActiveScene().name); };
 
         Move.started += Move_started;
         Move.canceled += Move_canceled;
@@ -139,7 +140,6 @@ public class InputManager : MonoBehaviour
             currentVolume = null;
         }
     }
-
 
     private void ManageMovement()
     {
@@ -356,11 +356,14 @@ public class InputManager : MonoBehaviour
 
     private void RotateFish()
     {
+        if (rigidbody.velocity.x == 0 && rigidbody.velocity.z==0)
+            return;
+
         Vector3 rotation = new Vector3(rigidbody.velocity.x, 0, rigidbody.velocity.z);
 
         Quaternion targetRotation = Quaternion.LookRotation(rotation.normalized);
 
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        Model.rotation = Quaternion.Slerp(Model.rotation, targetRotation, Time.deltaTime * 10f);
         //transform.forward = Vector3.Lerp(transform.forward, rigidbody.velocity, Time.deltaTime * 10);
 
         //transform.rotation = Quaternion.LookRotation(rigidbody.velocity.normalized);
