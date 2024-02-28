@@ -179,6 +179,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 20
+  SprintSpeed: 0
+  DashForce: 0
   SpeedMidair: 15
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
@@ -186,8 +188,10 @@ MonoBehaviour:
   buoyantForceSpring: 60
   buoyantForceDamper: 10
   buoyantDownwardForceDamper: 60
+  DepthColor: {r: 0, g: 0, b: 0.35686275, a: 1}
   movementOrigin: {fileID: 7267682323697709755}
-  Model: {fileID: 6593285041407148169}
+  ModelPivot: {fileID: 6593285041407148169}
+  Model: {fileID: 7068824609126421047}
   isHoldingJump: 0
   Move:
     m_Name: 
@@ -217,6 +221,24 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   cameraMovement:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  Sprint:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  Dash:
     m_Name: 
     m_Type: 0
     m_ExpectedControlType: 

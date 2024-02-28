@@ -158,8 +158,11 @@ public class CameraManager : MonoBehaviour
         //get player percent through water
         WaterVolume water = player.currentVolume;
 
-        if(water != null )
+        if (water != null)
+        {
             t = water.GetPlayerPercentFromBottom();
+            t = Mathf.Pow(t, 2);
+        }
 
         //zoom out
         //currentZoomMultiplier = Mathf.Max( (1 + t), 1);
