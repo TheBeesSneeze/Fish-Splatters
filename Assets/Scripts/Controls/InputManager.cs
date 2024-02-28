@@ -150,13 +150,14 @@ public class InputManager : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out WaterVolume water))
         {
-            FishEvents.Instance.FishEnterWater.Invoke();
             currentVolume = water;
 
             if (isHoldingJump)
             {
                 FishEvents.Instance.FishStartSinking.Invoke();
             }
+
+            FishEvents.Instance.FishEnterWater.Invoke();
         }
     }
 

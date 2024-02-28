@@ -58,9 +58,9 @@ public class CameraManager : MonoBehaviour
 
     public Vector3 targetRotation;
 
-    //y position of when space was held
+    //y surface level of current (or last) water block
     private float playerYPoint; 
-    private float cameraYPoint;
+    //private float cameraYPoint;
 
     private float balanceOffset = 0.3f; //allow the player to be balanced if within this number
 
@@ -155,21 +155,16 @@ public class CameraManager : MonoBehaviour
     }
     private void TiltCameraForUnderwater()
     {
-        //get player percent through water
-        WaterVolume water = player.currentVolume;
+        t = (playerYPoint - player.transform.position.y) / 20;
+        t = Mathf.Clamp(t, 0, 1);
 
-        if (water != null)
-        {
-            t = water.GetPlayerPercentFromBottom();
-            t = Mathf.Pow(t, 2);
-        }
+        t = t * t;
 
-        //zoom out
-        //currentZoomMultiplier = Mathf.Max( (1 + t), 1);
+        //targetRotation.x = Mathf.Lerp(defaultAngle, AngleCameraDown, t);
 
         //move camera up slightly
         Vector3 pos = targetPosition;
-        pos.y = cameraYPoint + (t* ZoomMultiplier);
+        pos.y = playerYPoint + CameraOffsetFromPlayer.y + (t* ZoomMultiplier);
         targetPosition = pos;
 
         //angle the damn thing
@@ -183,7 +178,6 @@ public class CameraManager : MonoBehaviour
         {
             Debug.Log("player jump so high!");
             playerYPoint = player.transform.position.y- JumpHeightToMoveCamera;
-            cameraYPoint = targetPosition.y - JumpHeightToMoveCamera;
         }
 
         TiltCameraForUnderwater();
@@ -238,9 +232,6 @@ public class CameraManager : MonoBehaviour
     {
         Debug.Log("sink");
         Mode = CameraMode.FishSinking;
-
-        playerYPoint = player.transform.position.y;
-        cameraYPoint = targetPosition.y;
     }
     public void OnPlayerAscendingStart()
     {
@@ -252,12 +243,12 @@ public class CameraManager : MonoBehaviour
 
     public void OnPlayerEnterWater()
     {
-        //currentZoomMultiplier = ZoomMultiplier;
-        
+        playerYPoint = player.currentVolume.GetSurfaceLevel();
+        Mode = CameraMode.DefaultFollow;
     }
     public void OnPlayerExitWater()
     {
-        
+        Mode = CameraMode.FishSinking;
     }
 
     public void OnPlayerEquilibriumEnter()
