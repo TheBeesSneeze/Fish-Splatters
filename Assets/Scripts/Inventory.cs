@@ -12,7 +12,7 @@ public class Inventory : MonoBehaviour
     {
         if (other.gameObject.tag == "Coin")
         {
-            coins++;
+            coins += other.GetComponent<CoinBehavior>().coinValue;
             Destroy(other.gameObject);
             coinText.text = "Coins: " + coins;
         }
