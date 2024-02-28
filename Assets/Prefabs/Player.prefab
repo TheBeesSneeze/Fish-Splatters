@@ -42,6 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4564085412338111071}
   - component: {fileID: 2019336131820175975}
+  - component: {fileID: 6279860050278456382}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -65,7 +66,7 @@ Transform:
   - {fileID: 7267682323697709755}
   - {fileID: 8870196940948889158}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2019336131820175975
 MonoBehaviour:
@@ -97,6 +98,20 @@ MonoBehaviour:
   EquilibriumExit:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6279860050278456382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535882345916170445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c00be04516b6bcd4fa63038a76a94dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventory: []
+  coins: 0
 --- !u!1 &3285737786523861134
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,6 +157,7 @@ GameObject:
   - component: {fileID: 6755860316182521657}
   - component: {fileID: 6009066561247158246}
   - component: {fileID: 7410861196912482163}
+  - component: {fileID: 4471859464509073702}
   m_Layer: 0
   m_Name: PlayerBody
   m_TagString: Untagged
@@ -179,6 +195,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 20
+  SprintSpeed: 0
+  DashForce: 0
   SpeedMidair: 15
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
@@ -186,7 +204,9 @@ MonoBehaviour:
   buoyantForceSpring: 60
   buoyantForceDamper: 10
   buoyantDownwardForceDamper: 60
+  DepthColor: {r: 0, g: 0, b: 0, a: 0}
   movementOrigin: {fileID: 7267682323697709755}
+  ModelPivot: {fileID: 0}
   Model: {fileID: 6593285041407148169}
   isHoldingJump: 0
   Move:
@@ -217,6 +237,24 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   cameraMovement:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  Sprint:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  Dash:
     m_Name: 
     m_Type: 0
     m_ExpectedControlType: 
@@ -307,6 +345,20 @@ CapsuleCollider:
   m_Height: 3.5699916
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: -0.37460303}
+--- !u!114 &4471859464509073702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5437888988921568922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c00be04516b6bcd4fa63038a76a94dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventory: []
+  coins: 0
 --- !u!1 &5604370985446490545
 GameObject:
   m_ObjectHideFlags: 0
