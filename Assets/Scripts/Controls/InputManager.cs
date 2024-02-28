@@ -148,13 +148,13 @@ public class InputManager : MonoBehaviour
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
         //do a haptic
-        Gamepad.current.SetMotorSpeeds(bottomSurfaceMotorLeftSpeed, bottomSurfaceMotorRightSpeed);
+        Gamepad.current?.SetMotorSpeeds(bottomSurfaceMotorLeftSpeed, bottomSurfaceMotorRightSpeed);
     }
 
     private void OnCollisionExit(Collision other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
-        Gamepad.current.ResetHaptics();
+        Gamepad.current?.ResetHaptics();
     }
 
     private void ManageMovement()
