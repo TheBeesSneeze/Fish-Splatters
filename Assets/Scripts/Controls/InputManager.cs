@@ -1,6 +1,6 @@
 /*******************************************************************************
  * File Name :         InputManager.cs
- * Author(s) :         Toby Schamberger, Clare Grady, Alec
+ * Author(s) :         Toby Schamberger, Clare Grady, Alec, Sky Beal
  * Creation Date :     2/19/2024
  *
  * Brief Description :
@@ -23,8 +23,15 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
 
+    [Header("Moving")]
     [Tooltip("The fastest the player will go (without an external force)")]
     public float Speed;
+    
+    [Tooltip("Speed the fish SPRINTS at.")]
+    public float SprintSpeed;
+
+    [Tooltip("Speed the fish DASHES at.")]
+    public float DashForce;
 
     [Tooltip("The fastest the player will go (midair)")]
     public float SpeedMidair;
@@ -34,6 +41,7 @@ public class InputManager : MonoBehaviour
 
     [Tooltip("Deadzone to stop bobbing, an offset from the position of the fish.")]
     public float bobbingDeadZone = 0.05f;
+   
 
     [Header("Jumping")]
 
@@ -66,13 +74,20 @@ public class InputManager : MonoBehaviour
     [Tooltip("How much to slow the players descent. Default is 2")]
     public float buoyantDownwardForceDamper = 50;
 
+    [Tooltip("Color of fish at max depth.")]
+    public Color DepthColor;
+
+    [Header("Unity")]
+
     [Tooltip("this is the camera")] public Transform movementOrigin;
+    public Transform ModelPivot;
     public Transform Model;
 
     [HideInInspector] public bool isHoldingJump;
+    [HideInInspector] private bool isHoldingSprint;
 
     private PlayerInput playerInput;
-    [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement;
+    [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement, Sprint, Dash;
 
     private Rigidbody rigidbody;
 
@@ -84,6 +99,7 @@ public class InputManager : MonoBehaviour
 
     Vector3 lastRotation;
 
+    
 
     private void Awake()
     {
@@ -106,6 +122,9 @@ public class InputManager : MonoBehaviour
 
         Move = playerInput.currentActionMap.FindAction("Move");
         Jump = playerInput.currentActionMap.FindAction("Jump");
+        Sprint = playerInput.currentActionMap.FindAction("Sprint");
+        Dash = playerInput.currentActionMap.FindAction("Dash");
+        
         Pause = playerInput.currentActionMap.FindAction("Pause");
         cameraMovement = playerInput.currentActionMap.FindAction("Camera");
         playerInput.currentActionMap.FindAction("Quit").started += context => { Application.Quit(); };
@@ -117,6 +136,10 @@ public class InputManager : MonoBehaviour
         Jump.started += Jump_started;
         Jump.canceled += Jump_canceled;
 
+        Sprint.started += Sprint_started;
+        Sprint.canceled += Sprint_canceled;
+
+        Dash.started += Dash_started;
         //Pause.started += Pause_started;
     }
 
@@ -161,7 +184,17 @@ public class InputManager : MonoBehaviour
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
         accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
 
-        float currentSpeed = Speed * accelerationPercent;
+        float currentSpeed = 0;
+
+        if(isHoldingSprint)
+        {
+            currentSpeed = SprintSpeed * accelerationPercent;
+        }
+        else
+        {
+            currentSpeed = Speed * accelerationPercent;
+        }
+        
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
@@ -305,7 +338,7 @@ public class InputManager : MonoBehaviour
         float m = 0;
         if (currentVolume != null)
         {
-            m = currentVolume.GetPlayerPecentFromBottom();
+            m = currentVolume.GetPlayerPercentFromBottom();
             m = m * buoyantDownwardForceDamper;
         }
 
@@ -333,6 +366,23 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    private void Sprint_started(InputAction.CallbackContext obj)
+    {
+        isHoldingSprint = true;
+    }
+
+    private void Sprint_canceled(InputAction.CallbackContext obj)
+    {
+        isHoldingSprint = false;
+    }
+
+    private void Dash_started(InputAction.CallbackContext obj)
+    {
+        rigidbody.AddForce(ModelPivot.forward * DashForce, ForceMode.Impulse);
+        //cooldown
+        //drag near end (decrease acceleration)
+    }
+
 
     private void Pause_started(InputAction.CallbackContext obj)
     {
@@ -358,27 +408,36 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
         //moved camera stuff to CameraManager - toby
+        MakeFishBluer();
     }
 
     private void RotateFish()
     {
-        if (rigidbody.velocity.x == 0 && rigidbody.velocity.z==0)
-            return;
+        //if (rigidbody.velocity.x == 0 && rigidbody.velocity.z==0)
+        //    return;
 
         Vector3 rotation = new Vector3(rigidbody.velocity.x, 0, rigidbody.velocity.z);
 
         Quaternion targetRotation = Quaternion.LookRotation(rotation.normalized);
-
-        Model.rotation = Quaternion.Slerp(Model.rotation, targetRotation, Time.deltaTime * 10f);
-        //transform.forward = Vector3.Lerp(transform.forward, rigidbody.velocity, Time.deltaTime * 10);
-
-        //transform.rotation = Quaternion.LookRotation(rigidbody.velocity.normalized);
-
-        /*
-        float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
-
-        Vector3 rotate = new Vector3(0, angle, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(movement), Time.deltaTime * 10);
-        */
+       
+        ModelPivot.rotation = Quaternion.Slerp(ModelPivot.rotation, targetRotation, Time.deltaTime * 10f);
+       
     }
+    
+
+    private void MakeFishBluer()
+    {
+        if (currentVolume == null)
+        {
+            Model.GetComponent<Renderer>().material.color = Color.white;
+            return;
+        }
+
+        float t = currentVolume.GetPlayerPercentFromBottom();
+
+        Color AppliedColor = Color.Lerp(Color.white, DepthColor, t);
+
+        Model.GetComponent<Renderer>().material.color = AppliedColor;
+    }
+
 }
