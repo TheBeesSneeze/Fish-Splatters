@@ -66,7 +66,7 @@ Transform:
   - {fileID: 7267682323697709755}
   - {fileID: 8870196940948889158}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2019336131820175975
 MonoBehaviour:
@@ -112,6 +112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: []
   coins: 0
+  coinText: {fileID: 0}
 --- !u!1 &3285737786523861134
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,16 +199,17 @@ MonoBehaviour:
   SprintSpeed: 0
   DashForce: 0
   SpeedMidair: 15
+  Drag: 1.5
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
   descentSpeed: 0.5
   bottomSurfaceMotorLeftSpeed: 0.1
   bottomSurfaceMotorRightSpeed: 0.1
   buoyantDownwardForceDamper: 60
-  DepthColor: {r: 0, g: 0, b: 0, a: 0}
+  DepthColor: {r: 0, g: 0, b: 0.33333334, a: 1}
   movementOrigin: {fileID: 7267682323697709755}
-  ModelPivot: {fileID: 0}
-  Model: {fileID: 6593285041407148169}
+  ModelPivot: {fileID: 6593285041407148169}
+  Model: {fileID: 7068824609126421047}
   isHoldingJump: 0
   Move:
     m_Name: 
@@ -359,6 +361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: []
   coins: 0
+  coinText: {fileID: 0}
 --- !u!1 &5604370985446490545
 GameObject:
   m_ObjectHideFlags: 0
