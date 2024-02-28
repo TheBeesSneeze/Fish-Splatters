@@ -23,28 +23,26 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
 
-    [Header("Moving")]
-    [Tooltip("The fastest the player will go (without an external force)")]
+    [Header("Moving")] [Tooltip("The fastest the player will go (without an external force)")]
     public float Speed;
-    
+
     [Tooltip("Speed the fish SPRINTS at.")]
     public float SprintSpeed;
 
-    [Tooltip("Speed the fish DASHES at.")]
-    public float DashForce;
+    [Tooltip("Speed the fish DASHES at.")] public float DashForce;
 
     [Tooltip("The fastest the player will go (midair)")]
     public float SpeedMidair;
 
     [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
-    public float Drag = 1.5f;
+    public float CounterForceMultiplier = 0.5f;
 
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
 
     [Tooltip("Deadzone to stop bobbing, an offset from the position of the fish.")]
     public float bobbingDeadZone = 0.05f;
-   
+
 
     [Header("Jumping")]
 
@@ -52,7 +50,6 @@ public class InputManager : MonoBehaviour
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
     
-
 
     public float bottomSurfaceMotorLeftSpeed = 0.1f;
     public float bottomSurfaceMotorRightSpeed = 0.1f;
@@ -75,9 +72,9 @@ public class InputManager : MonoBehaviour
     [Tooltip("Color of fish at max depth.")]
     public Color DepthColor;
 
-    [Header("Unity")]
+    [Header("Unity")] [Tooltip("this is the camera")]
+    public Transform movementOrigin;
 
-    [Tooltip("this is the camera")] public Transform movementOrigin;
     public Transform ModelPivot;
     public Transform Model;
 
@@ -99,7 +96,6 @@ public class InputManager : MonoBehaviour
     private bool jumpWasHeld;
     Vector3 lastRotation;
 
-    
 
     private void Awake()
     {
@@ -124,7 +120,7 @@ public class InputManager : MonoBehaviour
         Jump = playerInput.currentActionMap.FindAction("Jump");
         Sprint = playerInput.currentActionMap.FindAction("Sprint");
         Dash = playerInput.currentActionMap.FindAction("Dash");
-        
+
         Pause = playerInput.currentActionMap.FindAction("Pause");
         cameraMovement = playerInput.currentActionMap.FindAction("Camera");
         playerInput.currentActionMap.FindAction("Quit").started += context => { Application.Quit(); };
@@ -204,7 +200,7 @@ public class InputManager : MonoBehaviour
 
         float currentSpeed = 0;
 
-        if(isHoldingSprint)
+        if (isHoldingSprint)
         {
             currentSpeed = SprintSpeed * accelerationPercent;
         }
@@ -212,7 +208,7 @@ public class InputManager : MonoBehaviour
         {
             currentSpeed = Speed * accelerationPercent;
         }
-        
+
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
@@ -228,9 +224,12 @@ public class InputManager : MonoBehaviour
             force = Vector3.zero;
         }
 
-        rigidbody.drag = Drag; 
         rigidbody.AddForce(force);
-
+        var counterForce = rigidbody.velocity;
+        counterForce *= -1f;
+        counterForce *= CounterForceMultiplier;
+        counterForce.y = 0f;
+        rigidbody.AddForce(counterForce, ForceMode.Acceleration);
     }
 
     private void HandleBuoyancy()
@@ -308,6 +307,7 @@ public class InputManager : MonoBehaviour
             {
                 depth = 0f;
             }
+
             // rigidbody.AddForce(Vector3.up * descentSpeed * waterForce, ForceMode.Force);
             //
             // if (rigidbody.velocity.y >= 0)
@@ -327,9 +327,13 @@ public class InputManager : MonoBehaviour
                     // //at the top, stop!
                     if (jumpWasHeld)
                     {
-                        rigidbody.AddForce(Vector3.up * -rigidbody.velocity.y, ForceMode.VelocityChange); //cancel out y veloicty
+                        rigidbody.AddForce(Vector3.up * -rigidbody.velocity.y,
+                            ForceMode.VelocityChange); //cancel out y veloicty
                         //add impulse force to reach -depth height
-                        rigidbody.AddForce(Vector3.up * (Mathf.Sqrt(2 * depth * Physics.gravity.magnitude) * currentVolume.WaterData.JumpBoostMultiplier), ForceMode.Impulse);
+                        rigidbody.AddForce(
+                            Vector3.up * (Mathf.Sqrt(2 * depth * Physics.gravity.magnitude) *
+                                          currentVolume.WaterData.JumpBoostMultiplier), ForceMode.Impulse);
+
                         depth = 0f;
                         jumpWasHeld = false;
                     }
@@ -457,11 +461,10 @@ public class InputManager : MonoBehaviour
         Vector3 rotation = new Vector3(rigidbody.velocity.x, 0, rigidbody.velocity.z);
 
         Quaternion targetRotation = Quaternion.LookRotation(rotation.normalized);
-       
+
         ModelPivot.rotation = Quaternion.Slerp(ModelPivot.rotation, targetRotation, Time.deltaTime * 10f);
-       
     }
-    
+
 
     private void MakeFishBluer()
     {
@@ -477,5 +480,4 @@ public class InputManager : MonoBehaviour
 
         Model.GetComponent<Renderer>().material.color = AppliedColor;
     }
-
 }
