@@ -82,9 +82,9 @@ public class WaterVolume : MonoBehaviour
     }
 
     /// <summary>
-    /// returns number 0-1 for the players position relaitive of the surface level (0) and bottom (1).
+    /// returns number 0-1 for the players position relative of the surface level (0) and bottom (1).
     /// </summary>
-    public float GetPlayerPecentFromBottom()
+    public float GetPlayerPercentFromBottom()
     {
         if (bottom == null)
             return -1;
