@@ -40,6 +40,10 @@ public class InputManager : MonoBehaviour
     //Clare's variables (clariables)
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
+    [Tooltip("What rate the fish slows down")]
+    public float drag = 1.5f; 
+
+    private Vector3 InputMovement; 
 
     //[Tooltip("How fast the ascent and fall down is")]
     //public float ascentSpeed;
@@ -172,7 +176,9 @@ public class InputManager : MonoBehaviour
             force = Vector3.zero;
         }
 
-        rigidbody.AddForce(force, ForceMode.VelocityChange);
+        rigidbody.drag = drag; 
+        rigidbody.AddForce(force);
+
     }
 
     private void HandleBuoyancy()
