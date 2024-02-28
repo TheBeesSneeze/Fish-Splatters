@@ -92,8 +92,9 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public bool CurrentlyMoving;
     public bool InWater => currentVolume != null;
     private float currentAccelerationTime;
-    private Vector3 movement;
+    [HideInInspector] public Vector3 movement;
     [HideInInspector] public WaterVolume currentVolume;
+    [HideInInspector] public RailNode currentRailNode;
     private WaterVolume prevVolume;
     private float depth;
     private bool jumpWasHeld;
@@ -212,13 +213,7 @@ public class InputManager : MonoBehaviour
         {
             currentSpeed = Speed * accelerationPercent;
         }
-        
-
-        //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
-
-        Vector2 move = Move.ReadValue<Vector2>().normalized;
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
-        movement.y = 0f;
+       
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
@@ -264,9 +259,7 @@ public class InputManager : MonoBehaviour
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        Vector2 move = Move.ReadValue<Vector2>().normalized;
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
-        movement.y = 0f;
+        
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
@@ -429,6 +422,15 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Vector2 move = Move.ReadValue<Vector2>().normalized;
+        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        movement.y = 0f;
+
+        if (currentRailNode == null) 
+        {
+            return;
+        }
+
         if (!InWater)
         {
             ManageMidairMovement();
