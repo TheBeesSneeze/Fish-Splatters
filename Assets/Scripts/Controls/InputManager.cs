@@ -29,13 +29,17 @@ public class InputManager : MonoBehaviour
     [Tooltip("Speed the fish SPRINTS at.")]
     public float SprintSpeed;
 
-    [Tooltip("Speed the fish DASHES at.")] public float DashForce;
+    //[Tooltip("Speed the fish DASHES at.")]
+    //public float DashForce;
 
     [Tooltip("The fastest the player will go (midair)")]
     public float SpeedMidair;
 
     [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
     public float CounterForceMultiplier = 0.5f;
+
+    [Tooltip("The fastest the player will SPRINT (midair)")]
+    public float SprintSpeedMidair;
 
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
@@ -138,7 +142,7 @@ public class InputManager : MonoBehaviour
         Sprint.started += Sprint_started;
         Sprint.canceled += Sprint_canceled;
 
-        Dash.started += Dash_started;
+        //Dash.started += Dash_started;
         //Pause.started += Pause_started;
     }
 
@@ -259,7 +263,17 @@ public class InputManager : MonoBehaviour
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
         // accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
 
-        float currentSpeed = SpeedMidair;
+        float currentSpeed = 0;
+
+        if (isHoldingSprint)
+        {
+            currentSpeed = SprintSpeedMidair * accelerationPercent;
+        }
+
+        else
+        {
+            currentSpeed = SpeedMidair * accelerationPercent;
+        }
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
@@ -418,12 +432,12 @@ public class InputManager : MonoBehaviour
         isHoldingSprint = false;
     }
 
-    private void Dash_started(InputAction.CallbackContext obj)
+    /*private void Dash_started(InputAction.CallbackContext obj)
     {
         rigidbody.AddForce(ModelPivot.forward * DashForce, ForceMode.Impulse);
         //cooldown
         //drag near end (decrease acceleration)
-    }
+    }*/
 
 
     private void Pause_started(InputAction.CallbackContext obj)
