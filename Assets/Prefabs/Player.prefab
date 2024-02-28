@@ -198,8 +198,8 @@ MonoBehaviour:
   Speed: 20
   SprintSpeed: 0
   DashForce: 0
-  SpeedMidair: 15
-  Drag: 1.5
+  SpeedMidair: 10
+  CounterForceMultiplier: 0.75
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
   descentSpeed: 0.5
