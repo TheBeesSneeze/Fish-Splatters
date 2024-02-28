@@ -36,6 +36,9 @@ public class InputManager : MonoBehaviour
     [Tooltip("The fastest the player will go (midair)")]
     public float SpeedMidair;
 
+    [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
+    public float Drag = 1.5f;
+
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
 
@@ -48,10 +51,8 @@ public class InputManager : MonoBehaviour
     //Clare's variables (clariables)
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
-    [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
-    public float drag = 1.5f; 
+    
 
-    private Vector3 InputMovement; 
 
     //[Tooltip("How fast the ascent and fall down is")]
     //public float ascentSpeed;
@@ -209,7 +210,7 @@ public class InputManager : MonoBehaviour
             force = Vector3.zero;
         }
 
-        rigidbody.drag = drag; 
+        rigidbody.drag = Drag; 
         rigidbody.AddForce(force);
 
     }
