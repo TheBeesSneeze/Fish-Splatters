@@ -40,7 +40,7 @@ public class InputManager : MonoBehaviour
     //Clare's variables (clariables)
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
-    [Tooltip("What rate the fish slows down")]
+    [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
     public float drag = 1.5f; 
 
     private Vector3 InputMovement; 
