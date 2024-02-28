@@ -31,12 +31,10 @@ public class CameraManager : MonoBehaviour
 
     public float MaxDownwardTilt = 50;
 
-    
-
     [Tooltip("Starts moving the camera up if the player jumps higher than this number")]
     public float JumpHeightToMoveCamera = 5;
 
-    private float t = 0;
+    private float t = 0; //this is the lerp between default camera angle and down camera angle
 
     public enum CameraMode
     {

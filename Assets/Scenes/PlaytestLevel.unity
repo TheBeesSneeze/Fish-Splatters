@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &1140928 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7068824609126421047, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-  m_PrefabInstance: {fileID: 859938961}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &142763607
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -205,11 +200,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e097dc1b761606040a141ca558e64088, type: 3}
---- !u!4 &269248421 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6593285041407148169, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-  m_PrefabInstance: {fileID: 859938961}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &671471140
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -424,22 +414,6 @@ PrefabInstance:
     - target: {fileID: 4564085412338111071, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: Model
-      value: 
-      objectReference: {fileID: 1140928}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: ModelPivot
-      value: 
-      objectReference: {fileID: 269248421}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: DepthColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: DepthColor.b
-      value: 0.33333334
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
