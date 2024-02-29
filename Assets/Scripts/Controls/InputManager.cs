@@ -88,7 +88,7 @@ public class InputManager : MonoBehaviour
     private PlayerInput playerInput;
     [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement, Sprint, Dash;
 
-    private Rigidbody rigidbody;
+    [HideInInspector] public Rigidbody rigidbody;
 
     [HideInInspector] public bool CurrentlyMoving;
     public bool InWater => currentVolume != null;
@@ -96,10 +96,8 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public Vector3 movement;
     [HideInInspector] public WaterVolume currentVolume;
     [HideInInspector] public RailNode currentRailNode;
-    private WaterVolume prevVolume;
     private float depth;
     private bool jumpWasHeld;
-    Vector3 lastRotation;
 
 
     private void Awake()
@@ -169,7 +167,7 @@ public class InputManager : MonoBehaviour
         if (volume == currentVolume)
         {
             FishEvents.Instance.FishExitWater.Invoke();
-            prevVolume = currentVolume;
+            //prevVolume = currentVolume;
             currentVolume = null;
         }
     }
@@ -277,6 +275,7 @@ public class InputManager : MonoBehaviour
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
         targetV -= rigidbody.velocity;
+
         if (float.IsNaN(targetV.x) || float.IsNaN(targetV.y) || float.IsNaN(targetV.z))
         {
             targetV = Vector3.zero;
@@ -399,6 +398,13 @@ public class InputManager : MonoBehaviour
     {
         isHoldingJump = true;
 
+        if(currentRailNode != null)
+        {
+            Debug.Log("exit node!");
+            currentRailNode.ExitRail();
+            rigidbody.AddForce(Vector3.up * 10, ForceMode.Impulse);
+        }
+
         if (currentVolume != null)
         {
             FishEvents.Instance.FishStartSinking.Invoke();
@@ -444,7 +450,7 @@ public class InputManager : MonoBehaviour
         movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
         movement.y = 0f;
 
-        if (currentRailNode == null) 
+        if (currentRailNode != null) 
         {
             return;
         }
@@ -460,17 +466,19 @@ public class InputManager : MonoBehaviour
         }
 
         JumpManagment();
-        RotateFish();
     }
 
     private void Update()
     {
         //moved camera stuff to CameraManager - toby
         MakeFishBluer();
+        RotateFish();
     }
 
     private void RotateFish()
     {
+        if (currentRailNode != null) return;
+
         //if (rigidbody.velocity.x == 0 && rigidbody.velocity.z==0)
         //    return;
 
