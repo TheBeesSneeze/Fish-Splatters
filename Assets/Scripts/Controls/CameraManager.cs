@@ -97,12 +97,6 @@ public class CameraManager : MonoBehaviour
         {
             Mode = CameraMode.FishSinking;
         }
-
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
         targetPosition = HorizontalCameraManager.Instance.GetTargetPosition();
         //targetPosition = player.transform.position + (CameraOffsetFromPlayer);
 
@@ -126,6 +120,12 @@ public class CameraManager : MonoBehaviour
         }
 
         FollowPlayer();
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        
     }
 
     /// <summary>

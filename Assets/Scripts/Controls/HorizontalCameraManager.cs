@@ -17,6 +17,7 @@ public class HorizontalCameraManager : MonoBehaviour
     public static HorizontalCameraManager Instance;
 
     public float Sensitivity = 0.5f;
+    public float ControllerSensitivity = 15;
 
     public bool RotateAutomatically;
     public bool FullControl = false;
@@ -33,15 +34,18 @@ public class HorizontalCameraManager : MonoBehaviour
         player = InputManager.Instance.transform;
 
         Point.position = transform.position;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         Vector3 pivotRotation = Pivot.eulerAngles;
-        pivotRotation.y += cameraMovement.ReadValue<Vector2>().x * Time.fixedDeltaTime * Sensitivity;
+        float sensitivityTarget = Gamepad.current != null ? ControllerSensitivity : Sensitivity;
+        pivotRotation.y += cameraMovement.ReadValue<Vector2>().x * Time.deltaTime * sensitivityTarget;
 
         if (CameraManager.Instance.FullPlayerControl) 
-            pivotRotation.x -= cameraMovement.ReadValue<Vector2>().y * Time.fixedDeltaTime * Sensitivity;
+            pivotRotation.x -= cameraMovement.ReadValue<Vector2>().y * Time.deltaTime * sensitivityTarget;
 
         Pivot.eulerAngles = pivotRotation;
         //up and down rotato
