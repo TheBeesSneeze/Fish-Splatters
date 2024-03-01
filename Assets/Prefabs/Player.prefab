@@ -65,7 +65,7 @@ Transform:
   - {fileID: 7267682323697709755}
   - {fileID: 8870196940948889158}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2019336131820175975
 MonoBehaviour:
@@ -276,6 +276,7 @@ MonoBehaviour:
   movement: {x: 0, y: 0, z: 0}
   currentVolume: {fileID: 0}
   currentRailNode: {fileID: 0}
+  WaterPrefab: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c, type: 3}
 --- !u!54 &6755860316182521657
 Rigidbody:
   m_ObjectHideFlags: 0

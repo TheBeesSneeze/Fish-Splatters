@@ -98,6 +98,7 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public RailNode currentRailNode;
     private float depth;
     private bool jumpWasHeld;
+    public GameObject WaterPrefab;
 
 
     private void Awake()
@@ -157,6 +158,8 @@ public class InputManager : MonoBehaviour
             }
 
             FishEvents.Instance.FishEnterWater.Invoke();
+            var obj = Instantiate(WaterPrefab, other.ClosestPoint(transform.position), Quaternion.identity);
+            Destroy(obj, 1.5f);
         }
     }
 
