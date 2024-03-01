@@ -62,11 +62,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3003194936205004564}
   - {fileID: 7267682323697709755}
   - {fileID: 8870196940948889158}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2019336131820175975
 MonoBehaviour:
@@ -96,6 +95,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   EquilibriumExit:
+    m_PersistentCalls:
+      m_Calls: []
+  RailEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  RailExit:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &6279860050278456382
@@ -180,6 +185,7 @@ Transform:
   m_Children:
   - {fileID: 6593285041407148169}
   - {fileID: 4797165262001466483}
+  - {fileID: 3445494786213935927}
   m_Father: {fileID: 4564085412338111071}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -196,17 +202,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 20
-  SprintSpeed: 0
-  DashForce: 0
+  SprintSpeed: 40
   SpeedMidair: 10
   CounterForceMultiplier: 0.75
+  SprintSpeedMidair: 0
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
   descentSpeed: 0.5
   bottomSurfaceMotorLeftSpeed: 0.1
   bottomSurfaceMotorRightSpeed: 0.1
   buoyantDownwardForceDamper: 60
-  DepthColor: {r: 0, g: 0, b: 0.33333334, a: 1}
+  DepthColor: {r: 0.01601993, g: 0.01601993, b: 0.3773585, a: 1}
   movementOrigin: {fileID: 7267682323697709755}
   ModelPivot: {fileID: 6593285041407148169}
   Model: {fileID: 7068824609126421047}
@@ -265,8 +271,11 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+  rigidbody: {fileID: 0}
   CurrentlyMoving: 0
+  movement: {x: 0, y: 0, z: 0}
   currentVolume: {fileID: 0}
+  currentRailNode: {fileID: 0}
 --- !u!54 &6755860316182521657
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -572,7 +581,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7289626400421194731}
   m_Enabled: 1
---- !u!1 &8802854550158990363
+--- !u!1 &8226972357621523067
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -580,60 +589,96 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3003194936205004564}
-  - component: {fileID: 4340739452572770004}
-  m_Layer: 0
-  m_Name: Event
+  - component: {fileID: 3445494786213935927}
+  - component: {fileID: 6169203882925913100}
+  - component: {fileID: 5611970088609351623}
+  - component: {fileID: 6620236299155189941}
+  m_Layer: 7
+  m_Name: Rail Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3003194936205004564
+--- !u!4 &3445494786213935927
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8802854550158990363}
+  m_GameObject: {fileID: 8226972357621523067}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.884999, z: -6.554804}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.08699989, z: -0.26}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4564085412338111071}
+  m_Father: {fileID: 8870196940948889158}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4340739452572770004
+--- !u!114 &6169203882925913100
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8802854550158990363}
+  m_GameObject: {fileID: 8226972357621523067}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdb93b80932fc3d4a9441a728c4bc8df, type: 3}
+  m_Script: {fileID: 11500000, guid: 6431fd316ea6a424e91d79a96b1352cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FishStartSinking:
-    m_PersistentCalls:
-      m_Calls: []
-  FishStartAscending:
-    m_PersistentCalls:
-      m_Calls: []
-  FishExitWater:
-    m_PersistentCalls:
-      m_Calls: []
-  FishEnterWater:
-    m_PersistentCalls:
-      m_Calls: []
-  EquilibriumEnter:
-    m_PersistentCalls:
-      m_Calls: []
-  EquilibriumExit:
-    m_PersistentCalls:
-      m_Calls: []
+  ExpandedScale: 3
+  ShrinkScale: 0.01
+--- !u!33 &5611970088609351623
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8226972357621523067}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &6620236299155189941
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8226972357621523067}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 0dff1796950af104797057afa549cdd0, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &9005592617502128726
 GameObject:
   m_ObjectHideFlags: 0

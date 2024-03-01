@@ -29,13 +29,17 @@ public class InputManager : MonoBehaviour
     [Tooltip("Speed the fish SPRINTS at.")]
     public float SprintSpeed;
 
-    [Tooltip("Speed the fish DASHES at.")] public float DashForce;
+    //[Tooltip("Speed the fish DASHES at.")]
+    //public float DashForce;
 
     [Tooltip("The fastest the player will go (midair)")]
     public float SpeedMidair;
 
     [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
     public float CounterForceMultiplier = 0.5f;
+
+    [Tooltip("The fastest the player will SPRINT (midair)")]
+    public float SprintSpeedMidair;
 
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
@@ -84,17 +88,16 @@ public class InputManager : MonoBehaviour
     private PlayerInput playerInput;
     [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement, Sprint, Dash;
 
-    private Rigidbody rigidbody;
+    [HideInInspector] public Rigidbody rigidbody;
 
     [HideInInspector] public bool CurrentlyMoving;
     public bool InWater => currentVolume != null;
     private float currentAccelerationTime;
-    private Vector3 movement;
+    [HideInInspector] public Vector3 movement;
     [HideInInspector] public WaterVolume currentVolume;
-    private WaterVolume prevVolume;
+    [HideInInspector] public RailNode currentRailNode;
     private float depth;
     private bool jumpWasHeld;
-    Vector3 lastRotation;
 
 
     private void Awake()
@@ -138,7 +141,7 @@ public class InputManager : MonoBehaviour
         Sprint.started += Sprint_started;
         Sprint.canceled += Sprint_canceled;
 
-        Dash.started += Dash_started;
+        //Dash.started += Dash_started;
         //Pause.started += Pause_started;
     }
 
@@ -164,7 +167,7 @@ public class InputManager : MonoBehaviour
         if (volume == currentVolume)
         {
             FishEvents.Instance.FishExitWater.Invoke();
-            prevVolume = currentVolume;
+            //prevVolume = currentVolume;
             currentVolume = null;
         }
     }
@@ -210,12 +213,6 @@ public class InputManager : MonoBehaviour
         }
 
 
-        //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
-
-        Vector2 move = Move.ReadValue<Vector2>().normalized;
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
-        movement.y = 0f;
-
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
         Vector3 force = targetV - rigidbody.velocity;
@@ -259,17 +256,26 @@ public class InputManager : MonoBehaviour
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
         // accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
 
-        float currentSpeed = SpeedMidair;
+        float currentSpeed = 0;
+
+        if (isHoldingSprint)
+        {
+            currentSpeed = SprintSpeedMidair * accelerationPercent;
+        }
+
+        else
+        {
+            currentSpeed = SpeedMidair * accelerationPercent;
+        }
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        Vector2 move = Move.ReadValue<Vector2>().normalized;
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
-        movement.y = 0f;
+        
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
         targetV -= rigidbody.velocity;
+
         if (float.IsNaN(targetV.x) || float.IsNaN(targetV.y) || float.IsNaN(targetV.z))
         {
             targetV = Vector3.zero;
@@ -392,6 +398,14 @@ public class InputManager : MonoBehaviour
     {
         isHoldingJump = true;
 
+        if(currentRailNode != null)
+        {
+            Debug.Log("exit node!");
+            currentRailNode.ExitRail();
+            rigidbody.AddForce(Vector3.up * 10, ForceMode.Impulse);
+            FishEvents.Instance.RailExit.Invoke();
+        }
+
         if (currentVolume != null)
         {
             FishEvents.Instance.FishStartSinking.Invoke();
@@ -418,12 +432,12 @@ public class InputManager : MonoBehaviour
         isHoldingSprint = false;
     }
 
-    private void Dash_started(InputAction.CallbackContext obj)
+    /*private void Dash_started(InputAction.CallbackContext obj)
     {
         rigidbody.AddForce(ModelPivot.forward * DashForce, ForceMode.Impulse);
         //cooldown
         //drag near end (decrease acceleration)
-    }
+    }*/
 
 
     private void Pause_started(InputAction.CallbackContext obj)
@@ -433,6 +447,15 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Vector2 move = Move.ReadValue<Vector2>().normalized;
+        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        movement.y = 0f;
+
+        if (currentRailNode != null) 
+        {
+            return;
+        }
+
         if (!InWater)
         {
             ManageMidairMovement();
@@ -444,17 +467,19 @@ public class InputManager : MonoBehaviour
         }
 
         JumpManagment();
-        RotateFish();
     }
 
     private void Update()
     {
         //moved camera stuff to CameraManager - toby
         MakeFishBluer();
+        RotateFish();
     }
 
     private void RotateFish()
     {
+        if (currentRailNode != null) return;
+
         //if (rigidbody.velocity.x == 0 && rigidbody.velocity.z==0)
         //    return;
 
