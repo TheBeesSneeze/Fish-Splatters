@@ -240,6 +240,10 @@ PrefabInstance:
       propertyPath: NextRail
       value: 
       objectReference: {fileID: 985480196}
+    - target: {fileID: 4380409353947911125, guid: a53e175f8fc8f494a87114ea34bb23b8, type: 3}
+      propertyPath: LiveUpdate
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4715307247804374511, guid: a53e175f8fc8f494a87114ea34bb23b8, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -429,11 +433,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0b966c64834604cb759f4465fba4f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1091108736 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6593285041407148169, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-  m_PrefabInstance: {fileID: 976405772066581237}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1454593267
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -584,11 +583,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
---- !u!4 &1571750387 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7068824609126421047, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-  m_PrefabInstance: {fileID: 976405772066581237}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1603607707
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,6 +628,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   EquilibriumExit:
+    m_PersistentCalls:
+      m_Calls: []
+  RailEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  RailExit:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &1603607709
@@ -747,6 +747,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3445494786213935927, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3445494786213935927, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3445494786213935927, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3445494786213935927, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4564085412338111071, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -791,42 +807,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: Model
-      value: 
-      objectReference: {fileID: 1571750387}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: DashForce
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: ModelPivot
-      value: 
-      objectReference: {fileID: 1091108736}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: SprintSpeed
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: DepthColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: DepthColor.b
-      value: 0.3773585
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: DepthColor.g
-      value: 0.01601993
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: DepthColor.r
-      value: 0.01601993
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537962363467674131, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
-      propertyPath: ModelMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: eae982bf40ad1c04584a2e60281e713d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -844,14 +824,6 @@ PrefabInstance:
       propertyPath: NextRail
       value: 
       objectReference: {fileID: 946148529}
-    - target: {fileID: 4380409353947911125, guid: a53e175f8fc8f494a87114ea34bb23b8, type: 3}
-      propertyPath: IsHeadNode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4380409353947911125, guid: a53e175f8fc8f494a87114ea34bb23b8, type: 3}
-      propertyPath: MetersPerSecond
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 4715307247804374511, guid: a53e175f8fc8f494a87114ea34bb23b8, type: 3}
       propertyPath: m_RootOrder
       value: 6

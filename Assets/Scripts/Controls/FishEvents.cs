@@ -23,6 +23,8 @@ public class FishEvents : MonoBehaviour
     public UnityEvent FishEnterWater;
     public UnityEvent EquilibriumEnter;
     public UnityEvent EquilibriumExit;
+    public UnityEvent RailEnter;
+    public UnityEvent RailExit;
     
 
     private void Awake()
@@ -37,10 +39,7 @@ public class FishEvents : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        
-    }
+  
 
 
     

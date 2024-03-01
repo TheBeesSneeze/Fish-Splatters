@@ -40,9 +40,10 @@ public class RailNode : MonoBehaviour
     private LineRenderer lineRenderer;
     private float distance;
     private Vector3 direction; //points at next node
+    private float interpolationOffset; //makes player lerp meters/seconf
 
     [HideInInspector] public bool PlayerInRail;
-    private float interpolationPercent = 0; //t
+    [ReadOnly]public float interpolationPercent = 0; //t
 
     private float cooldownElapsed;
     private float cooldownTime = 0.15f;
@@ -101,6 +102,8 @@ public class RailNode : MonoBehaviour
 
         distance = Vector3.Distance(transform.position, NextRail.transform.position);
         direction = (NextRail.transform.position - transform.position).normalized;
+
+        interpolationOffset = distance / MetersPerSecond;
     }
 
     private void InterpolatePlayerPosition()
@@ -108,7 +111,7 @@ public class RailNode : MonoBehaviour
         Vector3 playerInputDirection = InputManager.Instance.movement; 
         float playerDirection = Vector3.Dot(direction, playerInputDirection);
 
-        interpolationPercent += playerDirection * Time.fixedDeltaTime;
+        interpolationPercent += playerDirection * Time.fixedDeltaTime / interpolationOffset;
 
         //enter next rail
         if (interpolationPercent > 1 && NextRail != null)
@@ -143,6 +146,9 @@ public class RailNode : MonoBehaviour
         InputManager.Instance.ModelPivot.LookAt(playerTransform.position+facingDirection);
     }
 
+    /// <summary>
+    /// raycats go prrrrrrr
+    /// </summary>
     private void SearchForPlayer()
     {
         if (PlayerInRail) return;
@@ -161,6 +167,8 @@ public class RailNode : MonoBehaviour
 
         float playerDistance = Vector3.Distance(transform.position, player.transform.position);
         EnterRail(playerDistance / distance);
+
+        FishEvents.Instance.RailEnter.Invoke();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -172,6 +180,8 @@ public class RailNode : MonoBehaviour
         if (player.currentRailNode != null) return;
 
         EnterRail(0);
+
+        FishEvents.Instance.RailEnter.Invoke();
     }
 
     private void Awake()
@@ -233,6 +243,7 @@ public class RailNode : MonoBehaviour
         if (NextRail == null) return;
 
         MetersPerSecond = template.MetersPerSecond;
+        UpdateVisual();
 
         if (NextRail == template) return; //no infinite loops please!
 
@@ -255,5 +266,7 @@ public class RailNode : MonoBehaviour
     {
         Debug.LogWarning("sorry guys i havent done this yet");
         //if(NextRail)
+
+
     }
 }

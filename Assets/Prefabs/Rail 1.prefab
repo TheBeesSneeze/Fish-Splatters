@@ -50,10 +50,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NextRail: {fileID: 0}
   LastRail: {fileID: 0}
-  MetersPerSecond: 1
+  MetersPerSecond: 30
   LiveUpdate: 0
   IsHeadNode: 0
   PlayerInRail: 0
+  interpolationPercent: 0
 --- !u!120 &4981632214606923329
 LineRenderer:
   serializedVersion: 2

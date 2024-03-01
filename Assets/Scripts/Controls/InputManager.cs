@@ -403,6 +403,7 @@ public class InputManager : MonoBehaviour
             Debug.Log("exit node!");
             currentRailNode.ExitRail();
             rigidbody.AddForce(Vector3.up * 10, ForceMode.Impulse);
+            FishEvents.Instance.RailExit.Invoke();
         }
 
         if (currentVolume != null)
