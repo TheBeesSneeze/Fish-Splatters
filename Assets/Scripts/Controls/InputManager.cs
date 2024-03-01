@@ -95,6 +95,8 @@ public class InputManager : MonoBehaviour
     private float depth;
     private bool jumpWasHeld;
     Vector3 lastRotation;
+    
+    public Projector projector;
 
 
     private void Awake()
@@ -433,6 +435,7 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        projector.enabled = !InWater;
         if (!InWater)
         {
             ManageMidairMovement();

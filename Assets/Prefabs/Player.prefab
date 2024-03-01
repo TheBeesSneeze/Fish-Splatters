@@ -319,6 +319,7 @@ MonoBehaviour:
     m_Flags: 0
   CurrentlyMoving: 0
   currentVolume: {fileID: 0}
+  projector: {fileID: 3405948433870828846}
 --- !u!54 &6755860316182521657
 Rigidbody:
   m_ObjectHideFlags: 0
