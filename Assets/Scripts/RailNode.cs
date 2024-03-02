@@ -3,13 +3,15 @@
  * Author(s) :         Toby Schamberger
  * Creation Date :     2/28/2024
  *
- * Brief Description :
+ * Brief Description : NODE THEORY!!!! Rail nodes link to other rail nodes and theyre awesome.
+ * look at the variables for a good description of whats going on here.
+ * uses lerps n shit.
  *
  * TODO:
  * - jumping
+ * - test continued mommy with controller
  *****************************************************************************/
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.EditorTools;
@@ -22,7 +24,7 @@ public class RailNode : MonoBehaviour
 {
     [Tooltip("Rail that is rail points to. Leave empty if this is the end")]
     public RailNode NextRail;
-    [HideInInspector] public RailNode LastRail; // assigned automatically :D
+    [ReadOnly][HideInInspector] public RailNode LastRail; // assigned automatically :D
 
     [Header("Head Chain Settings")]
     [InfoBox("Only define these varibles on the first node in the chain.", EInfoBoxType.Normal)]
@@ -33,43 +35,57 @@ public class RailNode : MonoBehaviour
 
     [Tooltip("Updates rail line renderer and math live (bad for performance). necessary if you want to have rails move for some reason")]
     [Foldout("Advanced settings")] public bool LiveUpdate = false;
-
     [Tooltip("ONLY USE FOR CLOSED LOOPS. If true, all next nodes will copy the settings from this one.")]
     [Foldout("Advanced settings")] public bool IsHeadNode = false;
+    [Tooltip("How long until player can reenter the rail")]
+    [Foldout("Advanced settings")] private float cooldownTime = 0.15f;
+
+    [Foldout("Debug")][SerializeField][ReadOnly] private bool playerInRail;
+    [Foldout("Debug")][SerializeField][ReadOnly] private float interpolationPercent = 0; //t
+    [Foldout("Debug")][SerializeField][ReadOnly] private float currentInputMomentum = 0;
+    [Foldout("Debug")][SerializeField][ReadOnly] private float cooldownElapsed;
+    
+    
 
     private LineRenderer lineRenderer;
     private float distance;
     private Vector3 direction; //points at next node
     private float interpolationOffset; //makes player lerp meters/seconf
 
-    [HideInInspector] public bool PlayerInRail;
-    [ReadOnly]public float interpolationPercent = 0; //t
-
-    private float cooldownElapsed;
-    private float cooldownTime = 0.15f;
+    
+    
+    
 
     private Transform playerTransform;
 
     /// <summary>
     /// hooks player to rail. works if player was already on a different rail.
     /// </summary>
-    /// <param name="t"></param>
     public void EnterRail(float t)
     {
         if (LastRail != null)
-            LastRail.TransitionRail();
+            LastRail.TransitionRailExit();
 
         InputManager.Instance.rigidbody.isKinematic = true;
         InputManager.Instance.currentRailNode = this;
-        PlayerInRail = true;
+        playerInRail = true;
         interpolationPercent = t;
     }
 
-    public void TransitionRail()
+    /// <summary>
+    /// so the player can keep holding w or whatever!!
+    /// </summary>
+    public void EnterRail(float t, float carriedMomentum)
+    {
+        currentInputMomentum = carriedMomentum;
+        EnterRail(t);
+    }
+
+    public void TransitionRailExit()
     {
         cooldownElapsed = 0;
         interpolationPercent = -1;
-        PlayerInRail = false;
+        playerInRail = false;
     }
 
     public void ExitRail()
@@ -78,7 +94,7 @@ public class RailNode : MonoBehaviour
         cooldownElapsed = 0;
         InputManager.Instance.currentRailNode = null;
         interpolationPercent = -1;
-        PlayerInRail = false;
+        playerInRail = false;
     }
 
     public void DetatchPlayer()
@@ -91,48 +107,76 @@ public class RailNode : MonoBehaviour
     /// </summary>
     public void UpdateVisual()
     {
+        //if nothing bitch baby fuck node
         if (NextRail == null)
         {
-            lineRenderer.enabled = false;
+            distance = 0;
+            direction = Vector3.zero;
+
+            if(lineRenderer != null)
+                lineRenderer.enabled = false;
+
             return;
         }
+
+        distance = Vector3.Distance(transform.position, NextRail.transform.position);
+        direction = (NextRail.transform.position - transform.position).normalized;
+
+        if (lineRenderer == null) return;
+
+        lineRenderer.enabled = true; //yes this does need to be here
 
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, NextRail.transform.position);
 
-        distance = Vector3.Distance(transform.position, NextRail.transform.position);
-        direction = (NextRail.transform.position - transform.position).normalized;
+        
 
         interpolationOffset = distance / MetersPerSecond;
     }
 
     private void InterpolatePlayerPosition()
     {
-        Vector3 playerInputDirection = InputManager.Instance.movement; 
-        float playerDirection = Vector3.Dot(direction, playerInputDirection);
+        Vector3 playerInputDirection = InputManager.Instance.movement;
+        currentInputMomentum = Vector3.Dot(direction, playerInputDirection);
 
-        interpolationPercent += playerDirection * Time.fixedDeltaTime / interpolationOffset;
+        interpolationPercent += currentInputMomentum * Time.fixedDeltaTime / interpolationOffset;
 
         //enter next rail
         if (interpolationPercent > 1 && NextRail != null)
         {
-            TransitionRail();
-            NextRail.EnterRail(0);
+            TransitionRailExit();
+            NextRail.EnterRail(0, currentInputMomentum);
             return;
         }
 
         //enter last rail
         if(interpolationPercent < 0 && LastRail != null)
         {
-            TransitionRail();
-            LastRail.EnterRail(1);
+            TransitionRailExit();
+            LastRail.EnterRail(1, currentInputMomentum);
             return;
         }
 
+        interpolationPercent = Mathf.Clamp(interpolationPercent,0,1);
+
         Vector3 playerPosition = Vector3.Lerp(transform.position, NextRail.transform.position, interpolationPercent);
-        Vector3 faceDirection = direction * playerDirection;
+        Vector3 faceDirection = direction * currentInputMomentum;
 
         UpdatePlayerPosition(playerPosition, faceDirection);
+    }
+
+    /// <summary>
+    /// sorry this gets called on EVERY RAIL whoops. called when a player touches/ untouches a WASD
+    /// </summary>
+    private void CalculateInputMomentum(InputAction.CallbackContext obj)
+    {
+        //oh FUCK is this gonna work with controller
+        if (!playerInRail) return;
+
+        Debug.Log("calc input in " + gameObject.name);
+
+        Vector3 playerInputDirection = InputManager.Instance.movement;
+        currentInputMomentum = Vector3.Dot(direction, playerInputDirection);
     }
 
     /// <summary>
@@ -151,7 +195,7 @@ public class RailNode : MonoBehaviour
     /// </summary>
     private void SearchForPlayer()
     {
-        if (PlayerInRail) return;
+        if (playerInRail) return;
         if (NextRail == null) return;
 
         Ray ray = new Ray(transform.position, direction);
@@ -171,12 +215,14 @@ public class RailNode : MonoBehaviour
         FishEvents.Instance.RailEnter.Invoke();
     }
 
+
     private void OnTriggerEnter(Collider other)
     {
+        if (cooldownElapsed < cooldownTime) return;
+
         InputManager player = other.GetComponent<InputManager>();
 
         if(player == null) return;
-
         if (player.currentRailNode != null) return;
 
         EnterRail(0);
@@ -186,10 +232,7 @@ public class RailNode : MonoBehaviour
 
     private void Awake()
     {
-        if (NextRail != null)
-        {
-            NextRail.LastRail = this;
-        }
+        SetLastLink();
     }
 
     private void Start()
@@ -204,11 +247,14 @@ public class RailNode : MonoBehaviour
 
         if (IsHeadNode)
             UpdateSettingsForNextRail(this);
+
+        InputManager.Instance.Move.started += CalculateInputMomentum;
+        InputManager.Instance.Move.canceled += CalculateInputMomentum;
     }
 
     private void FixedUpdate()
     {
-        if (PlayerInRail)
+        if (playerInRail)
         {
             InterpolatePlayerPosition();
             return;
@@ -250,6 +296,45 @@ public class RailNode : MonoBehaviour
         NextRail.UpdateSettingsForNextRail(template);
     }
 
+    /// <summary>
+    /// sets last node variable for this next rail.
+    /// if the last rail is already defined then we have problems.
+    /// </summary>
+    public void SetLastLink()
+    {
+        if (NextRail == null)
+        {
+            return;
+        }
+
+        if(NextRail.LastRail == null)
+        {
+            NextRail.LastRail = this;
+            return;
+        }
+
+        //oh shit okay so two rails are pointing at this one rail. FUCK.
+        NextRail.SwapLinks();
+        NextRail.LastRail = this;
+    }
+
+    /// <summary>
+    /// correcting two nodes pointing to one
+    /// </summary>
+    public void SwapLinks()
+    {
+        RailNode temp = NextRail;
+        NextRail = LastRail;
+        LastRail = temp;
+
+        if(NextRail != null)
+        {
+            NextRail.SwapLinks();
+        }
+
+        UpdateVisual();
+    }
+
     private void OnDrawGizmos()
     {
         if (NextRail != null)
@@ -258,7 +343,10 @@ public class RailNode : MonoBehaviour
 
             GetComponent<LineRenderer>().SetPosition(0, NextRail.transform.position);
             GetComponent<LineRenderer>().SetPosition(1, transform.position);
+            return;
         }
+        GetComponent<LineRenderer>().SetPosition(0, transform.position);
+        GetComponent<LineRenderer>().SetPosition(1, transform.position);
     }
 
     [Button]
@@ -266,7 +354,5 @@ public class RailNode : MonoBehaviour
     {
         Debug.LogWarning("sorry guys i havent done this yet");
         //if(NextRail)
-
-
     }
 }
