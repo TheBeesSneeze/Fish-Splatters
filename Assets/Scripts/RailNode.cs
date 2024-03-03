@@ -55,8 +55,8 @@ public class RailNode : MonoBehaviour
     private Vector3 direction; //points at next node
     private float metersPerSecondOffset; //makes player lerp meters/seconf
 
-    
-    
+
+    private bool firstEnter = true; 
     
 
     private Transform playerTransform;
@@ -68,6 +68,9 @@ public class RailNode : MonoBehaviour
     {
         if (LastRail != null)
             LastRail.TransitionRailExit();
+
+        //if(enternoise != nul && isFirstEnterl) play;
+        
 
         InputManager.Instance.rigidbody.isKinematic = true;
         InputManager.Instance.currentRailNode = this;
