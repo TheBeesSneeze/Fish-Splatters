@@ -14,6 +14,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -23,7 +24,7 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
 
-    [Header("Moving")] [Tooltip("The fastest the player will go (without an external force)")]
+    [Header("Moving")][Tooltip("The fastest the player will go (without an external force)")]
     public float Speed;
 
     [Tooltip("Speed the fish SPRINTS at.")]
@@ -53,7 +54,7 @@ public class InputManager : MonoBehaviour
     //Clare's variables (clariables)
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
-    
+
 
     public float bottomSurfaceMotorLeftSpeed = 0.1f;
     public float bottomSurfaceMotorRightSpeed = 0.1f;
@@ -76,7 +77,7 @@ public class InputManager : MonoBehaviour
     [Tooltip("Color of fish at max depth.")]
     public Color DepthColor;
 
-    [Header("Unity")] [Tooltip("this is the camera")]
+    [Header("Unity")][Tooltip("this is the camera")]
     public Transform movementOrigin;
 
     public Transform ModelPivot;
@@ -99,8 +100,22 @@ public class InputManager : MonoBehaviour
     private float depth;
     private bool jumpWasHeld;
 
+    [Header("Sounds")]
+
     private bool hasEnteredAir = false;
     private bool hasHitJump = false;
+
+    [SerializeField] private float swimVolume = 1f;
+    [SerializeField] private AudioClip swimSound;
+    [SerializeField] private float jumpVolume = 1f;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private float hitBottomVolume = 1f;
+    [SerializeField] private AudioClip hitBottomSound;
+    [SerializeField] private float splashVolume = 1f;
+    [SerializeField] private AudioClip splashSound;
+    [SerializeField] private float sprintVolume = 1f;
+    [SerializeField] private AudioClip sprintSound;
+    [SerializeField] private AudioSource soundOrigin; 
 
 
     private void Awake()
@@ -180,13 +195,12 @@ public class InputManager : MonoBehaviour
         if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
         //do a haptic
         Gamepad.current?.SetMotorSpeeds(bottomSurfaceMotorLeftSpeed, bottomSurfaceMotorRightSpeed);
-        /* 
-         * if (hitbottom sound != null)
-         * {
-         *      AudioSource.PlayClipAtPoint(hitbottom sound, transform.position, hitbottomvolume);
-         * }
-         */
-        Debug.LogWarning("HIT BOTTOM"); 
+        
+        if(hitBottomSound != null)
+        {
+            soundOrigin.PlayOneShot(hitBottomSound, hitBottomVolume);
+        }
+        
         
     }
 
@@ -202,11 +216,16 @@ public class InputManager : MonoBehaviour
         {
             if (currentAccelerationTime < AccelerationSeconds)
                 currentAccelerationTime += Time.fixedDeltaTime;
-            /*
-             * if(move audio != null)
-             *  Play
-             */
-            Debug.LogWarning("SWIM");
+            
+            if(swimSound != null && !isHoldingSprint)
+            {
+                soundOrigin.PlayOneShot(swimSound, swimVolume);
+            }
+            else if (sprintSound != null && isHoldingSprint)
+            {
+                soundOrigin.PlayOneShot(sprintSound, sprintVolume); 
+            }
+            
         }
         else
         {
@@ -218,8 +237,10 @@ public class InputManager : MonoBehaviour
 
         if(hasEnteredAir && InWater && hasHitJump)
         {
-            //play the audio 
-            Debug.LogWarning("SPLASH"); 
+            if(splashSound != null)
+            {
+                soundOrigin.PlayOneShot(splashSound, splashVolume); 
+            }
             hasEnteredAir = false;
         }
 
@@ -448,10 +469,12 @@ public class InputManager : MonoBehaviour
         {
             FishEvents.Instance.FishStartAscending.Invoke();
         }
-        /* if(jumpSound != null)
-         *      play noise
-         */
-        Debug.LogWarning("JUMP NOISE"); 
+        
+        if(jumpSound != null)
+        {
+            soundOrigin.PlayOneShot(jumpSound, jumpVolume); 
+        }
+        
         
     }
 

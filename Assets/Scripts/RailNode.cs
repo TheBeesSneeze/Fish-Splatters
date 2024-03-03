@@ -56,8 +56,11 @@ public class RailNode : MonoBehaviour
     private float metersPerSecondOffset; //makes player lerp meters/seconf
 
 
-    private bool firstEnter = true; 
+    [Header("Sounds")]
+    private float railVolume = 1.0f;
+    private AudioClip railSound;
     
+
 
     private Transform playerTransform;
 
@@ -69,8 +72,11 @@ public class RailNode : MonoBehaviour
         if (LastRail != null)
             LastRail.TransitionRailExit();
 
-        //if(enternoise != nul && isFirstEnterl) play;
-        
+        if(railSound != null)
+        {
+            AudioSource.PlayClipAtPoint(railSound, transform.position, railVolume);
+        }
+       
 
         InputManager.Instance.rigidbody.isKinematic = true;
         InputManager.Instance.currentRailNode = this;
