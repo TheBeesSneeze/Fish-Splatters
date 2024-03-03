@@ -196,6 +196,8 @@ public class InputManager : MonoBehaviour
         {
             if (currentAccelerationTime > 0)
                 currentAccelerationTime -= Time.fixedDeltaTime;
+
+            currentAccelerationTime = MathF.Max(currentAccelerationTime, 0.1f);
         }
 
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
