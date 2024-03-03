@@ -43,12 +43,12 @@ public class BubbleChestBehavior : MonoBehaviour
 
     public IEnumerator SpawnBubble()
     {
-        //can you tell i'm taking a cs course
         for (int i = 0; i < AmountOfBubbles; i++)
         {
             GameObject bubble = Instantiate(Bubble, transform.position, Bubble.transform.rotation);
             Rigidbody bubbleRB = bubble.GetComponent<Rigidbody>();
-            bubbleRB.velocity = (Vector3.up * BubbleSpeed);
+            //bubbleRB.velocity = (Vector3.up * BubbleSpeed);
+            bubbleRB.velocity = (transform.up * BubbleSpeed);
             yield return new WaitForSeconds(BubbleSpawnSeconds);
         }
         ChestOpen = false;

@@ -88,17 +88,16 @@ public class InputManager : MonoBehaviour
     private PlayerInput playerInput;
     [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement, Sprint, Dash;
 
-    private Rigidbody rigidbody;
+    [HideInInspector] public Rigidbody rigidbody;
 
     [HideInInspector] public bool CurrentlyMoving;
     public bool InWater => currentVolume != null;
     private float currentAccelerationTime;
-    private Vector3 movement;
+    [HideInInspector] public Vector3 movement;
     [HideInInspector] public WaterVolume currentVolume;
-    private WaterVolume prevVolume;
+    [HideInInspector] public RailNode currentRailNode;
     private float depth;
     private bool jumpWasHeld;
-    Vector3 lastRotation;
 
     private bool hasEnteredAir = false;
     private bool hasHitJump = false;
@@ -171,7 +170,7 @@ public class InputManager : MonoBehaviour
         if (volume == currentVolume)
         {
             FishEvents.Instance.FishExitWater.Invoke();
-            prevVolume = currentVolume;
+            //prevVolume = currentVolume;
             currentVolume = null;
         }
     }
@@ -213,6 +212,8 @@ public class InputManager : MonoBehaviour
         {
             if (currentAccelerationTime > 0)
                 currentAccelerationTime -= Time.fixedDeltaTime;
+
+            currentAccelerationTime = MathF.Max(currentAccelerationTime, 0.1f);
         }
 
         if(hasEnteredAir && InWater && hasHitJump)
@@ -236,12 +237,6 @@ public class InputManager : MonoBehaviour
             currentSpeed = Speed * accelerationPercent;
         }
 
-
-        //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
-
-        Vector2 move = Move.ReadValue<Vector2>().normalized;
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
-        movement.y = 0f;
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
@@ -301,13 +296,12 @@ public class InputManager : MonoBehaviour
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        Vector2 move = Move.ReadValue<Vector2>().normalized;
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
-        movement.y = 0f;
+        
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
         targetV -= rigidbody.velocity;
+
         if (float.IsNaN(targetV.x) || float.IsNaN(targetV.y) || float.IsNaN(targetV.z))
         {
             targetV = Vector3.zero;
@@ -432,6 +426,14 @@ public class InputManager : MonoBehaviour
         hasEnteredAir = false;
         hasHitJump = true;
 
+        if(currentRailNode != null)
+        {
+            Debug.Log("exit node!");
+            currentRailNode.ExitRail();
+            rigidbody.AddForce(Vector3.up * 10, ForceMode.Impulse);
+            FishEvents.Instance.RailExit.Invoke();
+        }
+
         if (currentVolume != null)
         {
             FishEvents.Instance.FishStartSinking.Invoke();
@@ -478,6 +480,15 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Vector2 move = Move.ReadValue<Vector2>().normalized;
+        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        movement.y = 0f;
+
+        if (currentRailNode != null) 
+        {
+            return;
+        }
+
         if (!InWater)
         {
             ManageMidairMovement();
@@ -489,17 +500,19 @@ public class InputManager : MonoBehaviour
         }
 
         JumpManagment();
-        RotateFish();
     }
 
     private void Update()
     {
         //moved camera stuff to CameraManager - toby
         MakeFishBluer();
+        RotateFish();
     }
 
     private void RotateFish()
     {
+        if (currentRailNode != null) return;
+
         //if (rigidbody.velocity.x == 0 && rigidbody.velocity.z==0)
         //    return;
 
