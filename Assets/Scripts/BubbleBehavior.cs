@@ -11,6 +11,14 @@ public class BubbleBehavior : MonoBehaviour
     //[Tooltip("Time until bubble despawns after hitting death plane")]
     //public float BubbleDespawnSeconds;
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "Player")
+        {
+            //play enter bubble noise
+            Debug.LogWarning("ENTER BUBBLE");
+        }
+    }
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "BubbleDeathPlane")

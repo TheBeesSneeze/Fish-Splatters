@@ -100,6 +100,9 @@ public class InputManager : MonoBehaviour
     private bool jumpWasHeld;
     Vector3 lastRotation;
 
+    private bool hasEnteredAir = false;
+    private bool hasHitJump = false;
+
 
     private void Awake()
     {
@@ -178,6 +181,14 @@ public class InputManager : MonoBehaviour
         if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
         //do a haptic
         Gamepad.current?.SetMotorSpeeds(bottomSurfaceMotorLeftSpeed, bottomSurfaceMotorRightSpeed);
+        /* 
+         * if (hitbottom sound != null)
+         * {
+         *      AudioSource.PlayClipAtPoint(hitbottom sound, transform.position, hitbottomvolume);
+         * }
+         */
+        Debug.LogWarning("HIT BOTTOM"); 
+        
     }
 
     private void OnCollisionExit(Collision other)
@@ -192,11 +203,23 @@ public class InputManager : MonoBehaviour
         {
             if (currentAccelerationTime < AccelerationSeconds)
                 currentAccelerationTime += Time.fixedDeltaTime;
+            /*
+             * if(move audio != null)
+             *  Play
+             */
+            Debug.LogWarning("SWIM");
         }
         else
         {
             if (currentAccelerationTime > 0)
                 currentAccelerationTime -= Time.fixedDeltaTime;
+        }
+
+        if(hasEnteredAir && InWater && hasHitJump)
+        {
+            //play the audio 
+            Debug.LogWarning("SPLASH"); 
+            hasEnteredAir = false;
         }
 
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
@@ -259,6 +282,7 @@ public class InputManager : MonoBehaviour
     private void ManageMidairMovement()
     {
         //acceleration doesnt change midair!!!
+        hasEnteredAir = true;
 
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
         // accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
@@ -405,6 +429,8 @@ public class InputManager : MonoBehaviour
     private void Jump_started(InputAction.CallbackContext obj)
     {
         isHoldingJump = true;
+        hasEnteredAir = false;
+        hasHitJump = true;
 
         if (currentVolume != null)
         {
@@ -420,6 +446,11 @@ public class InputManager : MonoBehaviour
         {
             FishEvents.Instance.FishStartAscending.Invoke();
         }
+        /* if(jumpSound != null)
+         *      play noise
+         */
+        Debug.LogWarning("JUMP NOISE"); 
+        
     }
 
     private void Sprint_started(InputAction.CallbackContext obj)

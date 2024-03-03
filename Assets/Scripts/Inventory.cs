@@ -12,6 +12,9 @@ public class Inventory : MonoBehaviour
     {
         if (other.gameObject.tag == "Coin")
         {
+            //if(coin noise != null)
+            //{ make the noise}
+            Debug.LogWarning("Coin Noise"); 
             coins += other.GetComponent<CoinBehavior>().coinValue;
             Destroy(other.gameObject);
             coinText.text = "Coins: " + coins;
