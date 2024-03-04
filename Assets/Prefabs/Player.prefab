@@ -42,7 +42,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4564085412338111071}
   - component: {fileID: 2019336131820175975}
-  - component: {fileID: 6279860050278456382}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -66,7 +65,7 @@ Transform:
   - {fileID: 7267682323697709755}
   - {fileID: 8870196940948889158}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2019336131820175975
 MonoBehaviour:
@@ -98,21 +97,6 @@ MonoBehaviour:
   EquilibriumExit:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6279860050278456382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1535882345916170445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c00be04516b6bcd4fa63038a76a94dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inventory: []
-  coins: 0
-  coinText: {fileID: 0}
 --- !u!1 &3285737786523861134
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,6 +143,7 @@ GameObject:
   - component: {fileID: 6009066561247158246}
   - component: {fileID: 7410861196912482163}
   - component: {fileID: 4471859464509073702}
+  - component: {fileID: 7007389504564264778}
   m_Layer: 0
   m_Name: PlayerBody
   m_TagString: Untagged
@@ -362,6 +347,22 @@ MonoBehaviour:
   inventory: []
   coins: 0
   coinText: {fileID: 0}
+--- !u!114 &7007389504564264778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5437888988921568922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 232104a04155ca04a88ecdeef7895958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  beingPulled: 0
+  pullForce: 1
+  launchForce: 10
+  pullPoint: {fileID: 0}
 --- !u!1 &5604370985446490545
 GameObject:
   m_ObjectHideFlags: 0
