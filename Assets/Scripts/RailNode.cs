@@ -19,6 +19,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using NaughtyAttributes;
 using System;
+using Unity.VisualScripting;
 
 public class RailNode : MonoBehaviour
 {
@@ -48,16 +49,10 @@ public class RailNode : MonoBehaviour
     [Foldout("Debug")][SerializeField][ReadOnly] private float currentInputMomentum = 0;
     [Foldout("Debug")][SerializeField][ReadOnly] private float cooldownElapsed;
     
-    
-
     private LineRenderer lineRenderer;
     private float distance;
     private Vector3 direction; //points at next node
     private float metersPerSecondOffset; //makes player lerp meters/seconf
-
-    
-    
-    
 
     private Transform playerTransform;
 
@@ -193,8 +188,6 @@ public class RailNode : MonoBehaviour
         currentInputMomentum = Vector3.Dot(direction, playerInputDirection);
     }
 
-
-
     /// <summary>
     /// smoothens player position
     /// </summary>
@@ -253,6 +246,9 @@ public class RailNode : MonoBehaviour
 
     private void Start()
     {
+        if (NextRail == this)
+            NextRail = null;
+
         lineRenderer = GetComponent<LineRenderer>();
         playerTransform = InputManager.Instance.transform;
 

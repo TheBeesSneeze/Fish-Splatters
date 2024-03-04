@@ -95,7 +95,6 @@ public class WaterVolume : MonoBehaviour
         t = Mathf.Clamp(t, 0, 1);
 
         return t;
-
     }
 
     public bool CheckWithinBounds2D(Vector3 v)
