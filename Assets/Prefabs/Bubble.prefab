@@ -101,8 +101,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <WaterData>k__BackingField:
-    BuoyancyDamper: 10
+    BuoyancyDamper: 2.82
     BuoyancyForce: 60
+    JumpBoostMultiplier: 1
     CirculationDirection: {x: 0, y: 0, z: 0}
     CirculationSpeed: 0
     BuoyancyDirection: {x: 0, y: 1, z: 0}
