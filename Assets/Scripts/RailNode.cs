@@ -6,6 +6,7 @@
  * Brief Description : NODE THEORY!!!! Rail nodes link to other rail nodes and theyre awesome.
  * look at the variables for a good description of whats going on here.
  * uses lerps n shit.
+ * allows for player to sprint and continue momentum when jumping out.
  *
  * TODO:
  * - jumping
@@ -56,6 +57,7 @@ public class RailNode : MonoBehaviour
     private float distance;
     private Vector3 direction; //points at next node
     private float metersPerSecondOffset; //makes player lerp meters/seconf
+    private float speedOffset; //makes player faster if they sprinting
 
     private Transform playerTransform;
 
@@ -191,7 +193,12 @@ public class RailNode : MonoBehaviour
         Debug.Log("calc input in " + gameObject.name);
 
         Vector3 playerInputDirection = InputManager.Instance.movement;
-        return Vector3.Dot(direction, playerInputDirection);
+        float m = Vector3.Dot(direction, playerInputDirection);
+
+        if (InputManager.Instance.isHoldingSprint)
+            m *= speedOffset;
+        
+        return m;
     }
 
     private float GetContinuedInputMomentum()
@@ -264,6 +271,8 @@ public class RailNode : MonoBehaviour
 
         lineRenderer = GetComponent<LineRenderer>();
         playerTransform = InputManager.Instance.transform;
+
+        speedOffset = InputManager.Instance.SprintSpeed / InputManager.Instance.Speed;
 
         UpdateVisual();
 
