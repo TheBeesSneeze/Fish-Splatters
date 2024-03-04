@@ -159,7 +159,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3409957226702172408}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0.83, z: 0}
+  m_LocalPosition: {x: 0, y: -1.65, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -313,8 +313,8 @@ MonoBehaviour:
   movement: {x: 0, y: 0, z: 0}
   rigidbody: {fileID: 0}
   currentVolume: {fileID: 0}
-  projector: {fileID: 3405948433870828846}
   currentRailNode: {fileID: 0}
+  projector: {fileID: 3405948433870828846}
   WaterPrefab: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c, type: 3}
 --- !u!54 &6755860316182521657
 Rigidbody:
