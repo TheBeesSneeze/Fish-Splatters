@@ -105,6 +105,10 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public RailNode currentRailNode;
     private float depth;
     private bool jumpWasHeld;
+    Vector3 lastRotation;
+    
+    public Projector projector;
+    public GameObject WaterPrefab;
 
 
     private void Awake()
@@ -166,6 +170,8 @@ public class InputManager : MonoBehaviour
             }
 
             FishEvents.Instance.FishEnterWater.Invoke();
+            var obj = Instantiate(WaterPrefab, other.ClosestPoint(transform.position), Quaternion.identity);
+            Destroy(obj, 1.5f);
         }
     }
 
@@ -463,6 +469,7 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        projector.enabled = !InWater;
         Vector2 move = Move.ReadValue<Vector2>().normalized;
         movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
         movement.y = 0f;
