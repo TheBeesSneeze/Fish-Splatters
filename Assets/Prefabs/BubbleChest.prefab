@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BubbleSpawnSeconds: 1
-  ChestClosedSeconds: 3
+  ChestClosedSeconds: 1.5
   AmountOfBubbles: 1
   BubbleSpeed: 1.5
   Bubble: {fileID: 474350950532761543, guid: 4c8b98d158b61914a84d6e480d9da0fe, type: 3}
