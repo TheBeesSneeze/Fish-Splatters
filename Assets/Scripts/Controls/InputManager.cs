@@ -92,7 +92,7 @@ public class InputManager : MonoBehaviour
     private PlayerInput playerInput;
     [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement, Sprint, Dash;
     [HideInInspector] public bool isHoldingJump;
-    [HideInInspector] private bool isHoldingSprint;
+    [HideInInspector] public bool isHoldingSprint;
      public bool isInEquilibrium;
     [HideInInspector] public bool CurrentlyMoving;
     [HideInInspector] public Vector3 movement;
