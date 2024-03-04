@@ -12,6 +12,7 @@ public class whirlpoolBehavior : MonoBehaviour
     public float launchForce = 10f;
     public float depth = 10;
     public GameObject whirlpool;
+    public float launchForce2 = 4000;
     void FixedUpdate()
     {
         if (beingPulled && whirlpool != null && !beingLaunched) {
@@ -29,7 +30,12 @@ public class whirlpoolBehavior : MonoBehaviour
         if (other.tag == "WhirlpoolPoint")
         {
             print("touching");
-            launch();
+            launch(launchForce);
+        }
+        if (other.tag == "WhirlPoolPointFinal")
+        {
+            print("touching");
+            launch(launchForce2);
         }
     }
     private void OnTriggerExit(Collider other)
@@ -40,9 +46,9 @@ public class whirlpoolBehavior : MonoBehaviour
             //whirlpool = null;
         }
     }
-    private void launch()
+    private void launch(float lf)
     {
         beingLaunched = true;
-        gameObject.GetComponent<Rigidbody>().AddForce(0, launchForce ,0);
+        gameObject.GetComponent<Rigidbody>().AddForce(0, lf ,0);
     }
 }
