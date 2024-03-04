@@ -415,6 +415,9 @@ public class InputManager : MonoBehaviour
         {
             Debug.Log("exit node!");
             currentRailNode.ExitRail();
+
+            //Vector3 railDirection = currentRailNode.
+
             rigidbody.AddForce(Vector3.up * 10, ForceMode.Impulse);
             FishEvents.Instance.RailExit.Invoke();
         }
