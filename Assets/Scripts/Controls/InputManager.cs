@@ -270,19 +270,19 @@ public class InputManager : MonoBehaviour
     {
         //acceleration doesnt change midair!!!
 
-        float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
+       // float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
         // accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
 
         float currentSpeed = 0;
 
         if (isHoldingSprint)
         {
-            currentSpeed = SprintSpeedMidair * accelerationPercent;
+            currentSpeed = SprintSpeedMidair;
         }
 
         else
         {
-            currentSpeed = SpeedMidair * accelerationPercent;
+            currentSpeed = SpeedMidair;
         }
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
