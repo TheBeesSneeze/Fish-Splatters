@@ -264,6 +264,10 @@ PrefabInstance:
       propertyPath: m_Positions.Array.data[1].z
       value: -648.088
       objectReference: {fileID: 0}
+    - target: {fileID: 3277225181027736866, guid: 49fde7371592a33479557588dacce8b5, type: 3}
+      propertyPath: MetersPerSecond
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 3405866680128886860, guid: 49fde7371592a33479557588dacce8b5, type: 3}
       propertyPath: m_Positions.Array.data[0].x
       value: -33.9
@@ -351,6 +355,10 @@ PrefabInstance:
     - target: {fileID: 5819071954408624920, guid: 49fde7371592a33479557588dacce8b5, type: 3}
       propertyPath: m_LocalPosition.z
       value: 322
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904761056937594493, guid: 49fde7371592a33479557588dacce8b5, type: 3}
+      propertyPath: MetersPerSecond
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 6094230062075955382, guid: 49fde7371592a33479557588dacce8b5, type: 3}
       propertyPath: m_Positions.Array.data[0].x
@@ -447,6 +455,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 7160383685507412514, guid: 49fde7371592a33479557588dacce8b5, type: 3}
+    - {fileID: 962177360664530341, guid: 49fde7371592a33479557588dacce8b5, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fde7371592a33479557588dacce8b5, type: 3}
@@ -706,6 +715,14 @@ PrefabInstance:
       propertyPath: m_Positions.Array.data[1].z
       value: -870.34
       objectReference: {fileID: 0}
+    - target: {fileID: 762645455143243520, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
+      propertyPath: BubbleSpawnSeconds
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 762645455143243520, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
+      propertyPath: ChestClosedSeconds
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 1177598948100505384, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
       propertyPath: m_Positions.Array.data[0].x
       value: 196.35
@@ -898,6 +915,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -395
       objectReference: {fileID: 0}
+    - target: {fileID: 5347017312427877453, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
+      propertyPath: BubbleSpawnSeconds
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5347017312427877453, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
+      propertyPath: ChestClosedSeconds
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5445304503167794875, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
       propertyPath: m_Positions.Array.data[0].x
       value: 196.35
@@ -1007,6 +1032,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 89686779327466184, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: ControllerSensitivity
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1535882345916170445, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_Name
       value: Player
@@ -1135,6 +1164,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4218464441435195324, guid: 6f1678ff6adabce4a94ebd7d9dbb23b8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 12.1
+      objectReference: {fileID: 0}
     - target: {fileID: 4474304297045102211, guid: 6f1678ff6adabce4a94ebd7d9dbb23b8, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1147,6 +1180,14 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 8d2634d6353d75d439d00ef5bca63984, type: 2}
+    - target: {fileID: 5949657621053453397, guid: 6f1678ff6adabce4a94ebd7d9dbb23b8, type: 3}
+      propertyPath: BubbleSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5949657621053453397, guid: 6f1678ff6adabce4a94ebd7d9dbb23b8, type: 3}
+      propertyPath: AmountOfBubbles
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8287493555868069794, guid: 6f1678ff6adabce4a94ebd7d9dbb23b8, type: 3}
       propertyPath: m_Name
       value: Part 1
