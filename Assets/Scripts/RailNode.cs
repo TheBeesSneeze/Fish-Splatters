@@ -6,10 +6,15 @@
  * Brief Description : NODE THEORY!!!! Rail nodes link to other rail nodes and theyre awesome.
  * look at the variables for a good description of whats going on here.
  * uses lerps n shit.
+ * allows for player to sprint and continue momentum when jumping out.
  *
  * TODO:
  * - jumping
- * - test continued mommy with controller
+ * - test continued momentum with controller
+ * - acceleration!
+ * 
+ * things to consider if proformance gets bad:
+ * - inputs actions! on every rail! oh boy!
  *****************************************************************************/
 
 using System.Collections;
@@ -45,19 +50,14 @@ public class RailNode : MonoBehaviour
     [Foldout("Debug")][SerializeField][ReadOnly] private bool playerInRail;
     [Foldout("Debug")][SerializeField][ReadOnly] private bool continueMomentum;
     [Foldout("Debug")][SerializeField][ReadOnly] private float interpolationPercent = 0; //t
-    [Foldout("Debug")][SerializeField][ReadOnly] private float currentInputMomentum = 0;
+    [Foldout("Debug")][SerializeField][ReadOnly] private float currentInputMomentum = 0; // -1<x<1
     [Foldout("Debug")][SerializeField][ReadOnly] private float cooldownElapsed;
     
-    
-
     private LineRenderer lineRenderer;
     private float distance;
     private Vector3 direction; //points at next node
     private float metersPerSecondOffset; //makes player lerp meters/seconf
-
-    
-    
-    
+    private float speedOffset; //makes player faster if they sprinting
 
     private Transform playerTransform;
 
@@ -145,8 +145,11 @@ public class RailNode : MonoBehaviour
 
     private void InterpolatePlayerPosition()
     {
-        if (!continueMomentum || !ContinueMomentum)
-            CalculateInputMomentum();
+        if (!continueMomentum)
+            currentInputMomentum = CalculateInputMomentum();
+
+        if (continueMomentum)
+            currentInputMomentum = GetContinuedInputMomentum();
 
         //Vector3 playerInputDirection = InputManager.Instance.movement;
         //currentInputMomentum = Vector3.Dot(direction, playerInputDirection);
@@ -180,7 +183,7 @@ public class RailNode : MonoBehaviour
     /// <summary>
     /// sorry this gets called on EVERY RAIL whoops. called when a player touches/ untouches a WASD
     /// </summary>
-    private void CalculateInputMomentum()
+    private float CalculateInputMomentum()
     {
         //oh FUCK is this gonna work with controller
         //if (!playerInRail) return;
@@ -190,10 +193,20 @@ public class RailNode : MonoBehaviour
         Debug.Log("calc input in " + gameObject.name);
 
         Vector3 playerInputDirection = InputManager.Instance.movement;
-        currentInputMomentum = Vector3.Dot(direction, playerInputDirection);
+        float m = Vector3.Dot(direction, playerInputDirection);
+
+        if (InputManager.Instance.isHoldingSprint)
+            m *= speedOffset;
+        
+        return m;
     }
 
+    private float GetContinuedInputMomentum()
+    {
+        float altMomentum = CalculateInputMomentum();
 
+        return Mathf.Max(currentInputMomentum, altMomentum);
+    }
 
     /// <summary>
     /// smoothens player position
@@ -253,8 +266,13 @@ public class RailNode : MonoBehaviour
 
     private void Start()
     {
+        if (NextRail == this)
+            NextRail = null;
+
         lineRenderer = GetComponent<LineRenderer>();
         playerTransform = InputManager.Instance.transform;
+
+        speedOffset = InputManager.Instance.SprintSpeed / InputManager.Instance.Speed;
 
         UpdateVisual();
 

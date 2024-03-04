@@ -68,7 +68,8 @@ public class WaterVolume : MonoBehaviour
         Gizmos.DrawWireCube(
             new Vector3(transform.position.x, transform.position.y + WaterData.SurfaceLevelOffset, transform.position.z),
             new Vector3(c.bounds.size.x, 0.05f, c.bounds.size.z));
-        Gizmos.DrawLine(transform.position, GetWaterCurrentForce());
+        if (GetWaterCurrentForce() == Vector3.zero || WaterData.CirculationSpeed == 0) return;
+        Gizmos.DrawLine(transform.position, transform.position + GetWaterCurrentForce());
     }
 
     public float GetSurfaceLevel()
@@ -95,7 +96,6 @@ public class WaterVolume : MonoBehaviour
         t = Mathf.Clamp(t, 0, 1);
 
         return t;
-
     }
 
     public bool CheckWithinBounds2D(Vector3 v)
