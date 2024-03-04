@@ -53,8 +53,13 @@ MonoBehaviour:
   MetersPerSecond: 30
   LiveUpdate: 0
   IsHeadNode: 0
-  PlayerInRail: 0
+  cooldownTime: 0.15
+  ContinueMomentum: 1
+  playerInRail: 0
+  continuingMomentum: 0
   interpolationPercent: 0
+  currentInputMomentum: 0
+  cooldownElapsed: 0
 --- !u!120 &4981632214606923329
 LineRenderer:
   serializedVersion: 2
@@ -98,8 +103,8 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 24.7, y: 11.29, z: 150}
-  - {x: -3.6, y: 11.29, z: 11.1}
+  - {x: 1.8, y: 13.64, z: 3.51}
+  - {x: -11.8, y: 11.29, z: 11.1}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1

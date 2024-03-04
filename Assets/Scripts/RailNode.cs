@@ -43,12 +43,12 @@ public class RailNode : MonoBehaviour
     [Tooltip("ONLY USE FOR CLOSED LOOPS. If true, all next nodes will copy the settings from this one.")]
     [Foldout("Advanced settings")] public bool IsHeadNode = false;
     [Tooltip("How long until player can reenter the rail")]
-    [Foldout("Advanced settings")] private float cooldownTime = 0.15f;
+    [Foldout("Advanced settings")] public float cooldownTime = 0.15f;
     [Tooltip("this shit dont work well yet. dont set it true")]
-    [Foldout("Advanced settings")] private bool ContinueMomentum = false;
+    [Foldout("Advanced settings")] public bool ContinueMomentum;
 
     [Foldout("Debug")][SerializeField][ReadOnly] private bool playerInRail;
-    [Foldout("Debug")][SerializeField][ReadOnly] private bool continueMomentum;
+    [Foldout("Debug")][SerializeField][ReadOnly] private bool continuingMomentum;
     [Foldout("Debug")][SerializeField][ReadOnly] private float interpolationPercent = 0; //t
     [Foldout("Debug")][SerializeField][ReadOnly] private float currentInputMomentum = 0; // -1<x<1
     [Foldout("Debug")][SerializeField][ReadOnly] private float cooldownElapsed;
@@ -72,7 +72,7 @@ public class RailNode : MonoBehaviour
         InputManager.Instance.rigidbody.isKinematic = true;
         InputManager.Instance.currentRailNode = this;
         playerInRail = true;
-        continueMomentum = false;
+        continuingMomentum = false;
         interpolationPercent = t;
     }
 
@@ -83,7 +83,7 @@ public class RailNode : MonoBehaviour
     {
         EnterRail(t);
         currentInputMomentum = carriedMomentum;
-        continueMomentum = true;
+        continuingMomentum = true;
     }
 
     public void TransitionRailExit()
@@ -92,7 +92,7 @@ public class RailNode : MonoBehaviour
         //interpolationPercent = -1;
         currentInputMomentum = -1;
         playerInRail = false;
-        continueMomentum = false;
+        continuingMomentum = false;
     }
 
     public void ExitRail()
@@ -103,7 +103,7 @@ public class RailNode : MonoBehaviour
         //interpolationPercent = -1;
         currentInputMomentum = -1;
         playerInRail = false;
-        continueMomentum = false;
+        continuingMomentum = false;
     }
 
     public void DetatchPlayer()
@@ -145,10 +145,10 @@ public class RailNode : MonoBehaviour
 
     private void InterpolatePlayerPosition()
     {
-        if (!continueMomentum)
+        if (!continuingMomentum)
             currentInputMomentum = CalculateInputMomentum();
 
-        if (continueMomentum)
+        if (continuingMomentum)
             currentInputMomentum = GetContinuedInputMomentum();
 
         //Vector3 playerInputDirection = InputManager.Instance.movement;
@@ -159,7 +159,7 @@ public class RailNode : MonoBehaviour
         //enter next rail
         if (interpolationPercent > 1 && NextRail != null && NextRail.NextRail != null)
         {
-            NextRail.EnterRail(0, currentInputMomentum);
+            NextRail.EnterRail(0.01f, currentInputMomentum);
             TransitionRailExit();
             return;
         }
@@ -167,7 +167,7 @@ public class RailNode : MonoBehaviour
         //enter last rail
         if (interpolationPercent < 0 && LastRail != null)
         {
-            LastRail.EnterRail(1, currentInputMomentum);
+            LastRail.EnterRail(0.99f, currentInputMomentum);
             TransitionRailExit();
             return;
         }
@@ -188,9 +188,7 @@ public class RailNode : MonoBehaviour
         //oh FUCK is this gonna work with controller
         //if (!playerInRail) return;
 
-        //if(continueMomentum) return;
-
-        Debug.Log("calc input in " + gameObject.name);
+        //if(continuingMomentum) return;
 
         Vector3 playerInputDirection = InputManager.Instance.movement;
         float m = Vector3.Dot(direction, playerInputDirection);
@@ -204,8 +202,10 @@ public class RailNode : MonoBehaviour
     private float GetContinuedInputMomentum()
     {
         float altMomentum = CalculateInputMomentum();
+        float sign = Mathf.Sign(currentInputMomentum); 
 
-        return Mathf.Max(currentInputMomentum, altMomentum);
+        float result = Mathf.Max(Mathf.Abs(currentInputMomentum), Mathf.Abs(altMomentum));
+        return result * sign;
     }
 
     /// <summary>
@@ -288,7 +288,7 @@ public class RailNode : MonoBehaviour
 
     private void PlayerInputChange(InputAction.CallbackContext obj)
     {
-        continueMomentum = false;
+        continuingMomentum = false;
     }
 
     private void FixedUpdate()
@@ -328,6 +328,9 @@ public class RailNode : MonoBehaviour
         if (NextRail == null) return;
 
         MetersPerSecond = template.MetersPerSecond;
+        cooldownTime = template.cooldownTime;
+        continuingMomentum = template.ContinueMomentum;
+
         UpdateVisual();
 
         if (NextRail == template) return; //no infinite loops please!
