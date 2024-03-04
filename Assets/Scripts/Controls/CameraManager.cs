@@ -251,7 +251,6 @@ public class CameraManager : MonoBehaviour
 
     public void OnPlayerEquilibriumEnter()
     {
-        Debug.Log("equilibrium");
         //Mode = CameraMode.DefaultFollow;
         Mode = CameraMode.DefaultFollow;
     }
