@@ -84,7 +84,7 @@ public class CameraManager : MonoBehaviour
         FishEvents.Instance.EquilibriumExit    .AddListener(OnPlayerEquilibriumEnter);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         CheckPlayerBalance();
 
@@ -97,12 +97,6 @@ public class CameraManager : MonoBehaviour
         {
             Mode = CameraMode.FishSinking;
         }
-
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
         targetPosition = HorizontalCameraManager.Instance.GetTargetPosition();
         //targetPosition = player.transform.position + (CameraOffsetFromPlayer);
 
@@ -127,6 +121,7 @@ public class CameraManager : MonoBehaviour
 
         FollowPlayer();
     }
+    
 
     /// <summary>
     /// this is *THE* FUNCTION
