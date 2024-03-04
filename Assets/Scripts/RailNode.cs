@@ -9,7 +9,11 @@
  *
  * TODO:
  * - jumping
- * - test continued mommy with controller
+ * - test continued momentum with controller
+ * - acceleration!
+ * 
+ * things to consider if proformance gets bad:
+ * - inputs actions! on every rail! oh boy!
  *****************************************************************************/
 
 using System.Collections;
@@ -45,22 +49,13 @@ public class RailNode : MonoBehaviour
     [Foldout("Debug")][SerializeField][ReadOnly] private bool playerInRail;
     [Foldout("Debug")][SerializeField][ReadOnly] private bool continueMomentum;
     [Foldout("Debug")][SerializeField][ReadOnly] private float interpolationPercent = 0; //t
-    [Foldout("Debug")][SerializeField][ReadOnly] private float currentInputMomentum = 0;
+    [Foldout("Debug")][SerializeField][ReadOnly] private float currentInputMomentum = 0; // -1<x<1
     [Foldout("Debug")][SerializeField][ReadOnly] private float cooldownElapsed;
     
-    
-
     private LineRenderer lineRenderer;
     private float distance;
     private Vector3 direction; //points at next node
     private float metersPerSecondOffset; //makes player lerp meters/seconf
-
-
-    [Header("Sounds")]
-    private float railVolume = 1.0f;
-    private AudioClip railSound;
-    
-
 
     private Transform playerTransform;
 
@@ -71,12 +66,6 @@ public class RailNode : MonoBehaviour
     {
         if (LastRail != null)
             LastRail.TransitionRailExit();
-
-        if(railSound != null)
-        {
-            AudioSource.PlayClipAtPoint(railSound, transform.position, railVolume);
-        }
-       
 
         InputManager.Instance.rigidbody.isKinematic = true;
         InputManager.Instance.currentRailNode = this;
@@ -154,8 +143,11 @@ public class RailNode : MonoBehaviour
 
     private void InterpolatePlayerPosition()
     {
-        if (!continueMomentum || !ContinueMomentum)
-            CalculateInputMomentum();
+        if (!continueMomentum)
+            currentInputMomentum = CalculateInputMomentum();
+
+        if (continueMomentum)
+            currentInputMomentum = GetContinuedInputMomentum();
 
         //Vector3 playerInputDirection = InputManager.Instance.movement;
         //currentInputMomentum = Vector3.Dot(direction, playerInputDirection);
@@ -189,7 +181,7 @@ public class RailNode : MonoBehaviour
     /// <summary>
     /// sorry this gets called on EVERY RAIL whoops. called when a player touches/ untouches a WASD
     /// </summary>
-    private void CalculateInputMomentum()
+    private float CalculateInputMomentum()
     {
         //oh FUCK is this gonna work with controller
         //if (!playerInRail) return;
@@ -199,10 +191,15 @@ public class RailNode : MonoBehaviour
         Debug.Log("calc input in " + gameObject.name);
 
         Vector3 playerInputDirection = InputManager.Instance.movement;
-        currentInputMomentum = Vector3.Dot(direction, playerInputDirection);
+        return Vector3.Dot(direction, playerInputDirection);
     }
 
+    private float GetContinuedInputMomentum()
+    {
+        float altMomentum = CalculateInputMomentum();
 
+        return Mathf.Max(currentInputMomentum, altMomentum);
+    }
 
     /// <summary>
     /// smoothens player position
@@ -262,6 +259,9 @@ public class RailNode : MonoBehaviour
 
     private void Start()
     {
+        if (NextRail == this)
+            NextRail = null;
+
         lineRenderer = GetComponent<LineRenderer>();
         playerTransform = InputManager.Instance.transform;
 
