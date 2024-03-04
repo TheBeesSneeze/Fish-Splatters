@@ -103,7 +103,7 @@ MonoBehaviour:
   <WaterData>k__BackingField:
     BuoyancyDamper: 2.82
     BuoyancyForce: 60
-    JumpBoostMultiplier: 1
+    JumpBoostMultiplier: 5
     CirculationDirection: {x: 0, y: 0, z: 0}
     CirculationSpeed: 0
     BuoyancyDirection: {x: 0, y: 1, z: 0}

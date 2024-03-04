@@ -25,6 +25,7 @@ public class FishEvents : MonoBehaviour
     public UnityEvent EquilibriumExit;
     public UnityEvent RailEnter;
     public UnityEvent RailExit;
+    
 
     private void Awake()
     {

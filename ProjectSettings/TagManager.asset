@@ -6,8 +6,6 @@ TagManager:
   tags:
   - BubbleDeathPlane
   - Coin
-  - Whirlpool
-  - WhirlpoolPoint
   layers:
   - Default
   - TransparentFX
