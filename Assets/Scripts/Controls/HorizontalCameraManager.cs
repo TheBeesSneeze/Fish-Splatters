@@ -38,7 +38,7 @@ public class HorizontalCameraManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Vector3 pivotRotation = Pivot.eulerAngles;
         float sensitivityTarget = Gamepad.current != null ? ControllerSensitivity : Sensitivity;

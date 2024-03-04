@@ -84,7 +84,7 @@ public class CameraManager : MonoBehaviour
         FishEvents.Instance.EquilibriumExit    .AddListener(OnPlayerEquilibriumEnter);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         CheckPlayerBalance();
 
@@ -121,12 +121,7 @@ public class CameraManager : MonoBehaviour
 
         FollowPlayer();
     }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        
-    }
+    
 
     /// <summary>
     /// this is *THE* FUNCTION

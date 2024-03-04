@@ -15,6 +15,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -23,11 +24,8 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
 
-    
 
-    [Header("Speed")]
-
-    [Header("Moving")] [Tooltip("The fastest the player will go (without an external force)")]
+    [Header("Speed")] [Header("Moving")] [Tooltip("The fastest the player will go (without an external force)")]
     public float Speed;
 
     [Tooltip("Speed the fish SPRINTS at.")]
@@ -42,9 +40,7 @@ public class InputManager : MonoBehaviour
     [Tooltip("The fastest the player will SPRINT (midair)")]
     public float SprintSpeedMidair;
 
-    [Header("General")]
-
-    [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
+    [Header("General")] [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
     public float CounterForceMultiplier = 0.5f;
 
     [Tooltip("How long it will take the player to reach their max speed")]
@@ -61,7 +57,7 @@ public class InputManager : MonoBehaviour
     //Clare's variables (clariables)
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
-    
+
 
     public float bottomSurfaceMotorLeftSpeed = 0.1f;
     public float bottomSurfaceMotorRightSpeed = 0.1f;
@@ -93,7 +89,7 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement, Sprint, Dash;
     [HideInInspector] public bool isHoldingJump;
     [HideInInspector] private bool isHoldingSprint;
-     public bool isInEquilibrium;
+    public bool isInEquilibrium;
     [HideInInspector] public bool CurrentlyMoving;
     [HideInInspector] public Vector3 movement;
 
@@ -106,9 +102,10 @@ public class InputManager : MonoBehaviour
     private float depth;
     private bool jumpWasHeld;
     Vector3 lastRotation;
-    
+
     public Projector projector;
     public GameObject WaterPrefab;
+    public bool ControllerUsed { get; private set; }
 
 
     private void Awake()
@@ -136,6 +133,7 @@ public class InputManager : MonoBehaviour
         Jump = playerInput.currentActionMap.FindAction("Jump");
         Sprint = playerInput.currentActionMap.FindAction("Sprint");
         Dash = playerInput.currentActionMap.FindAction("Dash");
+        
 
         Pause = playerInput.currentActionMap.FindAction("Pause");
         cameraMovement = playerInput.currentActionMap.FindAction("Camera");
@@ -289,7 +287,6 @@ public class InputManager : MonoBehaviour
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
@@ -417,7 +414,7 @@ public class InputManager : MonoBehaviour
     {
         isHoldingJump = true;
 
-        if(currentRailNode != null)
+        if (currentRailNode != null)
         {
             Debug.Log("exit node!");
             currentRailNode.ExitRail();
@@ -474,7 +471,7 @@ public class InputManager : MonoBehaviour
         movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
         movement.y = 0f;
 
-        if (currentRailNode != null) 
+        if (currentRailNode != null)
         {
             return;
         }
@@ -515,7 +512,7 @@ public class InputManager : MonoBehaviour
     private Quaternion RotateFishVertical(Quaternion currentHorizontalRotation)
     {
         //vertical rotation stuff
-        float maxVel = 10;//move later
+        float maxVel = 10; //move later
 
         float tiltPercent = (rigidbody.velocity.y + maxVel) / (maxVel * 2);
         tiltPercent = Mathf.Clamp(tiltPercent, 0, 1);
