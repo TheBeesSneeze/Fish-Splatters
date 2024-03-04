@@ -42,7 +42,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4564085412338111071}
   - component: {fileID: 2019336131820175975}
-  - component: {fileID: 6279860050278456382}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -62,7 +61,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3003194936205004564}
   - {fileID: 7267682323697709755}
   - {fileID: 8870196940948889158}
   m_Father: {fileID: 0}
@@ -98,21 +96,12 @@ MonoBehaviour:
   EquilibriumExit:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6279860050278456382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1535882345916170445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c00be04516b6bcd4fa63038a76a94dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inventory: []
-  coins: 0
-  coinText: {fileID: 0}
+  RailEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  RailExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3285737786523861134
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,6 +199,7 @@ GameObject:
   - component: {fileID: 6009066561247158246}
   - component: {fileID: 7410861196912482163}
   - component: {fileID: 4471859464509073702}
+  - component: {fileID: 7007389504564264778}
   m_Layer: 0
   m_Name: PlayerBody
   m_TagString: Untagged
@@ -249,11 +239,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 20
   SprintSpeed: 0
-  DashForce: 0
   SpeedMidair: 10
+  SprintSpeedMidair: 0
   CounterForceMultiplier: 0.75
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
+  VerticalTiltMax: 60
   descentSpeed: 0.5
   bottomSurfaceMotorLeftSpeed: 0.1
   bottomSurfaceMotorRightSpeed: 0.1
@@ -262,7 +253,6 @@ MonoBehaviour:
   movementOrigin: {fileID: 7267682323697709755}
   ModelPivot: {fileID: 6593285041407148169}
   Model: {fileID: 7068824609126421047}
-  isHoldingJump: 0
   Move:
     m_Name: 
     m_Type: 0
@@ -317,9 +307,15 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+  isHoldingJump: 0
+  isInEquilibrium: 0
   CurrentlyMoving: 0
+  movement: {x: 0, y: 0, z: 0}
+  rigidbody: {fileID: 0}
   currentVolume: {fileID: 0}
   projector: {fileID: 3405948433870828846}
+  currentRailNode: {fileID: 0}
+  WaterPrefab: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c, type: 3}
 --- !u!54 &6755860316182521657
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -415,6 +411,25 @@ MonoBehaviour:
   inventory: []
   coins: 0
   coinText: {fileID: 0}
+--- !u!114 &7007389504564264778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5437888988921568922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 232104a04155ca04a88ecdeef7895958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  beingPulled: 0
+  beingLaunched: 0
+  pullDepth: 1
+  pullForce: 1
+  launchForce: 10
+  depth: 10
+  whirlpool: {fileID: 0}
 --- !u!1 &5604370985446490545
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,7 +612,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.01
   far clip plane: 5000
   field of view: 40
   orthographic: 0
@@ -625,7 +640,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7289626400421194731}
   m_Enabled: 1
---- !u!1 &8802854550158990363
+--- !u!1 &7668977343385320135
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -633,60 +648,96 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3003194936205004564}
-  - component: {fileID: 4340739452572770004}
-  m_Layer: 0
-  m_Name: Event
+  - component: {fileID: 2513649914300762143}
+  - component: {fileID: 782026921849598587}
+  - component: {fileID: 876699547995004483}
+  - component: {fileID: 914778613819436535}
+  m_Layer: 7
+  m_Name: Rail Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3003194936205004564
+--- !u!4 &2513649914300762143
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8802854550158990363}
+  m_GameObject: {fileID: 7668977343385320135}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.884999, z: -6.554804}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 22.666668, z: -63.333336}
+  m_LocalScale: {x: 25, y: 25, z: 25}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4564085412338111071}
+  m_Father: {fileID: 7068824609126421047}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4340739452572770004
+--- !u!33 &782026921849598587
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7668977343385320135}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &876699547995004483
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7668977343385320135}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 0dff1796950af104797057afa549cdd0, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &914778613819436535
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8802854550158990363}
+  m_GameObject: {fileID: 7668977343385320135}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdb93b80932fc3d4a9441a728c4bc8df, type: 3}
+  m_Script: {fileID: 11500000, guid: 6431fd316ea6a424e91d79a96b1352cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FishStartSinking:
-    m_PersistentCalls:
-      m_Calls: []
-  FishStartAscending:
-    m_PersistentCalls:
-      m_Calls: []
-  FishExitWater:
-    m_PersistentCalls:
-      m_Calls: []
-  FishEnterWater:
-    m_PersistentCalls:
-      m_Calls: []
-  EquilibriumEnter:
-    m_PersistentCalls:
-      m_Calls: []
-  EquilibriumExit:
-    m_PersistentCalls:
-      m_Calls: []
+  ExpandedScale: 25
+  ShrinkScale: 0.001
 --- !u!1 &9005592617502128726
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,7 +767,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -2.72, z: 7.38}
   m_LocalScale: {x: 0.12, y: 0.12, z: 0.12}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 2513649914300762143}
   m_Father: {fileID: 6593285041407148169}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
