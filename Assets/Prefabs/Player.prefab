@@ -238,10 +238,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 20
-  SprintSpeed: 0
-  SpeedMidair: 10
-  SprintSpeedMidair: 0
-  CounterForceMultiplier: 0.75
+  SprintSpeed: 40
+  SpeedMidair: 15
+  SprintSpeedMidair: 15
+  CounterForceMultiplier: 1
   AccelerationSeconds: 2
   bobbingDeadZone: 0.05
   VerticalTiltMax: 60
@@ -308,6 +308,7 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   isHoldingJump: 0
+  isHoldingSprint: 0
   isInEquilibrium: 0
   CurrentlyMoving: 0
   movement: {x: 0, y: 0, z: 0}
@@ -427,9 +428,9 @@ MonoBehaviour:
   beingLaunched: 0
   pullDepth: 1
   pullForce: 1
-  launchForce: 10
-  depth: 10
-  whirlpool: {fileID: 0}
+  launchForce: 4000
+  depth: 40
+  whirlpool: {fileID: 5929313339891284572, guid: 24b9de8c3515c06478f6aa36e10d34fd, type: 3}
 --- !u!1 &5604370985446490545
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,6 +578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sensitivity: 10
+  ControllerSensitivity: 15
   RotateAutomatically: 0
   FullControl: 0
   Pivot: {fileID: 4797165262001466483}
