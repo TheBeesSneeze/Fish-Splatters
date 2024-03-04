@@ -22,6 +22,10 @@ public class WaterVolumeData
     public float BuoyancyDamper = 10f;
     [Tooltip("How much buoyant force to apply.")]
     public float BuoyancyForce = 60f;
+
+    [Tooltip("Multiplier for jump boost upon exiting the water.")]
+    public float JumpBoostMultiplier = 1f;
+
     [Tooltip("Direction of the current relative to the rotation of this volume.")]
     public Vector3 CirculationDirection;
     [Tooltip("Direction of the current relative to the rotation of this volume.")]
@@ -64,7 +68,8 @@ public class WaterVolume : MonoBehaviour
         Gizmos.DrawWireCube(
             new Vector3(transform.position.x, transform.position.y + WaterData.SurfaceLevelOffset, transform.position.z),
             new Vector3(c.bounds.size.x, 0.05f, c.bounds.size.z));
-        Gizmos.DrawLine(transform.position, GetWaterCurrentForce());
+        if (GetWaterCurrentForce() == Vector3.zero || WaterData.CirculationSpeed == 0) return;
+        Gizmos.DrawLine(transform.position, transform.position + GetWaterCurrentForce());
     }
 
     public float GetSurfaceLevel()
@@ -78,9 +83,9 @@ public class WaterVolume : MonoBehaviour
     }
 
     /// <summary>
-    /// returns number 0-1 for the players position relaitive of the surface level (0) and bottom (1).
+    /// returns number 0-1 for the players position relative of the surface level (0) and bottom (1).
     /// </summary>
-    public float GetPlayerPecentFromBottom()
+    public float GetPlayerPercentFromBottom()
     {
         if (bottom == null)
             return -1;
@@ -91,7 +96,6 @@ public class WaterVolume : MonoBehaviour
         t = Mathf.Clamp(t, 0, 1);
 
         return t;
-
     }
 
     public bool CheckWithinBounds2D(Vector3 v)

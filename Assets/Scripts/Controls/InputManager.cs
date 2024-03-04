@@ -1,6 +1,6 @@
 /*******************************************************************************
  * File Name :         InputManager.cs
- * Author(s) :         Toby Schamberger, Clare Grady, Alec
+ * Author(s) :         Toby Schamberger, Clare Grady, Alec, Sky Beal
  * Creation Date :     2/19/2024
  *
  * Brief Description :
@@ -10,11 +10,12 @@
  *****************************************************************************/
 
 using NaughtyAttributes;
-using System;
+//using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -23,11 +24,24 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
 
-    [Tooltip("The fastest the player will go (without an external force)")]
+
+    [Header("Speed")] [Header("Moving")] [Tooltip("The fastest the player will go (without an external force)")]
     public float Speed;
+
+    [Tooltip("Speed the fish SPRINTS at.")]
+    public float SprintSpeed;
+
+    //[Tooltip("Speed the fish DASHES at.")]
+    //public float DashForce;
 
     [Tooltip("The fastest the player will go (midair)")]
     public float SpeedMidair;
+
+    [Tooltip("The fastest the player will SPRINT (midair)")]
+    public float SprintSpeedMidair;
+
+    [Header("General")] [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
+    public float CounterForceMultiplier = 0.5f;
 
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
@@ -35,11 +49,18 @@ public class InputManager : MonoBehaviour
     [Tooltip("Deadzone to stop bobbing, an offset from the position of the fish.")]
     public float bobbingDeadZone = 0.05f;
 
+    public float VerticalTiltMax = 75;
+
+
     [Header("Jumping")]
 
     //Clare's variables (clariables)
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
+
+
+    public float bottomSurfaceMotorLeftSpeed = 0.1f;
+    public float bottomSurfaceMotorRightSpeed = 0.1f;
 
     //[Tooltip("How fast the ascent and fall down is")]
     //public float ascentSpeed;
@@ -53,29 +74,38 @@ public class InputManager : MonoBehaviour
     //[Tooltip("The amount you multiplier for how high the jump is")]
     //public float heightMultiplier;
 
-    [Tooltip("How aggressively to move up the water. Default is 100")]
-    public float buoyantForceSpring = 100f;
-
-    [Tooltip("How aggressively to counter upward movement. Default is 10")]
-    public float buoyantForceDamper = 10f;
-
     [Tooltip("How much to slow the players descent. Default is 2")]
     public float buoyantDownwardForceDamper = 50;
 
-    [Tooltip("this is the camera")] public Transform movementOrigin;
+    [Tooltip("Color of fish at max depth.")]
+    public Color DepthColor;
 
-    [HideInInspector] public bool isHoldingJump;
+    //[Header("Unity")] [Tooltip("this is the camera")]
+    [Foldout("Debug")] public Transform movementOrigin;
+    [Foldout("Debug")] public Transform ModelPivot;
+    [Foldout("Debug")] public Transform Model;
 
     private PlayerInput playerInput;
-    [HideInInspector] public InputAction Move, Jump, Pause;
-
-    private Rigidbody rigidbody;
-
+    [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement, Sprint, Dash;
+    [HideInInspector] public bool isHoldingJump;
+    [HideInInspector] public bool isHoldingSprint;
+     public bool isInEquilibrium;
     [HideInInspector] public bool CurrentlyMoving;
-    [HideInInspector] public bool InWater => currentVolume != null;
+    [HideInInspector] public Vector3 movement;
+
+    [HideInInspector] public Rigidbody rigidbody;
+
+    public bool InWater => currentVolume != null;
     private float currentAccelerationTime;
-    private Vector3 movement;
     [HideInInspector] public WaterVolume currentVolume;
+    [HideInInspector] public RailNode currentRailNode;
+    private float depth;
+    private bool jumpWasHeld;
+    Vector3 lastRotation;
+
+    public Projector projector;
+    public GameObject WaterPrefab;
+    public bool ControllerUsed { get; private set; }
 
 
     private void Awake()
@@ -92,6 +122,8 @@ public class InputManager : MonoBehaviour
 
     private void Start()
     {
+        UnityEngine.Cursor.visible = false;
+
         playerInput = GetComponent<PlayerInput>();
         rigidbody = GetComponent<Rigidbody>();
 
@@ -99,7 +131,12 @@ public class InputManager : MonoBehaviour
 
         Move = playerInput.currentActionMap.FindAction("Move");
         Jump = playerInput.currentActionMap.FindAction("Jump");
+        Sprint = playerInput.currentActionMap.FindAction("Sprint");
+        Dash = playerInput.currentActionMap.FindAction("Dash");
+        
+
         Pause = playerInput.currentActionMap.FindAction("Pause");
+        cameraMovement = playerInput.currentActionMap.FindAction("Camera");
         playerInput.currentActionMap.FindAction("Quit").started += context => { Application.Quit(); };
         playerInput.currentActionMap.FindAction("Restart").started += context =>
         {
@@ -112,6 +149,10 @@ public class InputManager : MonoBehaviour
         Jump.started += Jump_started;
         Jump.canceled += Jump_canceled;
 
+        Sprint.started += Sprint_started;
+        Sprint.canceled += Sprint_canceled;
+
+        //Dash.started += Dash_started;
         //Pause.started += Pause_started;
     }
 
@@ -119,13 +160,16 @@ public class InputManager : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out WaterVolume water))
         {
-            FishEvents.Instance.FishEnterWater.Invoke();
             currentVolume = water;
 
             if (isHoldingJump)
             {
                 FishEvents.Instance.FishStartSinking.Invoke();
             }
+
+            FishEvents.Instance.FishEnterWater.Invoke();
+            var obj = Instantiate(WaterPrefab, other.ClosestPoint(transform.position), Quaternion.identity);
+            Destroy(obj, 1.5f);
         }
     }
 
@@ -136,10 +180,25 @@ public class InputManager : MonoBehaviour
         if (volume == currentVolume)
         {
             FishEvents.Instance.FishExitWater.Invoke();
+            //prevVolume = currentVolume;
             currentVolume = null;
         }
     }
 
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
+
+        //do a haptic
+        Gamepad.current?.SetMotorSpeeds(bottomSurfaceMotorLeftSpeed, bottomSurfaceMotorRightSpeed);
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
+
+        Gamepad.current?.ResetHaptics();
+    }
 
     private void ManageMovement()
     {
@@ -152,17 +211,24 @@ public class InputManager : MonoBehaviour
         {
             if (currentAccelerationTime > 0)
                 currentAccelerationTime -= Time.fixedDeltaTime;
+
+            currentAccelerationTime = Mathf.Max(currentAccelerationTime, 0.1f);
         }
 
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
         accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
 
-        float currentSpeed = Speed * accelerationPercent;
+        float currentSpeed = 0;
 
-        //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
+        if (isHoldingSprint)
+        {
+            currentSpeed = SprintSpeed * accelerationPercent;
+        }
+        else
+        {
+            currentSpeed = Speed * accelerationPercent;
+        }
 
-        Vector2 move = Move.ReadValue<Vector2>();
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
@@ -172,7 +238,12 @@ public class InputManager : MonoBehaviour
             force = Vector3.zero;
         }
 
-        rigidbody.AddForce(force, ForceMode.VelocityChange);
+        rigidbody.AddForce(force);
+        var counterForce = rigidbody.velocity;
+        counterForce *= -1f;
+        counterForce *= CounterForceMultiplier;
+        counterForce.y = 0f;
+        rigidbody.AddForce(counterForce, ForceMode.Acceleration);
     }
 
     private void HandleBuoyancy()
@@ -199,19 +270,28 @@ public class InputManager : MonoBehaviour
     {
         //acceleration doesnt change midair!!!
 
-        float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
-        accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
+       // float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
+        // accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
 
-        float currentSpeed = SpeedMidair * accelerationPercent;
+        float currentSpeed = 0;
+
+        if (isHoldingSprint)
+        {
+            currentSpeed = SprintSpeedMidair;
+        }
+
+        else
+        {
+            currentSpeed = SpeedMidair;
+        }
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        Vector2 move = Move.ReadValue<Vector2>();
-        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
         targetV -= rigidbody.velocity;
+
         if (float.IsNaN(targetV.x) || float.IsNaN(targetV.y) || float.IsNaN(targetV.z))
         {
             targetV = Vector3.zero;
@@ -239,17 +319,26 @@ public class InputManager : MonoBehaviour
         {
             //if (position.y > diveHeightLimit)
             //{
-            float waterForce = DeepWaterForce();
 
             rigidbody.AddForce(Vector3.down * descentSpeed, ForceMode.Force);
-            rigidbody.AddForce(Vector3.up * descentSpeed * waterForce, ForceMode.Force);
-
-            if (rigidbody.velocity.y >= 0)
+            if (currentVolume != null)
             {
-                Vector3 vel = rigidbody.velocity;
-                vel.y = 0;
-                rigidbody.velocity = vel;
+                depth = Mathf.Abs(yPosition - currentVolume.GetSurfaceLevel());
             }
+            else
+            {
+                depth = 0f;
+            }
+
+            // rigidbody.AddForce(Vector3.up * descentSpeed * waterForce, ForceMode.Force);
+            //
+            // if (rigidbody.velocity.y >= 0)
+            // {
+            //     Vector3 vel = rigidbody.velocity;
+            //     vel.y = 0;
+            //     rigidbody.velocity = vel;
+            // }
+            jumpWasHeld = true;
         }
         else
         {
@@ -257,7 +346,19 @@ public class InputManager : MonoBehaviour
             {
                 if (yPosition >= currentVolume.GetSurfaceLevel())
                 {
-                    //at the top, stop!
+                    // //at the top, stop!
+                    if (jumpWasHeld)
+                    {
+                        rigidbody.AddForce(Vector3.up * -rigidbody.velocity.y,
+                            ForceMode.VelocityChange); //cancel out y veloicty
+                        //add impulse force to reach -depth height
+                        rigidbody.AddForce(
+                            Vector3.up * (Mathf.Sqrt(2 * depth * Physics.gravity.magnitude) *
+                                          currentVolume.WaterData.JumpBoostMultiplier), ForceMode.Impulse);
+
+                        depth = 0f;
+                        jumpWasHeld = false;
+                    }
                 }
                 else
                 {
@@ -274,6 +375,8 @@ public class InputManager : MonoBehaviour
                 //apply some up force
             }
         }
+
+        //jumpWasHeld = isHoldingJump;
         // else
         // {
         //     if (!hasPastSwimLine)
@@ -299,7 +402,7 @@ public class InputManager : MonoBehaviour
         float m = 0;
         if (currentVolume != null)
         {
-            m = currentVolume.GetPlayerPecentFromBottom();
+            m = currentVolume.GetPlayerPercentFromBottom();
             m = m * buoyantDownwardForceDamper;
         }
 
@@ -310,6 +413,17 @@ public class InputManager : MonoBehaviour
     private void Jump_started(InputAction.CallbackContext obj)
     {
         isHoldingJump = true;
+
+        if (currentRailNode != null)
+        {
+            Debug.Log("exit node!");
+            currentRailNode.ExitRail();
+
+            //Vector3 railDirection = currentRailNode.
+
+            rigidbody.AddForce(Vector3.up * 10, ForceMode.Impulse);
+            FishEvents.Instance.RailExit.Invoke();
+        }
 
         if (currentVolume != null)
         {
@@ -327,14 +441,41 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    private void Sprint_started(InputAction.CallbackContext obj)
+    {
+        isHoldingSprint = true;
+    }
+
+    private void Sprint_canceled(InputAction.CallbackContext obj)
+    {
+        isHoldingSprint = false;
+    }
+
+    /*private void Dash_started(InputAction.CallbackContext obj)
+    {
+        rigidbody.AddForce(ModelPivot.forward * DashForce, ForceMode.Impulse);
+        //cooldown
+        //drag near end (decrease acceleration)
+    }*/
+
 
     private void Pause_started(InputAction.CallbackContext obj)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     private void FixedUpdate()
     {
+        projector.enabled = !InWater;
+        Vector2 move = Move.ReadValue<Vector2>().normalized;
+        movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
+        movement.y = 0f;
+
+        if (currentRailNode != null)
+        {
+            return;
+        }
+
         if (!InWater)
         {
             ManageMidairMovement();
@@ -346,30 +487,58 @@ public class InputManager : MonoBehaviour
         }
 
         JumpManagment();
-        RotateFish();
     }
 
     private void Update()
     {
         //moved camera stuff to CameraManager - toby
+        MakeFishBluer();
+        RotateFish();
     }
 
     private void RotateFish()
     {
+        if (currentRailNode != null) return;
+
         Vector3 rotation = new Vector3(rigidbody.velocity.x, 0, rigidbody.velocity.z);
-
         Quaternion targetRotation = Quaternion.LookRotation(rotation.normalized);
+        Quaternion realRotation = Quaternion.Slerp(ModelPivot.rotation, targetRotation, Time.deltaTime * 10f);
 
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-        //transform.forward = Vector3.Lerp(transform.forward, rigidbody.velocity, Time.deltaTime * 10);
+        realRotation = RotateFishVertical(realRotation);
 
-        //transform.rotation = Quaternion.LookRotation(rigidbody.velocity.normalized);
+        ModelPivot.rotation = realRotation;
+    }
 
-        /*
-        float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+    private Quaternion RotateFishVertical(Quaternion currentHorizontalRotation)
+    {
+        //vertical rotation stuff
+        float maxVel = 10; //move later
 
-        Vector3 rotate = new Vector3(0, angle, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(movement), Time.deltaTime * 10);
-        */
+        float tiltPercent = (rigidbody.velocity.y + maxVel) / (maxVel * 2);
+        tiltPercent = Mathf.Clamp(tiltPercent, 0, 1);
+        float tilt = Mathf.Lerp(-VerticalTiltMax, VerticalTiltMax, tiltPercent);
+
+        Vector3 easy = currentHorizontalRotation.eulerAngles;
+        easy.x = tilt * -1;
+
+        tilt = Mathf.LerpAngle(Model.eulerAngles.x, tilt, Time.deltaTime);
+
+        return Quaternion.Euler(easy);
+    }
+
+
+    private void MakeFishBluer()
+    {
+        if (currentVolume == null)
+        {
+            Model.GetComponent<Renderer>().material.color = Color.white;
+            return;
+        }
+
+        float t = currentVolume.GetPlayerPercentFromBottom();
+
+        Color AppliedColor = Color.Lerp(Color.white, DepthColor, t);
+
+        Model.GetComponent<Renderer>().material.color = AppliedColor;
     }
 }
