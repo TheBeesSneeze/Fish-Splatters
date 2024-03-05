@@ -108,7 +108,8 @@ public class InputManager : MonoBehaviour
     public bool ControllerUsed { get; private set; }
 
     public bool hasEnteredAir;
-    public bool splash; 
+    public bool splash;
+    public bool justletgo; 
     
 
     private void Awake()
@@ -443,6 +444,7 @@ public class InputManager : MonoBehaviour
     private void Jump_canceled(InputAction.CallbackContext obj)
     {
         isHoldingJump = false;
+        justletgo = true;
 
         if (currentVolume != null)
         {
@@ -496,6 +498,7 @@ public class InputManager : MonoBehaviour
         }
 
         JumpManagment();
+        justletgo = false;
     }
 
     private void Update()

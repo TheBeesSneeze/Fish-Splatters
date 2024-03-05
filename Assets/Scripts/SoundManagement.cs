@@ -93,8 +93,11 @@ public class SoundManagement : MonoBehaviour
 
     private void IsMoving()
     {
+       
+
         if(InputManager.Instance.CurrentlyMoving && !InputManager.Instance.hasEnteredAir)
         {
+            
             if(!InputManager.Instance.isHoldingSprint && swimSound != null && !Audio.isPlaying)
             {
                 Audio.PlayOneShot(swimSound, swimVolume);
@@ -104,20 +107,33 @@ public class SoundManagement : MonoBehaviour
                 Audio.PlayOneShot(sprintSound, sprintVolume);
             }
         }
-        else if (InputManager.Instance.isHoldingJump)
+
+    }
+
+    private void JumpNoise()
+    {
+        if (InputManager.Instance.isHoldingJump && !Audio.isPlaying)
         {
-            if (jumpSound != null && !Audio.isPlaying)
+            if (jumpSound != null)
             {
                 Audio.PlayOneShot(jumpSound, jumpVolume);
             }
         }
+        if (InputManager.Instance.justletgo)
+        {
+            Audio.Stop();
+        }
+
+        
         
     }
 
     public void Update()
     {
         Splash();
+        JumpNoise();
         IsMoving();
+        
         if(!BackgroundAudio.isPlaying && backgroundSound != null)
         {
             BackgroundAudio.PlayOneShot(backgroundSound, backgroundVolume);
