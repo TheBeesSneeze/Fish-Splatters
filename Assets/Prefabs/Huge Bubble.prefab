@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1207983282778264013}
   m_Layer: 7
   m_Name: Huge Bubble
-  m_TagString: Untagged
+  m_TagString: Bubble
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36,7 +36,7 @@ Transform:
   m_Children:
   - {fileID: 3068676941689583263}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1609714898151922668
 MeshFilter:
