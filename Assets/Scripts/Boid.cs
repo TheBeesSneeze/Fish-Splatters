@@ -1,57 +1,60 @@
+/*******************************************************************************
+ * File Name :         Boid.cs
+ * Author(s) :         Toby
+ * Creation Date :     idk
+ *
+ * Brief Description : boid
+ *****************************************************************************/
+
+
 using Cinemachine.Utility;
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Boid : MonoBehaviour
 {
-    [Tooltip("if not null, boids will tend to follow target")]
-    public GameObject Target;
+    [HideInInspector] public Transform Target;
 
-    [Tooltip("Boids will be within a certain distance of center of boids")]
-    public Transform CenterOfBoids;
-    [Tooltip("How far you can get from center")]
-    public float MaxDistanceFromCenter;
+    //[Header("Weights")]
+    [Foldout("Debug")][ReadOnly] public Boid[] boids;
+    [Foldout("Debug")][ReadOnly] public float Speed;
+    [Foldout("Debug")][ReadOnly] public float MaxVelocity = 3;
+    [Foldout("Debug")][ReadOnly] public float NoCollisionDistance = 1;
+    [Foldout("Debug")][ReadOnly] public float FlockWeight        ;
+    [Foldout("Debug")][ReadOnly] public float SeperationWeight   ;
+    [Foldout("Debug")][ReadOnly] public float AvgVelocityWeight  ;
+    [Foldout("Debug")][ReadOnly] public float FollowTargetWeight ;
+    [Foldout("Debug")][ReadOnly] public Vector3 Velocity;
+    [Foldout("Debug")][ReadOnly] public int SkipXFrames;
+    [Foldout("Debug")][ReadOnly] public int SkipFrameOffset;
 
-    public float MaxVelocity=3;
+    [HideInInspector] public BoidTargetRotation Center;
 
-    public float NoCollisionDistance = 1;
-    [Tooltip("Starting speed is random")]
-    public float MaxStartingSpeed = 5;
-
-    [Header("weight")]
-    public float FlockWeight = 1;
-    public float SeperationWeight = 1;
-    public float AvgVelocityWeight = 1;
-    public float Rule4Weight = 1;
-
-    public Vector3 Velocity;
-
-    //private Rigidbody rb;
-    private Boid[] boids;
-
-    private Vector3 center;
+    private Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
     {
         RandomizeInitialVelocity();
 
-        //rb = GetComponent<Rigidbody>();
-        boids = GameObject.FindObjectsOfType<Boid>();
+        rb = GetComponent<Rigidbody>();
+
+        transform.SetParent(null);
     }
 
     // Update is called once per frame
     void Update()
     {
-        center = CalculateCenter();
+        //if ((Time.frameCount + SkipFrameOffset) % SkipXFrames != 0) return;
 
         Vector3 v1 = Flock() * FlockWeight;
         Vector3 v2 = Seperation() * SeperationWeight;
         Vector3 v3 = AvgVelocity() * AvgVelocityWeight;
-        Vector3 v4 = Rule4() * Rule4Weight;
+        Vector3 v4 = FollowTarget() * FollowTargetWeight;
 
-        if (gameObject.name == "Boid")
+        if (false && gameObject.name == "Boid")
         {
             Debug.Log("v1:" + v1);
             Debug.Log("v2:" + v2);
@@ -60,21 +63,27 @@ public class Boid : MonoBehaviour
         }
 
         Velocity = v1 + v2 + v3 + v4 + Velocity;
+        float multiplier =  Speed * (float)SkipXFrames;
 
         //rb.velocity = Velocity;
         if (!Velocity.IsNaN())
-            transform.position = (Velocity * Time.deltaTime) + transform.position;
+        {
+            //transform.position = (Velocity * multiplier) + transform.position;
+            rb.velocity = Velocity * multiplier;
+        }
 
         //BoundPosition();
         LimitVelocity();
         //rb.position = rb.position + rb.velocity;
+
+        Rotate();
     }
 
     private void RandomizeInitialVelocity()
     {
-        float r1 = (Random.value - MaxStartingSpeed) * (MaxStartingSpeed * 2);
-        float r2 = (Random.value - MaxStartingSpeed) * (MaxStartingSpeed * 2);
-        float r3 = (Random.value - MaxStartingSpeed) * (MaxStartingSpeed * 2);
+        float r1 = (Random.value * Speed * 2) - Speed;
+        float r2 = (Random.value * Speed * 2) - Speed;
+        float r3 = (Random.value * Speed * 2) - Speed;
 
         Velocity = new Vector3(r1, r2, r3);
     }
@@ -85,21 +94,8 @@ public class Boid : MonoBehaviour
     /// <returns></returns>
     private Vector3 Flock()
     {
-        Vector3 center = CalculateCenter();
 
-        /*
-        foreach (Boid boid in boids)
-        {
-            if (boid != this)
-            {
-                center = center + boid.transform.position;
-            }
-        }
-
-        center = center / (boids.Length);
-        */
-
-        return (center - transform.position).normalized;
+        return (Center.BoidCenter - transform.position).normalized;
     }
 
     /// <summary>
@@ -129,7 +125,7 @@ public class Boid : MonoBehaviour
     /// </summary>
     private Vector3 AvgVelocity()
     {
-        Vector3 result = CalculateAverageVelocity();
+        Vector3 result = Center.AverageVelocity;
 
         foreach (Boid boid in boids)
         {
@@ -145,16 +141,18 @@ public class Boid : MonoBehaviour
     }
 
     //follow a target
-    public Vector3 Rule4()
+    public Vector3 FollowTarget()
     {
         if(Target == null)
         {
+            Debug.LogWarning("no target");
             return Vector3.zero;
         }
 
-        return (Target.transform.position - transform.position) .normalized;
+        return (Target.position - transform.position).normalized;
     }
 
+    /*
     public void BoundPosition()
     {
         if (center == null)
@@ -169,6 +167,7 @@ public class Boid : MonoBehaviour
             transform.position = relativePositon.normalized * MaxDistanceFromCenter;
         }
     }
+    */
 
     public void LimitVelocity()
     {
@@ -180,32 +179,33 @@ public class Boid : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// SO INEFFICIENT THIS IS CALLED ON EVERY BOID
-    /// </summary>
-    public Vector3 CalculateCenter()
+    private void Rotate()
     {
-        Vector3 sum = Vector3.zero;
-
-        foreach (Boid boid in boids)
-        {
-            sum += boid.transform.position;
-        }
-
-        return sum / (boids.Length);
+        transform.rotation = Quaternion.LookRotation(transform.position + Velocity,Vector3.up);
     }
 
-    public Vector3 CalculateAverageVelocity()
+    //didnt cook with this one.
+    /*
+    [Button]
+    private void BalanceWeightsForAllBoids()
     {
-        Vector3 sum = Vector3.zero;
-
-        foreach (Boid boid in boids)
+        foreach(Boid boid in boids)
         {
-            sum += boid.Velocity;
+            boid.BalanceWeight();
         }
-
-        return sum / (boids.Length);
     }
 
+    public void BalanceWeight()
+    {
+        float[] weights = { FlockWeight, SeperationWeight, AvgVelocityWeight, FollowTargetWeight };
+        float max = Mathf.Max(weights);
 
+        FlockWeight /= max;
+        SeperationWeight /= max;
+        AvgVelocityWeight /= max;
+        FollowTargetWeight /= max;
+
+        Speed *= max;
+    }
+    */
 }
