@@ -289,6 +289,9 @@ public class RailNode : MonoBehaviour
     private void PlayerInputChange(InputAction.CallbackContext obj)
     {
         continuingMomentum = false;
+        if(playerInRail)
+            Debug.Log(InputManager.Instance.movement);
+        CalculateInputMomentum ();
     }
 
     private void FixedUpdate()
