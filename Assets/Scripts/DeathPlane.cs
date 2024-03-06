@@ -34,7 +34,7 @@ public class DeathPlane : MonoBehaviour
 
     private IEnumerator smoothHeight()
     {
-        while(transform.position.y != y)
+        while(transform.position.y != targetPosition.y)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime);
 
