@@ -8,6 +8,8 @@ TagManager:
   - Coin
   - Whirlpool
   - WhirlpoolPoint
+  - Bubble
+  - Rail
   layers:
   - Default
   - TransparentFX

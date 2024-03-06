@@ -107,6 +107,10 @@ public class InputManager : MonoBehaviour
     public GameObject WaterPrefab;
     public bool ControllerUsed { get; private set; }
 
+    public bool hasEnteredAir;
+    public bool splash;
+    public bool justletgo; 
+    
 
     private void Awake()
     {
@@ -202,6 +206,7 @@ public class InputManager : MonoBehaviour
 
     private void ManageMovement()
     {
+
         if (CurrentlyMoving)
         {
             if (currentAccelerationTime < AccelerationSeconds)
@@ -229,7 +234,11 @@ public class InputManager : MonoBehaviour
             currentSpeed = Speed * accelerationPercent;
         }
 
-
+        if(hasEnteredAir && InWater)
+        {
+            splash = true;
+            hasEnteredAir = false;
+        }
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
         Vector3 force = targetV - rigidbody.velocity;
@@ -268,6 +277,7 @@ public class InputManager : MonoBehaviour
 
     private void ManageMidairMovement()
     {
+        hasEnteredAir = true;
         //acceleration doesnt change midair!!!
 
        // float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
@@ -434,6 +444,7 @@ public class InputManager : MonoBehaviour
     private void Jump_canceled(InputAction.CallbackContext obj)
     {
         isHoldingJump = false;
+        justletgo = true;
 
         if (currentVolume != null)
         {
@@ -487,6 +498,7 @@ public class InputManager : MonoBehaviour
         }
 
         JumpManagment();
+        justletgo = false;
     }
 
     private void Update()

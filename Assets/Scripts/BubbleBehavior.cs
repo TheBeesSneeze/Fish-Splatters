@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * File Name :         BubbleBehavior.cs
+ * Author(s) :         Sky Beal, Toby Schamberger
+ * Creation Date :     
+ *
+ * Brief Description : 
+ *****************************************************************************/
+
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,23 +16,84 @@ using UnityEngine;
 
 public class BubbleBehavior : MonoBehaviour
 {
-    //[Header("Changable Variables")]
-    //[Tooltip("Time until bubble despawns after hitting death plane")]
-    //public float BubbleDespawnSeconds;
+    [Tooltip("time until bubble gets destroyed. -1 for no timer")]
+    public float DeathTimer = -1;
+    [Tooltip("Bubble starts flashing after x seconds")]
+    public float FlashSeconds = 5;
+    [ReadOnly] public float SecondsUntilDestroyed = -1;
+
+    //magic number
+    private float transparentColor = 0.25f;
+
+    private GameObject DeathPlane;
+    private Material material;
+    private Color baseColor;
+
+    /// <summary>
+    /// called in bubble chese
+    /// </summary>
+    public void Initialize( GameObject deathPlane, Vector3 speed)
+    {
+        GetComponent<Rigidbody>().velocity = speed;
+
+        if(DeathTimer != -1)
+        {
+            SecondsUntilDestroyed = DeathTimer;
+            return;
+        }
+
+        if (deathPlane == null) return;
+
+        DeathPlane = deathPlane;
+
+        float distance = Vector3.Distance(transform.position, deathPlane.transform.position);
+
+        SecondsUntilDestroyed = distance / speed.x;
+    }
+
+    private void Start()
+    {
+        material = GetComponent<Renderer>().material;
+        baseColor = material.color;
+    }
+
+    private void Update()
+    {
+       
+        if(SecondsUntilDestroyed <= 0)
+        {
+            Pop();
+            return;
+        }
+
+        SecondsUntilDestroyed -= Time.deltaTime;
+
+        if (SecondsUntilDestroyed > FlashSeconds) return;
+
+        //flash transparency
+
+        float a = Mathf.Sin(SecondsUntilDestroyed * Mathf.PI * 2) + 1; // 0<a<2;
+        a = a / 2;
+        a = Mathf.Lerp(transparentColor, 0.9f, a);
+        baseColor.a = a;
+
+        material.color = baseColor;
+    }
+
+    /// <summary>
+    /// pop!
+    /// </summary>
+    public void Pop()
+    {
+        Destroy(this.gameObject);
+    }
 
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "BubbleDeathPlane")
         {
-            DestroyBubble();
+            Pop();
         }
     }
 
-    public void DestroyBubble()
-    {
-        //yield return new WaitForSeconds(BubbleDespawnSeconds);
-        Destroy(gameObject);
-
-
-    }
 }
