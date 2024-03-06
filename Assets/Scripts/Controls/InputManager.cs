@@ -10,11 +10,12 @@
  *****************************************************************************/
 
 using NaughtyAttributes;
-using System;
+//using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -23,7 +24,8 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
 
-    [Header("Moving")] [Tooltip("The fastest the player will go (without an external force)")]
+
+    [Header("Speed")] [Header("Moving")] [Tooltip("The fastest the player will go (without an external force)")]
     public float Speed;
 
     [Tooltip("Speed the fish SPRINTS at.")]
@@ -35,11 +37,11 @@ public class InputManager : MonoBehaviour
     [Tooltip("The fastest the player will go (midair)")]
     public float SpeedMidair;
 
-    [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
-    public float CounterForceMultiplier = 0.5f;
-
     [Tooltip("The fastest the player will SPRINT (midair)")]
     public float SprintSpeedMidair;
+
+    [Header("General")] [Tooltip("What rate the fish slows down (higher it is the quicker it slows)")]
+    public float CounterForceMultiplier = 0.5f;
 
     [Tooltip("How long it will take the player to reach their max speed")]
     public float AccelerationSeconds;
@@ -47,13 +49,15 @@ public class InputManager : MonoBehaviour
     [Tooltip("Deadzone to stop bobbing, an offset from the position of the fish.")]
     public float bobbingDeadZone = 0.05f;
 
+    public float VerticalTiltMax = 75;
+
 
     [Header("Jumping")]
 
     //Clare's variables (clariables)
     [Tooltip("How fast the descent speed is")]
     public float descentSpeed;
-    
+
 
     public float bottomSurfaceMotorLeftSpeed = 0.1f;
     public float bottomSurfaceMotorRightSpeed = 0.1f;
@@ -76,29 +80,37 @@ public class InputManager : MonoBehaviour
     [Tooltip("Color of fish at max depth.")]
     public Color DepthColor;
 
-    [Header("Unity")] [Tooltip("this is the camera")]
-    public Transform movementOrigin;
-
-    public Transform ModelPivot;
-    public Transform Model;
-
-    [HideInInspector] public bool isHoldingJump;
-    [HideInInspector] private bool isHoldingSprint;
+    //[Header("Unity")] [Tooltip("this is the camera")]
+    [Foldout("Debug")] public Transform movementOrigin;
+    [Foldout("Debug")] public Transform ModelPivot;
+    [Foldout("Debug")] public Transform Model;
 
     private PlayerInput playerInput;
     [HideInInspector] public InputAction Move, Jump, Pause, cameraMovement, Sprint, Dash;
+    [HideInInspector] public bool isHoldingJump;
+    [HideInInspector] public bool isHoldingSprint;
+     public bool isInEquilibrium;
+    [HideInInspector] public bool CurrentlyMoving;
+    [HideInInspector] public Vector3 movement;
 
     [HideInInspector] public Rigidbody rigidbody;
 
-    [HideInInspector] public bool CurrentlyMoving;
     public bool InWater => currentVolume != null;
     private float currentAccelerationTime;
-    [HideInInspector] public Vector3 movement;
     [HideInInspector] public WaterVolume currentVolume;
     [HideInInspector] public RailNode currentRailNode;
     private float depth;
     private bool jumpWasHeld;
+    Vector3 lastRotation;
 
+    public Projector projector;
+    public GameObject WaterPrefab;
+    public bool ControllerUsed { get; private set; }
+
+    public bool hasEnteredAir;
+    public bool splash;
+    public bool justletgo; 
+    
 
     private void Awake()
     {
@@ -114,6 +126,8 @@ public class InputManager : MonoBehaviour
 
     private void Start()
     {
+        UnityEngine.Cursor.visible = false;
+
         playerInput = GetComponent<PlayerInput>();
         rigidbody = GetComponent<Rigidbody>();
 
@@ -123,6 +137,7 @@ public class InputManager : MonoBehaviour
         Jump = playerInput.currentActionMap.FindAction("Jump");
         Sprint = playerInput.currentActionMap.FindAction("Sprint");
         Dash = playerInput.currentActionMap.FindAction("Dash");
+        
 
         Pause = playerInput.currentActionMap.FindAction("Pause");
         cameraMovement = playerInput.currentActionMap.FindAction("Camera");
@@ -157,6 +172,8 @@ public class InputManager : MonoBehaviour
             }
 
             FishEvents.Instance.FishEnterWater.Invoke();
+            var obj = Instantiate(WaterPrefab, other.ClosestPoint(transform.position), Quaternion.identity);
+            Destroy(obj, 1.5f);
         }
     }
 
@@ -175,6 +192,7 @@ public class InputManager : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
+
         //do a haptic
         Gamepad.current?.SetMotorSpeeds(bottomSurfaceMotorLeftSpeed, bottomSurfaceMotorRightSpeed);
     }
@@ -182,11 +200,13 @@ public class InputManager : MonoBehaviour
     private void OnCollisionExit(Collision other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom")) return;
+
         Gamepad.current?.ResetHaptics();
     }
 
     private void ManageMovement()
     {
+
         if (CurrentlyMoving)
         {
             if (currentAccelerationTime < AccelerationSeconds)
@@ -197,7 +217,7 @@ public class InputManager : MonoBehaviour
             if (currentAccelerationTime > 0)
                 currentAccelerationTime -= Time.fixedDeltaTime;
 
-            currentAccelerationTime = MathF.Max(currentAccelerationTime, 0.1f);
+            currentAccelerationTime = Mathf.Max(currentAccelerationTime, 0.1f);
         }
 
         float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0
@@ -214,7 +234,11 @@ public class InputManager : MonoBehaviour
             currentSpeed = Speed * accelerationPercent;
         }
 
-
+        if(hasEnteredAir && InWater)
+        {
+            splash = true;
+            hasEnteredAir = false;
+        }
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
         Vector3 force = targetV - rigidbody.velocity;
@@ -253,26 +277,26 @@ public class InputManager : MonoBehaviour
 
     private void ManageMidairMovement()
     {
+        hasEnteredAir = true;
         //acceleration doesnt change midair!!!
 
-        float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
+       // float accelerationPercent = currentAccelerationTime / AccelerationSeconds; // 0.0 - 1.0 this never gets updated
         // accelerationPercent = Mathf.Pow(accelerationPercent, 0.5f);
 
         float currentSpeed = 0;
 
         if (isHoldingSprint)
         {
-            currentSpeed = SprintSpeedMidair * accelerationPercent;
+            currentSpeed = SprintSpeedMidair;
         }
 
         else
         {
-            currentSpeed = SpeedMidair * accelerationPercent;
+            currentSpeed = SpeedMidair;
         }
 
         //rigidbody.velocity = Move.ReadValue<Vector2>() * currentSpeed;
 
-        
 
         var targetV = movement * currentSpeed;
         targetV.y = rigidbody.velocity.y;
@@ -400,10 +424,13 @@ public class InputManager : MonoBehaviour
     {
         isHoldingJump = true;
 
-        if(currentRailNode != null)
+        if (currentRailNode != null)
         {
             Debug.Log("exit node!");
             currentRailNode.ExitRail();
+
+            //Vector3 railDirection = currentRailNode.
+
             rigidbody.AddForce(Vector3.up * 10, ForceMode.Impulse);
             FishEvents.Instance.RailExit.Invoke();
         }
@@ -417,6 +444,7 @@ public class InputManager : MonoBehaviour
     private void Jump_canceled(InputAction.CallbackContext obj)
     {
         isHoldingJump = false;
+        justletgo = true;
 
         if (currentVolume != null)
         {
@@ -444,16 +472,17 @@ public class InputManager : MonoBehaviour
 
     private void Pause_started(InputAction.CallbackContext obj)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     private void FixedUpdate()
     {
+        projector.enabled = !InWater;
         Vector2 move = Move.ReadValue<Vector2>().normalized;
         movement = movementOrigin.TransformDirection(new Vector3(move.x, 0f, move.y));
         movement.y = 0f;
 
-        if (currentRailNode != null) 
+        if (currentRailNode != null)
         {
             return;
         }
@@ -469,6 +498,7 @@ public class InputManager : MonoBehaviour
         }
 
         JumpManagment();
+        justletgo = false;
     }
 
     private void Update()
@@ -482,14 +512,30 @@ public class InputManager : MonoBehaviour
     {
         if (currentRailNode != null) return;
 
-        //if (rigidbody.velocity.x == 0 && rigidbody.velocity.z==0)
-        //    return;
-
         Vector3 rotation = new Vector3(rigidbody.velocity.x, 0, rigidbody.velocity.z);
-
         Quaternion targetRotation = Quaternion.LookRotation(rotation.normalized);
+        Quaternion realRotation = Quaternion.Slerp(ModelPivot.rotation, targetRotation, Time.deltaTime * 10f);
 
-        ModelPivot.rotation = Quaternion.Slerp(ModelPivot.rotation, targetRotation, Time.deltaTime * 10f);
+        realRotation = RotateFishVertical(realRotation);
+
+        ModelPivot.rotation = realRotation;
+    }
+
+    private Quaternion RotateFishVertical(Quaternion currentHorizontalRotation)
+    {
+        //vertical rotation stuff
+        float maxVel = 10; //move later
+
+        float tiltPercent = (rigidbody.velocity.y + maxVel) / (maxVel * 2);
+        tiltPercent = Mathf.Clamp(tiltPercent, 0, 1);
+        float tilt = Mathf.Lerp(-VerticalTiltMax, VerticalTiltMax, tiltPercent);
+
+        Vector3 easy = currentHorizontalRotation.eulerAngles;
+        easy.x = tilt * -1;
+
+        tilt = Mathf.LerpAngle(Model.eulerAngles.x, tilt, Time.deltaTime);
+
+        return Quaternion.Euler(easy);
     }
 
 

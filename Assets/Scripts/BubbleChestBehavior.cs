@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * File Name :         BubbleChestBehavior.cs
+ * Author(s) :         Sky Beal, Toby Schamberger
+ * Creation Date :     
+ *
+ * Brief Description : 
+ *****************************************************************************/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +29,7 @@ public class BubbleChestBehavior : MonoBehaviour
     [Header("Unity")]
     [Tooltip("Bubble Prefab")]
     public GameObject Bubble;
+    public GameObject DeathPlane;
 
     private void Start()
     {
@@ -31,7 +40,7 @@ public class BubbleChestBehavior : MonoBehaviour
     {
         if (ChestOpen)
         {
-            StartCoroutine(SpawnBubble());
+            StartCoroutine(SpawnBubbles());
         }
 
         else
@@ -41,14 +50,11 @@ public class BubbleChestBehavior : MonoBehaviour
         
     }
 
-    public IEnumerator SpawnBubble()
+    public IEnumerator SpawnBubbles()
     {
         for (int i = 0; i < AmountOfBubbles; i++)
         {
-            GameObject bubble = Instantiate(Bubble, transform.position, Bubble.transform.rotation);
-            Rigidbody bubbleRB = bubble.GetComponent<Rigidbody>();
-            //bubbleRB.velocity = (Vector3.up * BubbleSpeed);
-            bubbleRB.velocity = (transform.up * BubbleSpeed);
+            SpawnOneBubble();
             yield return new WaitForSeconds(BubbleSpawnSeconds);
         }
         ChestOpen = false;
@@ -60,6 +66,20 @@ public class BubbleChestBehavior : MonoBehaviour
         yield return new WaitForSeconds(ChestClosedSeconds);
         ChestOpen = true;
         ChestControls();
+    }
+
+    private void SpawnOneBubble()
+    {
+        GameObject bubbleObj = Instantiate(Bubble, transform.position, Bubble.transform.rotation);
+        //Rigidbody bubbleRB = bubbleObj.GetComponent<Rigidbody>();
+        //bubbleRB.velocity = (Vector3.up * BubbleSpeed);
+
+        BubbleBehavior bubble = bubbleObj.GetComponent<BubbleBehavior>();
+        if (bubble == null) return;
+
+        Vector3 velocity = transform.up * BubbleSpeed;
+
+        bubble.Initialize(DeathPlane, velocity, BubbleSpeed);
     }
 }
 

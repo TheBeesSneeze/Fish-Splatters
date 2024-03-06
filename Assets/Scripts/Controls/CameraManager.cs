@@ -60,7 +60,7 @@ public class CameraManager : MonoBehaviour
     private float playerYPoint; 
     //private float cameraYPoint;
 
-    private float balanceOffset = 0.3f; //allow the player to be balanced if within this number
+    private float balanceOffset = 0.4f; //allow the player to be balanced if within this number
 
     // Start is called before the first frame update
     void Start()
@@ -84,7 +84,7 @@ public class CameraManager : MonoBehaviour
         FishEvents.Instance.EquilibriumExit    .AddListener(OnPlayerEquilibriumEnter);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         CheckPlayerBalance();
 
@@ -97,12 +97,6 @@ public class CameraManager : MonoBehaviour
         {
             Mode = CameraMode.FishSinking;
         }
-
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
         targetPosition = HorizontalCameraManager.Instance.GetTargetPosition();
         //targetPosition = player.transform.position + (CameraOffsetFromPlayer);
 
@@ -127,6 +121,7 @@ public class CameraManager : MonoBehaviour
 
         FollowPlayer();
     }
+    
 
     /// <summary>
     /// this is *THE* FUNCTION
@@ -196,6 +191,7 @@ public class CameraManager : MonoBehaviour
         if (player.currentVolume == null) return;
 
         float y = player.currentVolume.WaterData.SurfaceLevelOffset + player.currentVolume.transform.position.y;
+
         //check for player equiblirium
         if (!player.isHoldingJump && SomewhatEqual(player.transform.position.y, y, balanceOffset) && SomewhatEqual(playerRB.velocity.y, 0, balanceOffset))
         {
@@ -203,12 +199,14 @@ public class CameraManager : MonoBehaviour
                 FishEvents.Instance.EquilibriumEnter.Invoke();
 
             fishInEquilibrium = true;
+            player.isInEquilibrium = true;
             return;
         }
 
         if (fishInEquilibrium)
         {
             FishEvents.Instance.EquilibriumExit.Invoke();
+            player.isInEquilibrium = false;
         }
         fishInEquilibrium = false;
     }
@@ -251,6 +249,7 @@ public class CameraManager : MonoBehaviour
 
     public void OnPlayerEquilibriumEnter()
     {
+        //Debug.Log("equilibrium");
         //Mode = CameraMode.DefaultFollow;
         Mode = CameraMode.DefaultFollow;
     }
@@ -272,7 +271,4 @@ public class CameraManager : MonoBehaviour
             Destroy(this);
         }
     }
-
-
-
 }
