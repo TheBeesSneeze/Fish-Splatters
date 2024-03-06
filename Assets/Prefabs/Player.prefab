@@ -740,7 +740,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Audio: {fileID: 6113170992525321181}
   BackgroundAudio: {fileID: 452655592358724495}
-  backgroundSound: {fileID: 8300000, guid: 956ad2f73332544fd87365087825cc4f, type: 3}
+  backgroundSound: {fileID: 8300000, guid: d8f7a78a964aa489aafb3749d805cd4b, type: 3}
   backgroundVolume: 0.25
   hitBottomSound: {fileID: 8300000, guid: ced765120c3015040b794e0403277fdc, type: 3}
   hitBottomVolume: 1
@@ -750,15 +750,15 @@ MonoBehaviour:
   sprintVolume: 1
   jumpSound: {fileID: 8300000, guid: ecd3b03ba438d2a4d8c1065562c65963, type: 3}
   jumpVolume: 1
-  smallSplashSound: {fileID: 8300000, guid: 624dfb8501c581543bf2b979002f4674, type: 3}
+  smallSplashSound: {fileID: 8300000, guid: ed72afedd4a72c240a8e53f02e379ab9, type: 3}
   smallSplashVolume: 1
-  largeSplashSound: {fileID: 8300000, guid: 0b6515d72c91f83459a2218f24972f43, type: 3}
+  largeSplashSound: {fileID: 8300000, guid: 18fa4c0558ef1184cb39a028d7b5b37b, type: 3}
   largeSplashVolume: 1
   enterBubbleSound: {fileID: 8300000, guid: 448f82433d6c86a42aad5a63a34f17c8, type: 3}
   enterBubbleVolume: 1
-  pickUpCoinSound: {fileID: 8300000, guid: aa64fdda9557a4143978e71654a9565d, type: 3}
+  pickUpCoinSound: {fileID: 8300000, guid: 4aa97a901d6cb344aa386233fff1041e, type: 3}
   pickUpCoinVolume: 1
-  checkpointSound: {fileID: 0}
+  checkpointSound: {fileID: 8300000, guid: fb4dd24337d95d844a80fe451c26dcbb, type: 3}
   checkpointVolume: 1
   railSound: {fileID: 8300000, guid: 83402a94cbed7e84d8afea6b370018d5, type: 3}
   railVolume: 1
