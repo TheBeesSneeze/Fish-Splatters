@@ -6,8 +6,10 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
     public float DistanceFromCheckpoint = 50;
+    public bool hitCheckpoint = false; 
     private void OnTriggerEnter(Collider other)
     {
+        hitCheckpoint = true;
         Debug.Log("help");
         CheckpointManager checkpointManager = other.GetComponent<CheckpointManager>();
 
@@ -31,6 +33,4 @@ public class Checkpoint : MonoBehaviour
             deathPlane.transform.position = deathPlanePosition;
         }
     }
-
-
 }

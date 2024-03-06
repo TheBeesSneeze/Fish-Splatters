@@ -610,6 +610,7 @@ MonoBehaviour:
   WaterPrefab: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c, type: 3}
   hasEnteredAir: 0
   splash: 0
+  justletgo: 0
 --- !u!54 &6755860316182521657
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -745,7 +746,7 @@ MonoBehaviour:
   hitBottomVolume: 1
   swimSound: {fileID: 8300000, guid: a4b053335c9a3664dbf49bf28d4bf01c, type: 3}
   swimVolume: 1
-  sprintSound: {fileID: 0}
+  sprintSound: {fileID: 8300000, guid: ba3b553121da44645a0140af6eeb5286, type: 3}
   sprintVolume: 1
   jumpSound: {fileID: 8300000, guid: ecd3b03ba438d2a4d8c1065562c65963, type: 3}
   jumpVolume: 1
@@ -755,8 +756,12 @@ MonoBehaviour:
   largeSplashVolume: 1
   enterBubbleSound: {fileID: 8300000, guid: 448f82433d6c86a42aad5a63a34f17c8, type: 3}
   enterBubbleVolume: 1
-  pickUpCoinSound: {fileID: 0}
+  pickUpCoinSound: {fileID: 8300000, guid: aa64fdda9557a4143978e71654a9565d, type: 3}
   pickUpCoinVolume: 1
+  checkpointSound: {fileID: 0}
+  checkpointVolume: 1
+  railSound: {fileID: 8300000, guid: 83402a94cbed7e84d8afea6b370018d5, type: 3}
+  railVolume: 1
 --- !u!1 &5604370985446490545
 GameObject:
   m_ObjectHideFlags: 0
