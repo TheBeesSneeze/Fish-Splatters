@@ -31,16 +31,20 @@ public class SoundManagement : MonoBehaviour
     [SerializeField] private float enterBubbleVolume = 1f;
     [SerializeField] private AudioClip pickUpCoinSound;
     [SerializeField] private float pickUpCoinVolume = 1f;
+    [SerializeField] private AudioClip checkpointSound;
+    [SerializeField] private float checkpointVolume = 1f;
+    [SerializeField] private AudioClip railSound;
+    [SerializeField] private float railVolume = 1f;
+
    
 
-    private bool enteredWhirlpool =false; 
-    
-    
+    private bool enteredWhirlpool =false;
+    private bool canJump = true;
 
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Water Bottom"))
         {
            if(hitBottomSound != null)
            {
@@ -49,10 +53,19 @@ public class SoundManagement : MonoBehaviour
         }
     }
 
+    private void OnCollisionExit(Collision collision)
+    {
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Water Bottom"))
+        {
+            Audio.Stop(); 
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Bubble")
         {
+            canJump = false; 
             if(enterBubbleSound != null)
             {
                 Audio.PlayOneShot(enterBubbleSound, enterBubbleVolume);
@@ -68,9 +81,33 @@ public class SoundManagement : MonoBehaviour
             {
                 Audio.PlayOneShot(pickUpCoinSound, pickUpCoinVolume);
             }
+        } 
+        else if(other.gameObject.tag == "Rail")
+        {
+            if(railSound != null && !Audio.isPlaying)
+            {
+                Audio.PlayOneShot(railSound, railVolume);
+            }
         }
-        
-        
+
+        Checkpoint checkpoint = other.GetComponent<Checkpoint>();
+
+        if (checkpoint != null && checkpoint.hitCheckpoint)
+        {
+            if(checkpointSound != null)
+            {
+                Audio.PlayOneShot(checkpointSound, checkpointVolume);
+            }
+            checkpoint.hitCheckpoint = false;  
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject.tag == "Bubble")
+        {
+            canJump = true;
+        }
     }
 
     private void Splash()
@@ -102,7 +139,7 @@ public class SoundManagement : MonoBehaviour
             {
                 Audio.PlayOneShot(swimSound, swimVolume);
             }
-            else if(InputManager.Instance.isHoldingSprint && sprintSound != null)
+            else if(InputManager.Instance.isHoldingSprint && sprintSound != null && !Audio.isPlaying) 
             {
                 Audio.PlayOneShot(sprintSound, sprintVolume);
             }
@@ -112,7 +149,7 @@ public class SoundManagement : MonoBehaviour
 
     private void JumpNoise()
     {
-        if (InputManager.Instance.isHoldingJump && !Audio.isPlaying)
+        if (InputManager.Instance.isHoldingJump && !Audio.isPlaying && canJump)
         {
             if (jumpSound != null)
             {
@@ -133,6 +170,7 @@ public class SoundManagement : MonoBehaviour
         Splash();
         JumpNoise();
         IsMoving();
+        
         
         if(!BackgroundAudio.isPlaying && backgroundSound != null)
         {

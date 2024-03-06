@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -612,6 +612,50 @@ PrefabInstance:
       propertyPath: SprintSpeedMidair
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: jumpSound
+      value: 
+      objectReference: {fileID: 8300000, guid: ecd3b03ba438d2a4d8c1065562c65963, type: 3}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: railSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 83402a94cbed7e84d8afea6b370018d5, type: 3}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: swimSound
+      value: 
+      objectReference: {fileID: 8300000, guid: a4b053335c9a3664dbf49bf28d4bf01c, type: 3}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: sprintSound
+      value: 
+      objectReference: {fileID: 8300000, guid: ba3b553121da44645a0140af6eeb5286, type: 3}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: hitBottomSound
+      value: 
+      objectReference: {fileID: 8300000, guid: ced765120c3015040b794e0403277fdc, type: 3}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: backgroundSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 956ad2f73332544fd87365087825cc4f, type: 3}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: checkpointSound
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: pickUpCoinSound
+      value: 
+      objectReference: {fileID: 8300000, guid: aa64fdda9557a4143978e71654a9565d, type: 3}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: enterBubbleSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 448f82433d6c86a42aad5a63a34f17c8, type: 3}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: largeSplashSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 0b6515d72c91f83459a2218f24972f43, type: 3}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: smallSplashSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 624dfb8501c581543bf2b979002f4674, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
