@@ -139,7 +139,7 @@ public class SoundManagement : MonoBehaviour
             {
                 Audio.PlayOneShot(swimSound, swimVolume);
             }
-            else if(InputManager.Instance.isHoldingSprint && sprintSound != null)
+            else if(InputManager.Instance.isHoldingSprint && sprintSound != null && !Audio.isPlaying) 
             {
                 Audio.PlayOneShot(sprintSound, sprintVolume);
             }
