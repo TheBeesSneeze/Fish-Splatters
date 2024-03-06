@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.51252925, g: 0.8719155, b: 0.9558807, a: 1}
+  m_IndirectSpecularColor: {r: 0.51252866, g: 0.8719141, b: 0.9558793, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -677,6 +677,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 7160383685507412514, guid: 49fde7371592a33479557588dacce8b5, type: 3}
     - {fileID: 962177360664530341, guid: 49fde7371592a33479557588dacce8b5, type: 3}
+    - {fileID: 4892525163429450908, guid: 49fde7371592a33479557588dacce8b5, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5266111977210031199, guid: 49fde7371592a33479557588dacce8b5, type: 3}
@@ -701,6 +702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistanceFromCheckpoint: 50
+  hitCheckpoint: 0
 --- !u!1001 &482727232
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -913,6 +915,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistanceFromCheckpoint: 50
+  hitCheckpoint: 0
 --- !u!1001 &805338466
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1630,6 +1633,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistanceFromCheckpoint: 50
+  hitCheckpoint: 0
 --- !u!1 &1226619618 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5772952277324733674, guid: 6f1678ff6adabce4a94ebd7d9dbb23b8, type: 3}
@@ -1648,6 +1652,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistanceFromCheckpoint: 50
+  hitCheckpoint: 0
 --- !u!1001 &1267516461
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2843,6 +2848,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistanceFromCheckpoint: 50
+  hitCheckpoint: 0
 --- !u!1001 &2061076333
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3030,6 +3036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistanceFromCheckpoint: 50
+  hitCheckpoint: 0
 --- !u!1001 &9068661873757018106
 PrefabInstance:
   m_ObjectHideFlags: 0
