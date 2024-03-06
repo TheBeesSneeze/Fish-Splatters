@@ -32,9 +32,9 @@ public class BubbleBehavior : MonoBehaviour
     /// <summary>
     /// called in bubble chese
     /// </summary>
-    public void Initialize(float speed, GameObject deathPlane)
+    public void Initialize( GameObject deathPlane, Vector3 speed)
     {
-        GetComponent<Rigidbody>().velocity = (transform.up * speed);
+        GetComponent<Rigidbody>().velocity = speed;
 
         if(DeathTimer != -1)
         {
@@ -48,7 +48,7 @@ public class BubbleBehavior : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, deathPlane.transform.position);
 
-        SecondsUntilDestroyed = distance / speed;
+        SecondsUntilDestroyed = distance / speed.x;
     }
 
     private void Start()
