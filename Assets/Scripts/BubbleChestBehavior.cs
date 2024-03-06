@@ -77,7 +77,9 @@ public class BubbleChestBehavior : MonoBehaviour
         BubbleBehavior bubble = bubbleObj.GetComponent<BubbleBehavior>();
         if (bubble == null) return;
 
-        bubble.Initialize(BubbleSpeed, DeathPlane);
+        Vector3 velocity = transform.up * BubbleSpeed;
+
+        bubble.Initialize(DeathPlane, velocity, BubbleSpeed);
     }
 }
 
