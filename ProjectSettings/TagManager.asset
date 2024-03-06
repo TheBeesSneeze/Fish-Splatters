@@ -10,6 +10,7 @@ TagManager:
   - WhirlpoolPoint
   - Bubble
   - Rail
+  - WhirlPoolPointFinal
   layers:
   - Default
   - TransparentFX
