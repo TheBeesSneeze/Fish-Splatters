@@ -5,14 +5,30 @@ using UnityEngine;
 //sky's workin on this one
 public class Checkpoint : MonoBehaviour
 {
-    public bool IsCheckpoint;
-
+    public float DistanceFromCheckpoint = 50;
     private void OnTriggerEnter(Collider other)
     {
-        if (IsCheckpoint)
+        Debug.Log("help");
+        CheckpointManager checkpointManager = other.GetComponent<CheckpointManager>();
+
+        if (checkpointManager != null)
         {
-            //if this checkpoint != the last checkpoint i touched
-            //store this checkpoint = to the current checkpoint
+            checkpointManager.CurrentCheckpoint = transform.position;
+            MoveDeathPlane();
+        }
+    }
+
+    public void MoveDeathPlane()
+    {
+
+        Debug.Log("please");
+        DeathPlane[] deathPlanes = GameObject.FindObjectsOfType<DeathPlane>();
+
+        foreach (DeathPlane deathPlane in deathPlanes)
+        {
+            Vector3 deathPlanePosition = deathPlane.transform.position;
+            deathPlanePosition.y = transform.position.y - DistanceFromCheckpoint;
+            deathPlane.transform.position = deathPlanePosition;
         }
     }
 

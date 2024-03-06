@@ -34,7 +34,7 @@ Transform:
   m_Children:
   - {fileID: 5819796595052148122}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8726950363837813554
 MeshFilter:
@@ -124,6 +124,7 @@ MonoBehaviour:
   AmountOfBubbles: 1
   BubbleSpeed: 1.5
   Bubble: {fileID: 474350950532761543, guid: 4c8b98d158b61914a84d6e480d9da0fe, type: 3}
+  DeathPlane: {fileID: 6522199358782898803}
 --- !u!1 &6522199358782898803
 GameObject:
   m_ObjectHideFlags: 0
