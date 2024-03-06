@@ -36,7 +36,7 @@ public class DeathPlane : MonoBehaviour
     {
         while(transform.position.y != targetPosition.y)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime*3);
 
             yield return null;
         }
