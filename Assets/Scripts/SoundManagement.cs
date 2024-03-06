@@ -44,12 +44,20 @@ public class SoundManagement : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Water Bottom"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Water Bottom"))
         {
            if(hitBottomSound != null)
            {
                 Audio.PlayOneShot(hitBottomSound, hitBottomVolume);
            }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Water Bottom"))
+        {
+            Audio.Stop(); 
         }
     }
 

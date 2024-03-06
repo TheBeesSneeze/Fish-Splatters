@@ -742,7 +742,7 @@ MonoBehaviour:
   BackgroundAudio: {fileID: 452655592358724495}
   backgroundSound: {fileID: 8300000, guid: 956ad2f73332544fd87365087825cc4f, type: 3}
   backgroundVolume: 0.25
-  hitBottomSound: {fileID: 0}
+  hitBottomSound: {fileID: 8300000, guid: ced765120c3015040b794e0403277fdc, type: 3}
   hitBottomVolume: 1
   swimSound: {fileID: 8300000, guid: a4b053335c9a3664dbf49bf28d4bf01c, type: 3}
   swimVolume: 1
