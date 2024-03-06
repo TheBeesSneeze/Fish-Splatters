@@ -22,15 +22,19 @@ public class Checkpoint : MonoBehaviour
 
     public void MoveDeathPlane()
     {
+        DistanceFromCheckpoint = Mathf.Abs(DistanceFromCheckpoint);
 
         Debug.Log("please");
         DeathPlane[] deathPlanes = GameObject.FindObjectsOfType<DeathPlane>();
 
-        foreach (DeathPlane deathPlane in deathPlanes)
+        foreach (DeathPlane plane in deathPlanes)
         {
+            plane.SetHeight(transform.position.y - DistanceFromCheckpoint);
+            /*
             Vector3 deathPlanePosition = deathPlane.transform.position;
             deathPlanePosition.y = transform.position.y - DistanceFromCheckpoint;
             deathPlane.transform.position = deathPlanePosition;
+            */
         }
     }
 }
