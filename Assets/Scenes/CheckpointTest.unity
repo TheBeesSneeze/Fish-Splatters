@@ -227,6 +227,10 @@ PrefabInstance:
       propertyPath: <WaterData>k__BackingField.SurfaceLevelOffset
       value: 12.86
       objectReference: {fileID: 0}
+    - target: {fileID: 2666290972571702759, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
+      propertyPath: DistanceFromCheckpoint
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 5777986541487495852, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
       propertyPath: m_Name
       value: Volume (1)
@@ -327,7 +331,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1879222055532837541, guid: eea0f18c210ad074a850bda74a7ab49c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -23.2
+      value: -95.1
       objectReference: {fileID: 0}
     - target: {fileID: 1879222055532837541, guid: eea0f18c210ad074a850bda74a7ab49c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -433,7 +437,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5437888988921568922, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
   m_PrefabInstance: {fileID: 1716319242}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1542759738
+--- !u!114 &1542759747
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -442,9 +446,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1542759730}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca9cd760960e39d4193fcf858360b1e9, type: 3}
+  m_Script: {fileID: 11500000, guid: bbb88aec1e824b34ab7328fde1e426ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentCheckpoint: {x: 0, y: 0, z: 0}
 --- !u!1 &1704511148
 GameObject:
   m_ObjectHideFlags: 0
@@ -561,7 +566,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4564085412338111071, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 14.58
+      value: 19.35
       objectReference: {fileID: 0}
     - target: {fileID: 4564085412338111071, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_LocalPosition.z
@@ -613,7 +618,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5437888988921568922, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1542759738}
+      addedObject: {fileID: 1542759747}
   m_SourcePrefab: {fileID: 100100000, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
 --- !u!1001 &1729592405
 PrefabInstance:
@@ -626,6 +631,10 @@ PrefabInstance:
     - target: {fileID: 438131444053023521, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
       propertyPath: <WaterData>k__BackingField.SurfaceLevelOffset
       value: 14.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 2666290972571702759, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
+      propertyPath: DistanceFromCheckpoint
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5777986541487495852, guid: 52e3966b58573e2438b9143c07baf625, type: 3}
       propertyPath: m_Name
