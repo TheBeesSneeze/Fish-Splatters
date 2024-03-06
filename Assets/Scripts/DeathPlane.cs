@@ -7,11 +7,11 @@ public class DeathPlane : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        Rigidbody player = other.GetComponent<Rigidbody>();
+       CheckpointManager checkpointManager = other.GetComponent<CheckpointManager>();
 
-        if(player != null )
+       if(checkpointManager != null)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            checkpointManager.RespawnAtCheckpoint();
         }
 
     }
