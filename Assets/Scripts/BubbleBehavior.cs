@@ -28,13 +28,14 @@ public class BubbleBehavior : MonoBehaviour
     private GameObject DeathPlane;
     private Material material;
     private Color baseColor;
+    private static readonly int Alpha = Shader.PropertyToID("_Alpha");
 
     /// <summary>
     /// called in bubble chese
     /// </summary>
-    public void Initialize( GameObject deathPlane, Vector3 speed)
+    public void Initialize( GameObject deathPlane, Vector3 velocity,float bubbleSpeed)
     {
-        GetComponent<Rigidbody>().velocity = speed;
+        GetComponent<Rigidbody>().velocity = velocity;
 
         if(DeathTimer != -1)
         {
@@ -48,7 +49,7 @@ public class BubbleBehavior : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, deathPlane.transform.position);
 
-        SecondsUntilDestroyed = distance / speed.x;
+        SecondsUntilDestroyed = distance / bubbleSpeed;
     }
 
     private void Start()
@@ -59,7 +60,6 @@ public class BubbleBehavior : MonoBehaviour
 
     private void Update()
     {
-       
         if(SecondsUntilDestroyed <= 0)
         {
             Pop();
@@ -77,7 +77,7 @@ public class BubbleBehavior : MonoBehaviour
         a = Mathf.Lerp(transparentColor, 0.9f, a);
         baseColor.a = a;
 
-        material.color = baseColor;
+        material.SetFloat(Alpha, -a);
     }
 
     /// <summary>

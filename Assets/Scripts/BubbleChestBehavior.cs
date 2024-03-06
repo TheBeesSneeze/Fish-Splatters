@@ -79,7 +79,7 @@ public class BubbleChestBehavior : MonoBehaviour
 
         Vector3 velocity = transform.up * BubbleSpeed;
 
-        bubble.Initialize( DeathPlane, velocity);
+        bubble.Initialize(DeathPlane, velocity, BubbleSpeed);
     }
 }
 
