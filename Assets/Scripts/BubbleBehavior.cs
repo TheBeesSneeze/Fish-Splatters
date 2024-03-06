@@ -28,6 +28,7 @@ public class BubbleBehavior : MonoBehaviour
     private GameObject DeathPlane;
     private Material material;
     private Color baseColor;
+    private static readonly int Alpha = Shader.PropertyToID("_Alpha");
 
     /// <summary>
     /// called in bubble chese
@@ -76,7 +77,7 @@ public class BubbleBehavior : MonoBehaviour
         a = Mathf.Lerp(transparentColor, 0.9f, a);
         baseColor.a = a;
 
-        material.color = baseColor;
+        material.SetFloat(Alpha, -a);
     }
 
     /// <summary>
