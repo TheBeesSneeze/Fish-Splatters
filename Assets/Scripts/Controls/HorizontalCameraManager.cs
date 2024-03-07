@@ -42,10 +42,10 @@ public class HorizontalCameraManager : MonoBehaviour
     {
         Vector3 pivotRotation = Pivot.eulerAngles;
         float sensitivityTarget = Gamepad.current != null ? ControllerSensitivity : Sensitivity;
-        pivotRotation.y += cameraMovement.ReadValue<Vector2>().x * Time.deltaTime * sensitivityTarget;
+        pivotRotation.y += cameraMovement.ReadValue<Vector2>().x * Time.fixedDeltaTime * sensitivityTarget;
 
         if (CameraManager.Instance.FullPlayerControl) 
-            pivotRotation.x -= cameraMovement.ReadValue<Vector2>().y * Time.deltaTime * sensitivityTarget;
+            pivotRotation.x -= cameraMovement.ReadValue<Vector2>().y * Time.fixedDeltaTime * sensitivityTarget;
 
         Pivot.eulerAngles = pivotRotation;
         //up and down rotato

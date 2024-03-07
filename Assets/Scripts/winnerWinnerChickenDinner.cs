@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * File Name :         winnerWinnerChickenDinner.cs
+ * Author(s) :         Tyler
+ * Creation Date :     
+ *
+ * Brief Description : 
+ *****************************************************************************/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +16,8 @@ public class winnerWinnerChickenDinner : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player") {
+        InputManager player = other.GetComponent<InputManager>();
+        if (player != null) {
             SceneManager.LoadScene("WinScene");
         }
     }

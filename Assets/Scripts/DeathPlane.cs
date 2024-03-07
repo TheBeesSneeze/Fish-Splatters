@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * File Name :         DeathPlane.cs
+ * Author(s) :         Clare, Sky Beal, Toby Schamberger
+ * Creation Date :     
+ *
+ * Brief Description : 
+ *****************************************************************************/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

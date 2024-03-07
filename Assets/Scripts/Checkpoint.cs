@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * File Name :         Checkpoint.cs
+ * Author(s) :         sky
+ * Creation Date :     
+ *
+ * Brief Description : 
+ *****************************************************************************/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
