@@ -14,6 +14,12 @@ using UnityEngine.SceneManagement;
 public class MenuButtons : MonoBehaviour
 {
     public string LevelName="Segment A";
+
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
     public void StartGame()
     {
         SceneManager.LoadScene(LevelName);
