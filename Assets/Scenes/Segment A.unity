@@ -2284,6 +2284,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 89686779327466184, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: Sensitivity
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1535882345916170445, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: m_Name
       value: Player
@@ -2350,7 +2354,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8684405678741292798, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: CameraHorizontalSpeed
-      value: 5
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: backgroundSound
