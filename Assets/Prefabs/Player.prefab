@@ -760,7 +760,7 @@ MonoBehaviour:
   pickUpCoinVolume: 1
   checkpointSound: {fileID: 8300000, guid: fb4dd24337d95d844a80fe451c26dcbb, type: 3}
   checkpointVolume: 1
-  railSound: {fileID: 8300000, guid: 83402a94cbed7e84d8afea6b370018d5, type: 3}
+  railSound: {fileID: 8300000, guid: 27c0c5e960566234082df24ca21e7f04, type: 3}
   railVolume: 1
 --- !u!1 &5604370985446490545
 GameObject:
