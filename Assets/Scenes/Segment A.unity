@@ -2022,6 +2022,14 @@ PrefabInstance:
       propertyPath: m_Positions.Array.data[1].z
       value: -870.34
       objectReference: {fileID: 0}
+    - target: {fileID: 762645455143243520, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
+      propertyPath: BubbleSpawnSeconds
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 762645455143243520, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
+      propertyPath: ChestClosedSeconds
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 1177598948100505384, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
       propertyPath: m_Positions.Array.data[0].x
       value: 196.35
@@ -2217,6 +2225,14 @@ PrefabInstance:
     - target: {fileID: 5299758960433316822, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
       propertyPath: m_LocalPosition.y
       value: -395
+      objectReference: {fileID: 0}
+    - target: {fileID: 5347017312427877453, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
+      propertyPath: BubbleSpawnSeconds
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5347017312427877453, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
+      propertyPath: ChestClosedSeconds
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5445304503167794875, guid: 229e277a689b5c14fbd56d43313e5c3f, type: 3}
       propertyPath: m_Positions.Array.data[0].x
@@ -2436,6 +2452,10 @@ PrefabInstance:
     - target: {fileID: 8684405678741292798, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: CameraHorizontalSpeed
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
+      propertyPath: railVolume
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8825554954979638426, guid: 924085610d215064f994b277fa1bc1ac, type: 3}
       propertyPath: backgroundSound
